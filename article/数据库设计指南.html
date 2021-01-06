@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.sun1999.top","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="原文章出自www.hackbase.com，本文对其排版做了部分优化，作者不可考，感谢前人贡献 转自数据库设计中的14个技巧 虽然文章很棒，但年代比较远，关于数据库冗余等的争议性问题，我并不认同文章中的做法，因为现代数据库更注重效率，数据库冗余权衡还是要因地制宜，不可一概而论  1. 原始单据与实体之间的关系　　可以是一对一、一对多、多对多的关系。在一般情况下，它们是一对一的关系：即一张原始单据">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据库设计指南">
+<meta property="og:url" content="https://www.sun1999.top/article/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1%E6%8C%87%E5%8D%97.html">
+<meta property="og:site_name" content="Sunny Grocery">
+<meta property="og:description" content="原文章出自www.hackbase.com，本文对其排版做了部分优化，作者不可考，感谢前人贡献 转自数据库设计中的14个技巧 虽然文章很棒，但年代比较远，关于数据库冗余等的争议性问题，我并不认同文章中的做法，因为现代数据库更注重效率，数据库冗余权衡还是要因地制宜，不可一概而论  1. 原始单据与实体之间的关系　　可以是一对一、一对多、多对多的关系。在一般情况下，它们是一对一的关系：即一张原始单据">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-09-10T05:45:30.000Z">
+<meta property="article:modified_time" content="2019-09-10T06:09:22.943Z">
+<meta property="article:author" content="Sunny Grocery">
+<meta property="article:tag" content="DataBase">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://www.sun1999.top/article/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1%E6%8C%87%E5%8D%97.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>数据库设计指南 | Sunny Grocery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Sunny Grocery</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.sun1999.top/article/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1%E6%8C%87%E5%8D%97.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Sunny Grocery">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sunny Grocery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据库设计指南
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-09-10 13:45:30 / 修改时间：14:09:22" itemprop="dateCreated datePublished" datetime="2019-09-10T13:45:30+08:00">2019-09-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DataBase/" itemprop="url" rel="index"><span itemprop="name">DataBase</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>原文章出自<a target="_blank" rel="noopener" href="http://www.hackbase.com/">www.hackbase.com</a>，本文对其排版做了部分优化，作者不可考，感谢前人贡献</p>
+<p>转自<a target="_blank" rel="noopener" href="https://tech.china.com/zh_cn/netschool/programme/167721/20050809/12555491.html"><strong>数据库设计中的14个技巧</strong></a></p>
+<p>虽然文章很棒，但年代比较远，关于数据库冗余等的争议性问题，我并不认同文章中的做法，因为现代数据库更注重效率，数据库冗余权衡还是要因地制宜，不可一概而论</p>
+</blockquote>
+<h3 id="1-原始单据与实体之间的关系"><a href="#1-原始单据与实体之间的关系" class="headerlink" title="1. 原始单据与实体之间的关系"></a>1. 原始单据与实体之间的关系</h3><p>　　可以是一对一、一对多、多对多的关系。在一般情况下，它们是一对一的关系：即一张原始单据对应且只对应一个实体。在特殊情况下，它们可能是一对多或多对一的关系，即一张原始单据对应多个实体，或多张原始单据对应一个实体。这里的实体可以理解为基本表。明确这种对应关系后，对我们设计录入界面大有好处。</p>
+<p>　　〖例1〗：一份员工履历资料，在人力资源信息系统中，就对应三个基本表：员工基本情况表、社会关系表、工作简历表。这就是“一张原始单据对应多个实体”的典型例子。</p>
+<a id="more"></a>
+
+<h3 id="2-主键与外键"><a href="#2-主键与外键" class="headerlink" title="2. 主键与外键"></a>2. 主键与外键</h3><p>　　一般而言，一个实体不能既无主键又无外键。在E－R 图中, 处于叶子部位的实体, 可以定义主键，也可以不定义主键(因为它无子孙), 但必须要有外键(因为它有父亲)。</p>
+<p>　　主键与外键的设计，在全局数据库的设计中，占有重要地位。当全局数据库的设计完成以后，有个美国数据库设计专家说：“键，到处都是键，除了键之外，什么也没有”，这就是他的数据库设计经验之谈，也反映了他对信息系统核心(数据模型)的高度抽象思想。因为：主键是实体的高度抽象，主键与外键的配对，表示实体之间的连接</p>
+<h3 id="3-基本表的性质"><a href="#3-基本表的性质" class="headerlink" title="3. 基本表的性质"></a>3. 基本表的性质</h3><p>基本表与中间表、临时表不同，因为它具有如下四个特性：</p>
+<ul>
+<li>原子性。基本表中的字段是不可再分解的。</li>
+<li>原始性。基本表中的记录是原始数据（基础数据）的记录。</li>
+<li>演绎性。由基本表与代码表中的数据，可以派生出所有的输出数据。</li>
+<li>稳定性。基本表的结构是相对稳定的，表中的记录是要长期保存的。</li>
+</ul>
+<p>理解基本表的性质后，在设计数据库时，就能将基本表与中间表、临时表区分开来。</p>
+<h3 id="4-范式标准"><a href="#4-范式标准" class="headerlink" title="4. 范式标准"></a>4. 范式标准</h3><p>　　基本表及其字段之间的关系, 应尽量满足第三范式。但是，满足第三范式的数据库设计，往往不是最好的设计。为了提高数据库的运行效率，常常需要降低范式标准：适当增加冗余，达到以空间换时间的目的。</p>
+<p>　　〖例2〗：有一张存放商品的基本表，如表1所示。“金额”这个字段的存在，表明该表的设计不满足第三范式，因为“金额”可以由“单价”乘以“数量”得到，说明“金额”是冗余字段。但是，增加“金额”这个冗余字段，可以提高查询统计的速度，这就是以空间换时间的作法。</p>
+<p>　　在Rose 2002中，规定列有两种类型：数据列和计算列。“金额”这样的列被称为“计算列”，而“单价”和“数量”这样的列被称为“数据列”。</p>
+<p>　　表1.商品表的表结构</p>
+<table>
+<thead>
+<tr>
+<th>商品名称</th>
+<th>商品型号</th>
+<th>单价</th>
+<th>数量</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>电视</td>
+<td>29吋</td>
+<td>2,500</td>
+<td>40</td>
+<td>100,000</td>
+</tr>
+</tbody></table>
+<h3 id="5-通俗地理解三个范式"><a href="#5-通俗地理解三个范式" class="headerlink" title="5. 通俗地理解三个范式"></a>5. 通俗地理解三个范式</h3><p>　　通俗地理解三个范式，对于数据库设计大有好处。在数据库设计中，为了更好地应用三个范式，就必须通俗地理解三个范式(通俗地理解是够用的理解，并不是最科学最准确的理解)：</p>
+<p>　　第一范式：1NF是对属性的原子性约束，要求属性具有原子性，不可再分解；</p>
+<p>　　第二范式：2NF是对记录的惟一性约束，要求记录有惟一标识，即实体的惟一性；</p>
+<p>　　第三范式：3NF是对字段冗余性的约束，即任何字段不能由其他字段派生出来，它要求字段没有冗余。</p>
+<p>　　没有冗余的数据库设计可以做到。但是，没有冗余的数据库未必是最好的数据库，有时为了提高运行效率，就必须降低范式标准，适当保留冗余数据。具体做法是：在概念数据模型设计时遵守第三范式，降低范式标准的工作放到物理数据模型设计时考虑。降低范式就是增加字段，允许冗余。</p>
+<h3 id="6-要善于识别与正确处理多对多的关系"><a href="#6-要善于识别与正确处理多对多的关系" class="headerlink" title="6. 要善于识别与正确处理多对多的关系"></a>6. 要善于识别与正确处理多对多的关系</h3><p>　　若两个实体之间存在多对多的关系，则应消除这种关系。消除的办法是，在两者之间增加第三个实体。这样，原来一个多对多的关系，现在变为两个一对多的关系。要将原来两个实体的属性合理地分配到三个实体中去。这里的第三个实体，实质上是一个较复杂的关系，它对应一张基本表。一般来讲，数据库设计工具不能识别多对多的关系，但能处理多对多的关系。</p>
+<p>　　〖例3〗：在“图书馆信息系统”中，“图书”是一个实体，“读者”也是一个实体。这两个实体之间的关系，是一个典型的多对多关系：一本图书在不同时间可以被多个读者借阅，一个读者又可以借多本图书。为此，要在二者之间增加第三个实体，该实体取名为“借还书”，它的属性为：借还时间、借还标志(0表示借书，1表示还书)，另外，它还应该有两个外键(“图书”的主键，“读者”的主键)，使它能与“图书”和“读者”连接。  </p>
+<h3 id="7-主键PK的取值方法"><a href="#7-主键PK的取值方法" class="headerlink" title="7. 主键PK的取值方法"></a>7. 主键PK的取值方法</h3><p>　　PK是供程序员使用的表间连接工具，可以是一无物理意义的数字串, 由程序自动加1来实现。也可以是有物理意义的字段名或字段名的组合。不过前者比后者好。当PK是字段名的组合时，建议字段的个数不要太多，多了不但索引占用空间大，而且速度也慢。</p>
+<h3 id="8-正确认识数据冗余"><a href="#8-正确认识数据冗余" class="headerlink" title="8. 正确认识数据冗余"></a>8. 正确认识数据冗余</h3><p>　　主键与外键在多表中的重复出现, 不属于数据冗余，这个概念必须清楚，事实上有许多人还不清楚。非键字段的重复出现, 才是数据冗余！而且是一种低级冗余，即重复性的冗余。高级冗余不是字段的重复出现，而是字段的派生出现。</p>
+<p>　　〖例4〗：商品中的“单价、数量、金额”三个字段，“金额”就是由“单价”乘以“数量”派生出来的，它就是冗余，而且是一种高级冗余。冗余的目的是为了提高处理速度。只有低级冗余才会增加数据的不一致性，因为同一数据，可能从不同时间、地点、角色上多次录入。因此，我们提倡高级冗余(派生性冗余)，反对低级冗余(重复性冗余)。</p>
+<h3 id="9-E－R图没有标准答案"><a href="#9-E－R图没有标准答案" class="headerlink" title="9. E－R图没有标准答案"></a>9. E－R图没有标准答案</h3><p>　　信息系统的E－R图没有标准答案，因为它的设计与画法不是惟一的，只要它覆盖了系统需求的业务范围和功能内容，就是可行的。反之要修改E－R图。尽管它没有惟一的标准答案，并不意味着可以随意设计。好的E－图的标准是：结构清晰、关联简洁、实体个数适中、属性分配合理、没有低级冗余。</p>
+<h3 id="10-视图技术在数据库设计中很有用"><a href="#10-视图技术在数据库设计中很有用" class="headerlink" title="10. 视图技术在数据库设计中很有用"></a>10. 视图技术在数据库设计中很有用</h3><p>　　与基本表、代码表、中间表不同，视图是一种虚表，它依赖数据源的实表而存在。视图是供程序员使用数据库的一个窗口，是基表数据综合的一种形式, 是数据处理的一种方法，是用户数据保密的一种手段。为了进行复杂处理、提高运算速度和节省存储空间, 视图的定义深度一般不得超过三层。 若三层视图仍不够用, 则应在视图上定义临时表, 在临时表上再定义视图。这样反复交迭定义, 视图的深度就不受限制了。</p>
+<p>　　对于某些与国家政治、经济、技术、军事和安全利益有关的信息系统，视图的作用更加重要。这些系统的基本表完成物理设计之后，立即在基本表上建立第一层视图，这层视图的个数和结构，与基本表的个数和结构是完全相同。并且规定，所有的程序员，一律只准在视图上操作。只有数据库管理员，带着多个人员共同掌握的“安全钥匙”，才能直接在基本表上操作。请读者想想：这是为什么？</p>
+<h3 id="11-中间表、报表和临时表"><a href="#11-中间表、报表和临时表" class="headerlink" title="11. 中间表、报表和临时表"></a>11. 中间表、报表和临时表</h3><p>　　中间表是存放统计数据的表，它是为数据仓库、输出报表或查询结果而设计的，有时它没有主键与外键(数据仓库除外)。临时表是程序员个人设计的，存放临时记录，为个人所用。基表和中间表由DBA维护，临时表由程序员自己用程序自动维护。</p>
+<h3 id="12-完整性约束表现在三个方面"><a href="#12-完整性约束表现在三个方面" class="headerlink" title="12. 完整性约束表现在三个方面"></a>12. 完整性约束表现在三个方面</h3><p>　　域的完整性：用Check来实现约束，在数据库设计工具中，对字段的取值范围进行定义时，有一个Check按钮，通过它定义字段的值城。</p>
+<p>　　参照完整性：用PK、FK、表级触发器来实现。</p>
+<p>　　用户定义完整性：它是一些业务规则，用存储过程和触发器来实现。  </p>
+<h3 id="13-防止数据库设计打补丁的方法是“三少原则”"><a href="#13-防止数据库设计打补丁的方法是“三少原则”" class="headerlink" title="13. 防止数据库设计打补丁的方法是“三少原则”"></a>13. 防止数据库设计打补丁的方法是“三少原则”</h3><ol>
+<li>一个数据库中表的个数越少越好。只有表的个数少了，才能说明系统的E－R图少而精，去掉了重复的多余的实体，形成了对客观世界的高度抽象，进行了系统的数据集成，防止了打补丁式的设计；</li>
+<li> 一个表中组合主键的字段个数越少越好。因为主键的作用，一是建主键索引，二是做为子表的外键，所以组合主键的字段个数少了，不仅节省了运行时间，而且节省了索引存储空间；</li>
+<li>一个表中的字段个数越少越好。只有字段的个数少了，才能说明在系统中不存在数据重复，且很少有数据冗余，更重要的是督促读者学会“列变行”，这样就防止了将子表中的字段拉入到主表中去，在主表中留下许多空余的字段。所谓“列变行”，就是将主表中的一部分内容拉出去，另外单独建一个子表。这个方法很简单，有的人就是不习惯、不采纳、不执行。</li>
+</ol>
+<p>　　数据库设计的实用原则是：在数据冗余和处理速度之间找到合适的平衡点。“三少”是一个整体概念，综合观点，不能孤立某一个原则。该原则是相对的，不是绝对的。“三多”原则肯定是错误的。试想：若覆盖系统同样的功能，一百个实体(共一千个属性) 的E－R图，肯定比二百个实体(共二千个属性)的E－R图，要好得多。</p>
+<p>　　提倡“三少”原则，是叫读者学会利用数据库设计技术进行系统的数据集成。数据集成的步骤是将文件系统集成为应用数据库，将应用数据库集成为主题数据库，将主题数据库集成为全局综合数据库。集成的程度越高，数据共享性就越强，信息孤岛现象就越少，整个企业信息系统的全局E—R图中实体的个数、主键的个数、属性的个数就会越少。</p>
+<p>　　提倡“三少”原则的目的，是防止读者利用打补丁技术，不断地对数据库进行增删改，使企业数据库变成了随意设计数据库表的“垃圾堆”，或数据库表的“大杂院”，最后造成数据库中的基本表、代码表、中间表、临时表杂乱无章，不计其数，导致企事业单位的信息系统无法维护而瘫痪。</p>
+<p>　　“三多”原则任何人都可以做到，该原则是“打补丁方法”设计数据库的歪理学说。“三少”原则是少而精的原则，它要求有较高的数据库设计技巧与艺术，不是任何人都能做到的，因为该原则是杜绝用“打补丁方法”设计数据库的理论依据。</p>
+<h3 id="14-提高数据库运行效率的办法"><a href="#14-提高数据库运行效率的办法" class="headerlink" title="14. 提高数据库运行效率的办法"></a>14. 提高数据库运行效率的办法</h3><p>在给定的系统硬件和系统软件条件下，提高数据库系统的运行效率的办法是：    </p>
+<ol>
+<li>在数据库物理设计时，降低范式，增加冗余, 少用触发器, 多用存储过程。</li>
+<li>当计算非常复杂、而且记录条数非常巨大时(例如一千万条)，复杂计算要先在数据库外面，以文件系统方式用C++语言计算处理完成之后，最后才入库追加到表中去。这是电信计费系统设计的经验。</li>
+<li>发现某个表的记录太多，例如超过一千万条，则要对该表进行水平分割。水平分割的做法是，以该表主键PK的某个值为界线，将该表的记录水平分割为两个表。若发现某个表的字段太多，例如超过八十个，则垂直分割该表，将原来的一个表分解为两个表。</li>
+<li>对数据库管理系统DBMS进行系统优化，即优化各种系统参数，如缓冲区个数。</li>
+<li>在使用面向数据的SQL语言进行程序设计时，尽量采取优化算法。</li>
+</ol>
+<hr>
+<p>　　<strong>总之，要提高数据库的运行效率，必须从数据库系统级优化、数据库设计级优化、程序实现级优化，这三个层次上同时下功夫</strong>。</p>
+<p>　　上述十四个技巧，是许多人在大量的数据库分析与设计实践中，逐步总结出来的。对于这些经验的运用，读者不能生帮硬套，死记硬背，而要消化理解，实事求是，灵活掌握。并逐步做到：在应用中发展，在发展中应用。  </p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/DataBase/" rel="tag"># DataBase</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/%E7%AE%80%E6%98%93%E7%9A%84restfulapi%E8%AE%BE%E8%AE%A1%E6%8C%87%E5%8D%97.html" rel="prev" title="简易的RESTfulAPI设计指南">
+      <i class="fa fa-chevron-left"></i> 简易的RESTfulAPI设计指南
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/hadoop%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97.html" rel="next" title="Hadoop快速入门指南">
+      Hadoop快速入门指南 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%8E%9F%E5%A7%8B%E5%8D%95%E6%8D%AE%E4%B8%8E%E5%AE%9E%E4%BD%93%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">1.</span> <span class="nav-text">1. 原始单据与实体之间的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%B8%BB%E9%94%AE%E4%B8%8E%E5%A4%96%E9%94%AE"><span class="nav-number">2.</span> <span class="nav-text">2. 主键与外键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%9F%BA%E6%9C%AC%E8%A1%A8%E7%9A%84%E6%80%A7%E8%B4%A8"><span class="nav-number">3.</span> <span class="nav-text">3. 基本表的性质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E8%8C%83%E5%BC%8F%E6%A0%87%E5%87%86"><span class="nav-number">4.</span> <span class="nav-text">4. 范式标准</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E9%80%9A%E4%BF%97%E5%9C%B0%E7%90%86%E8%A7%A3%E4%B8%89%E4%B8%AA%E8%8C%83%E5%BC%8F"><span class="nav-number">5.</span> <span class="nav-text">5. 通俗地理解三个范式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E8%A6%81%E5%96%84%E4%BA%8E%E8%AF%86%E5%88%AB%E4%B8%8E%E6%AD%A3%E7%A1%AE%E5%A4%84%E7%90%86%E5%A4%9A%E5%AF%B9%E5%A4%9A%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">6.</span> <span class="nav-text">6. 要善于识别与正确处理多对多的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E4%B8%BB%E9%94%AEPK%E7%9A%84%E5%8F%96%E5%80%BC%E6%96%B9%E6%B3%95"><span class="nav-number">7.</span> <span class="nav-text">7. 主键PK的取值方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-%E6%AD%A3%E7%A1%AE%E8%AE%A4%E8%AF%86%E6%95%B0%E6%8D%AE%E5%86%97%E4%BD%99"><span class="nav-number">8.</span> <span class="nav-text">8. 正确认识数据冗余</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-E%EF%BC%8DR%E5%9B%BE%E6%B2%A1%E6%9C%89%E6%A0%87%E5%87%86%E7%AD%94%E6%A1%88"><span class="nav-number">9.</span> <span class="nav-text">9. E－R图没有标准答案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-%E8%A7%86%E5%9B%BE%E6%8A%80%E6%9C%AF%E5%9C%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1%E4%B8%AD%E5%BE%88%E6%9C%89%E7%94%A8"><span class="nav-number">10.</span> <span class="nav-text">10. 视图技术在数据库设计中很有用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-%E4%B8%AD%E9%97%B4%E8%A1%A8%E3%80%81%E6%8A%A5%E8%A1%A8%E5%92%8C%E4%B8%B4%E6%97%B6%E8%A1%A8"><span class="nav-number">11.</span> <span class="nav-text">11. 中间表、报表和临时表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-%E5%AE%8C%E6%95%B4%E6%80%A7%E7%BA%A6%E6%9D%9F%E8%A1%A8%E7%8E%B0%E5%9C%A8%E4%B8%89%E4%B8%AA%E6%96%B9%E9%9D%A2"><span class="nav-number">12.</span> <span class="nav-text">12. 完整性约束表现在三个方面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-%E9%98%B2%E6%AD%A2%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1%E6%89%93%E8%A1%A5%E4%B8%81%E7%9A%84%E6%96%B9%E6%B3%95%E6%98%AF%E2%80%9C%E4%B8%89%E5%B0%91%E5%8E%9F%E5%88%99%E2%80%9D"><span class="nav-number">13.</span> <span class="nav-text">13. 防止数据库设计打补丁的方法是“三少原则”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-%E6%8F%90%E9%AB%98%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%90%E8%A1%8C%E6%95%88%E7%8E%87%E7%9A%84%E5%8A%9E%E6%B3%95"><span class="nav-number">14.</span> <span class="nav-text">14. 提高数据库运行效率的办法</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Sunny Grocery</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sunny Grocery</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">110k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:20</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

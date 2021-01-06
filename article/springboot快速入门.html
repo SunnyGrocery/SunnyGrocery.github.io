@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.sun1999.top","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="配置首先，配置文件我们一般用yml格式，且可以分环境在classpath下，创建application.yml为主配置文件 下来可以创建文件名规范为application-__.yml的yml文件 例如application-dev.yml,application-prod.yml 在主配置文件application.yml做以下配置，即可使用application-dev.yml下的配置信息；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot快速入门">
+<meta property="og:url" content="https://www.sun1999.top/article/springboot%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8.html">
+<meta property="og:site_name" content="Sunny Grocery">
+<meta property="og:description" content="配置首先，配置文件我们一般用yml格式，且可以分环境在classpath下，创建application.yml为主配置文件 下来可以创建文件名规范为application-__.yml的yml文件 例如application-dev.yml,application-prod.yml 在主配置文件application.yml做以下配置，即可使用application-dev.yml下的配置信息；">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-07-20T15:36:20.000Z">
+<meta property="article:modified_time" content="2019-08-21T13:34:04.069Z">
+<meta property="article:author" content="Sunny Grocery">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="SpringBoot">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://www.sun1999.top/article/springboot%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>SpringBoot快速入门 | Sunny Grocery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Sunny Grocery</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.sun1999.top/article/springboot%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Sunny Grocery">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sunny Grocery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SpringBoot快速入门
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-20 23:36:20" itemprop="dateCreated datePublished" datetime="2019-07-20T23:36:20+08:00">2019-07-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-08-21 21:34:04" itemprop="dateModified" datetime="2019-08-21T21:34:04+08:00">2019-08-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/SpringBoot/" itemprop="url" rel="index"><span itemprop="name">SpringBoot</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>首先，配置文件我们一般用<code>yml</code>格式，且可以分环境在<code>classpath</code>下，创建<code>application.yml</code>为主配置文件</p>
+<p>下来可以创建文件名规范为<code>application-__.yml</code>的yml文件</p>
+<p>例如<code>application-dev.yml</code>,<code>application-prod.yml</code></p>
+<p>在主配置文件<code>application.yml</code>做以下配置，即可使用<code>application-dev.yml</code>下的配置信息；</p>
+<p>注意，无论使用哪个子配置文件，主配置文件中的配置都会生效（相当于通用配置），若子配置文件覆盖掉主配置文件中的相同信息，则最终为子文件中的配置</p>
+<a id="more"></a>
+
+<p>一些基本配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8080</span></span><br><span class="line">  <span class="attr">servlet:</span></span><br><span class="line">    <span class="attr">context-path:</span> <span class="string">/your-context-path</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">profiles:</span></span><br><span class="line">  	<span class="comment">#选用dev配置文件</span></span><br><span class="line">    <span class="attr">active:</span> <span class="string">dev</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">driver-class-name:</span> <span class="string">com.mysql.cj.jdbc.Driver</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://127.0.0.1:3306/dataBaseName?serverTimezone=Asia/Shanghai&amp;useUnicode=true&amp;characterEncoding=utf-8</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">password:</span> <span class="number">123456</span></span><br><span class="line">  <span class="attr">jpa:</span></span><br><span class="line">    <span class="attr">hibernate:</span></span><br><span class="line">    <span class="comment">#第一次运行使用create自动生成表，一般使用update</span></span><br><span class="line">      <span class="attr">ddl-auto:</span> <span class="string">create</span></span><br><span class="line">    <span class="comment">#控制台打印出SQL语句</span></span><br><span class="line">    <span class="attr">show-sql:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment">#使用MySQL方言，为了自动生成数据库时使用InnoDB</span></span><br><span class="line">    <span class="attr">database-platform:</span> <span class="string">org.hibernate.dialect.MySQL8Dialect</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="启动方式"><a href="#启动方式" class="headerlink" title="启动方式"></a>启动方式</h3><ol>
+<li><p>开发工具启动</p>
+</li>
+<li><p>项目目录下执行 ：<code>mvn springboot:run</code></p>
+</li>
+<li><p>生产环境</p>
+<ol>
+<li><p>项目目录下执行 <code>mvn clean package</code>编译项目</p>
+</li>
+<li><p>成功后执行<code>cd target</code>进入编译生成的target目录</p>
+</li>
+<li><p>执行<code>java -jar JAR包文件名</code> 启动（这里启动时，可以配置参数，以指定SpringBoot的配置文件）</p>
+<p><code>java -jar 文件名.jar --spring.profiles.active=prod  </code>这样就可以用<code>application-prod.yml</code>启动</p>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="常用注解"><a href="#常用注解" class="headerlink" title="常用注解"></a>常用注解</h3><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># yml:</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##自定义配置1（使用@Value注入变量）</span></span><br><span class="line"><span class="attr">customParameter1:</span></span><br><span class="line">	<span class="attr">sonPara:</span> <span class="number">1</span></span><br><span class="line"><span class="comment">####使用配置文件中的参数：customParameter2 的实际值为&quot;最小数为1&quot;</span></span><br><span class="line"><span class="attr">customParameter2:</span> <span class="string">最小数为$&#123;customParameter1.sonPara&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##自定义配置2(直接注入对象)</span></span><br><span class="line"><span class="attr">limit:</span></span><br><span class="line">	<span class="attr">ANum:</span> <span class="number">1</span></span><br><span class="line">	<span class="attr">BNum:</span> <span class="string">$&#123;limit.minNum&#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>@Value(&quot;&quot;)</code>  用在 配置变量 的定义上</p>
+<p>主要用于单个自定义配置 </p>
+<p>配置文件中自定义的参数<code>0</code>注入类变量 ,相比于下面的配置类批量注入来说比较繁琐</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//CustomParConfig.java</span></span><br><span class="line">  <span class="meta">@Value(&quot;$&#123;customParameter1&#125;&quot;)</span></span><br><span class="line">  <span class="keyword">private</span> String myCustomPar1;</span><br><span class="line">  <span class="meta">@Value(&quot;$&#123;customParameter2&#125;&quot;)</span></span><br><span class="line">  <span class="keyword">private</span> String myCustomPar2;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>@ConfigurationProperties(perfix = &quot;&quot;)</code>配合<code>@Component</code> 写在配置类上</p>
+<p>主要用于多个自定义配置</p>
+<p>该注释可直接将自定义配置批量注入配置类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//LimitConfig.java</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;limit&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LimitConfig</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Integer ANum;</span><br><span class="line">    <span class="keyword">private</span> Integer BNum;</span><br><span class="line">    <span class="comment">//省略get()和set()</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样就可以直接将 .yml 中的参数封装到配置类中，其他地方获取只需用@Autowired注入即可</p>
+<hr>
+</li>
+<li><p><code>@RestController</code> 用在Contorller类上</p>
+<p>代替了@Controller，并且还相当于在类的所有方法上都加@ResponseBody注解，即该类下的所有方法都会返回字符串，一般用于返回json格式数据</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//本类中访问根url为http://localhost:8080/hw/...</span></span><br><span class="line"><span class="meta">@RestController()</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/hw&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line">    <span class="comment">//omit....</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><code>@RequestMapping</code>配置url映射</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//postman中以POST请求访问url：url:http://localhost:8080/hw/say</span></span><br><span class="line"><span class="meta">@RequestMapping(value = &quot;/say&quot;,method = RequestMethod.POST)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">say</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">&quot;100&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//页面返回值：100</span></span><br></pre></td></tr></table></figure></li>
+<li><p><code>@___Mapping</code>系列：GetMapping ,PostMapping,</p>
+<p>映射单个url:@GetMapping(“url”)</p>
+<p>映射多个url:@GetMapping({“/url1”,”/url2”})</p>
+</li>
+<li><p><code>@PathVariable(&quot;&quot;)</code> 获取url中的数据</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//url:http://localhost:8080/hw/say/100</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/say/&#123;id&#125;&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">say</span><span class="params">(<span class="meta">@PathVariable(&quot;id&quot;)</span>Integer myId )</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> String.valueOf(myId);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//页面返回值：100</span></span><br></pre></td></tr></table></figure></li>
+<li><p><code>@RequestParam(&quot;&quot;)</code> 获取请求参数的值，也可以选择不传参数，使用默认值</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestParam( value = &quot;id&quot;,required = false,defaultValue = &quot;0&quot;)</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//url:http://localhost:8080/hw/say?100</span></span><br><span class="line"><span class="comment">//或者url:http://localhost:8080/hw/say</span></span><br><span class="line"><span class="comment">//使用form-urlencoded</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/say&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">say</span><span class="params">(<span class="meta">@RequestParam(&quot;id&quot;)</span>Integer myId )</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> String.valueOf(myId);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//页面返回值：100</span></span><br></pre></td></tr></table></figure></li>
+<li><p>使用JPA自动创建表时，有如下的yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">jpa:</span></span><br><span class="line">    <span class="attr">hibernate:</span></span><br><span class="line">    <span class="comment">#第一次运行使用create自动生成表，一般使用update</span></span><br><span class="line">      <span class="attr">ddl-auto:</span> <span class="string">create</span></span><br><span class="line">    <span class="comment">#控制台打印出SQL语句</span></span><br><span class="line">    <span class="attr">show-sql:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment">#使用MySQL方言，为了自动生成数据库时使用InnoDB</span></span><br><span class="line">    <span class="attr">database-platform:</span> <span class="string">org.hibernate.dialect.MySQL8Dialect</span></span><br></pre></td></tr></table></figure>
+<p>相应的实体类的类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">*注意，以下注解都为：&#x27;javax.persistence&#x27;包下</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">@Entity</span><span class="comment">//声明需要自动创建表的实体类</span></span><br><span class="line"><span class="meta">@Table(&quot;table_name&quot;)</span><span class="comment">//指定表名，缺省值为驼峰类名的转换:lucky_money</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyEntity</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    *&#x27;@id&#x27; 指定主键</span></span><br><span class="line"><span class="comment">    *&#x27;@GeneratedValue&#x27; 配置自增列，并声明自增策略</span></span><br><span class="line"><span class="comment">    *详情参见：&#x27;https://blog.csdn.net/zhangli0910/article/details/83580855&#x27;</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//必须有一个无参构造器</span></span><br><span class="line">    MyEntity()&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//省略get和set方法</span></span><br></pre></td></tr></table></figure></li>
+<li><p><code>@Transactional</code> 用在映射方法上，使方法中的服务以事务执行</p>
+<p>// org.springframework.transaction.annotation.Transactional</p>
+</li>
+</ul>
+<h3 id="RESTful-API"><a href="#RESTful-API" class="headerlink" title="RESTful API"></a>RESTful API</h3><p>最基本的API设计</p>
+<table>
+<thead>
+<tr>
+<th>请求类型</th>
+<th>请求路径</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET</td>
+<td>/context-path</td>
+<td>查询条目列表</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/context-path</td>
+<td>创建单个记录</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/context-path/id</td>
+<td>查询单个记录</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/context-path/id</td>
+<td>更新单个记录</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>/context-path/id</td>
+<td>删除单个记录</td>
+</tr>
+</tbody></table>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/SpringBoot/" rel="tag"># SpringBoot</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/mybatis%E6%80%BB%E7%BB%93-%E8%BD%AC%E8%BD%BD.html" rel="prev" title="Mybatis总结[转载]">
+      <i class="fa fa-chevron-left"></i> Mybatis总结[转载]
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/jpa%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97-1.html" rel="next" title="JPA使用指南-1">
+      JPA使用指南-1 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%96%B9%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">启动方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3"><span class="nav-number">3.</span> <span class="nav-text">常用注解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RESTful-API"><span class="nav-number">4.</span> <span class="nav-text">RESTful API</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Sunny Grocery</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sunny Grocery</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">110k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:20</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

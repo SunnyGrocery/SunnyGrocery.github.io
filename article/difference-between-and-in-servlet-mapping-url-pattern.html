@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.sun1999.top","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="&lt;url-pattern&gt;&#x2F;*&lt;&#x2F;url-pattern&gt;The &#x2F;* on a servlet overrides all other servlets, including all servlets provided by the servletcontainer such as the default servlet and the JSP servlet. What">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Difference between &#x2F; and &#x2F;* in servlet mapping url pattern">
+<meta property="og:url" content="https://www.sun1999.top/article/difference-between-and-in-servlet-mapping-url-pattern.html">
+<meta property="og:site_name" content="Sunny Grocery">
+<meta property="og:description" content="&lt;url-pattern&gt;&#x2F;*&lt;&#x2F;url-pattern&gt;The &#x2F;* on a servlet overrides all other servlets, including all servlets provided by the servletcontainer such as the default servlet and the JSP servlet. What">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-06-02T13:40:04.000Z">
+<meta property="article:modified_time" content="2019-06-02T13:59:24.267Z">
+<meta property="article:author" content="Sunny Grocery">
+<meta property="article:tag" content="web">
+<meta property="article:tag" content="servlet">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://www.sun1999.top/article/difference-between-and-in-servlet-mapping-url-pattern.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Difference between / and /* in servlet mapping url pattern | Sunny Grocery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Sunny Grocery</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.sun1999.top/article/difference-between-and-in-servlet-mapping-url-pattern.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Sunny Grocery">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sunny Grocery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Difference between / and /* in servlet mapping url pattern
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-06-02 21:40:04 / 修改时间：21:59:24" itemprop="dateCreated datePublished" datetime="2019-06-02T21:40:04+08:00">2019-06-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Web/" itemprop="url" rel="index"><span itemprop="name">Web</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="lt-url-pattern-gt-lt-url-pattern-gt"><a href="#lt-url-pattern-gt-lt-url-pattern-gt" class="headerlink" title="&lt;url-pattern&gt;/*&lt;/url-pattern&gt;"></a><code>&lt;url-pattern&gt;/*&lt;/url-pattern&gt;</code></h3><p>The <code>/*</code> on a servlet overrides all other servlets, including all servlets provided by the servletcontainer such as the default servlet and the JSP servlet. Whatever request you fire, it will end up in that servlet. This is thus a bad URL pattern for servlets. Usually, you’d like to use <code>/*</code> on a <a target="_blank" rel="noopener" href="http://download.oracle.com/javaee/6/api/javax/servlet/Filter.html"><code>Filter</code></a> only. It is able to let the request continue to any of the servlets listening on a more specific URL pattern by calling [<code>FilterChain#doFilter()</code>](<a target="_blank" rel="noopener" href="http://download.oracle.com/javaee/6/api/javax/servlet/FilterChain.html#doFilter">http://download.oracle.com/javaee/6/api/javax/servlet/FilterChain.html#doFilter</a>(javax.servlet.ServletRequest, javax.servlet.ServletResponse)).</p>
+<a id="more"></a>
+
+<h3 id="lt-url-pattern-gt-lt-url-pattern-gt-1"><a href="#lt-url-pattern-gt-lt-url-pattern-gt-1" class="headerlink" title="&lt;url-pattern&gt;/&lt;/url-pattern&gt;"></a><code>&lt;url-pattern&gt;/&lt;/url-pattern&gt;</code></h3><p>The <code>/</code> doesn’t override any other servlet. It only replaces the servletcontainer’s builtin default servlet for all requests which doesn’t match any other registered servlet. This is normally only invoked on static resources (CSS/JS/image/etc) and directory listings. The servletcontainer’s builtin default servlet is also capable of dealing with HTTP cache requests, media (audio/video) streaming and file download resumes. </p>
+<p>Usually, you don’t want to override the default servlet as you would otherwise have to take care of all its tasks, which is not exactly trivial (JSF utility library <a target="_blank" rel="noopener" href="http://omnifaces.org/">OmniFaces</a> has an <a target="_blank" rel="noopener" href="https://github.com/omnifaces/omnifaces/blob/master/src/main/java/org/omnifaces/servlet/FileServlet.java">open source</a> <a target="_blank" rel="noopener" href="http://showcase.omnifaces.org/servlets/FileServlet">example</a>). </p>
+<blockquote>
+<p>译：通常，你并不希望覆盖默认的servlet，因为这样您必须处理它的所有任务，这并不容易(JSF实用程序库OmniFaces有一个开源示例)。</p>
+<p>注：SpringMVC就是要接管所有任务，所以要我们要覆盖容器默认的servlet，静态文件配置<code>&lt;mvc:default-servlet-handler/&gt;</code>即可排除</p>
+</blockquote>
+<p>This is thus also a bad URL pattern for servlets. As to why JSP pages doesn’t hit this servlet, it’s because the servletcontainer’s builtin JSP servlet will be invoked, which is already by default mapped on the more specific URL pattern <code>*.jsp</code>.</p>
+<h3 id="lt-url-pattern-gt-lt-url-pattern-gt-2"><a href="#lt-url-pattern-gt-lt-url-pattern-gt-2" class="headerlink" title="&lt;url-pattern&gt;&lt;/url-pattern&gt;"></a><code>&lt;url-pattern&gt;&lt;/url-pattern&gt;</code></h3><p>Then there’s also the empty string URL pattern . This will be invoked when the context root is requested. This is different from the <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/14648167/how-to-configure-welcome-file-list-in-web-xml/"><code>&lt;welcome-file&gt;</code></a> approach that it isn’t invoked when any subfolder is requested. This is most likely the URL pattern you’re actually looking for in case you want a “<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/33248473/change-default-homepage-in-root-path-to-servlet-with-doget/">home page servlet</a>“. I only have to admit that I’d intuitively expect the empty string URL pattern <code> </code> and the slash URL pattern <code>/</code> be defined exactly the other way round, so I can understand that a lot of starters got confused on this. But it is what it is.</p>
+<h3 id="Front-Controller"><a href="#Front-Controller" class="headerlink" title="Front Controller"></a>Front Controller</h3><p>In case you <em>actually</em> intend to have a front controller servlet, then you’d best map it on a more specific URL pattern like <code>*.html</code>, <code>*.do</code>, <code>/pages/*</code>, <code>/app/*</code>, etc. You can hide away the front controller URL pattern and cover static resources on a common URL pattern like <code>/resources/*</code>, <code>/static/*</code>, etc with help of a servlet filter. See also <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/13521946/how-to-prevent-static-resources-from-being-handled-by-front-controller-servlet-w">How to prevent static resources from being handled by front controller servlet which is mapped on /*</a>. Noted should be that Spring MVC has a builtin static resource servlet, so that’s why you could map its front controller on <code>/</code> if you configure a common URL pattern for static resources in Spring. See also <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/1483063/spring-mvc-3-and-handling-static-content-am-i-missing-something">How to handle static content in Spring MVC?</a></p>
+<blockquote>
+<p>作者：<a target="_blank" rel="noopener" href="https://stackoverflow.com/users/157882/balusc">BalusC</a></p>
+<p>文章转载自：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/4140448/difference-between-and-in-servlet-mapping-url-pattern">Difference between / and /* in servlet mapping url pattern</a></p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/web/" rel="tag"># web</a>
+              <a href="/tags/servlet/" rel="tag"># servlet</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/ssm%E5%9F%BA%E6%9C%AC%E9%A1%B9%E7%9B%AE%E6%A8%A1%E5%9D%97%E6%9E%B6%E6%9E%84.html" rel="prev" title="SSM基本项目模块架构">
+      <i class="fa fa-chevron-left"></i> SSM基本项目模块架构
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F-%E5%8C%B9%E9%85%8D%E8%A7%84%E5%88%99.html" rel="next" title="正则表达式-匹配规则">
+      正则表达式-匹配规则 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#lt-url-pattern-gt-lt-url-pattern-gt"><span class="nav-number">1.</span> <span class="nav-text">&lt;url-pattern&gt;&#x2F;*&lt;&#x2F;url-pattern&gt;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lt-url-pattern-gt-lt-url-pattern-gt-1"><span class="nav-number">2.</span> <span class="nav-text">&lt;url-pattern&gt;&#x2F;&lt;&#x2F;url-pattern&gt;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lt-url-pattern-gt-lt-url-pattern-gt-2"><span class="nav-number">3.</span> <span class="nav-text">&lt;url-pattern&gt;&lt;&#x2F;url-pattern&gt;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Front-Controller"><span class="nav-number">4.</span> <span class="nav-text">Front Controller</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Sunny Grocery</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sunny Grocery</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">110k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:20</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

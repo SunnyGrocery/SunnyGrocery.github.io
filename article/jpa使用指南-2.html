@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.sun1999.top","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="文章承自JPA使用指南-1 本文介绍 JPA 常用 API Persistence -&gt; EntityManagerFactory -&gt; EntityManager -&gt; EntityTransaction">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JPA使用指南-2">
+<meta property="og:url" content="https://www.sun1999.top/article/jpa%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97-2.html">
+<meta property="og:site_name" content="Sunny Grocery">
+<meta property="og:description" content="文章承自JPA使用指南-1 本文介绍 JPA 常用 API Persistence -&gt; EntityManagerFactory -&gt; EntityManager -&gt; EntityTransaction">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://image.sun1999.top/20190823173249.png">
+<meta property="article:published_time" content="2019-08-23T09:28:22.000Z">
+<meta property="article:modified_time" content="2019-08-24T04:43:22.223Z">
+<meta property="article:author" content="Sunny Grocery">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="JPA">
+<meta property="article:tag" content="Hibernate">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://image.sun1999.top/20190823173249.png">
+
+<link rel="canonical" href="https://www.sun1999.top/article/jpa%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97-2.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>JPA使用指南-2 | Sunny Grocery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Sunny Grocery</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.sun1999.top/article/jpa%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97-2.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Sunny Grocery">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sunny Grocery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JPA使用指南-2
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-08-23 17:28:22" itemprop="dateCreated datePublished" datetime="2019-08-23T17:28:22+08:00">2019-08-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-08-24 12:43:22" itemprop="dateModified" datetime="2019-08-24T12:43:22+08:00">2019-08-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/JPA/" itemprop="url" rel="index"><span itemprop="name">JPA</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>13 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>文章承自<a href="https://www.sun1999.top/article/jpa%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97-1.html">JPA使用指南-1</a></p>
+<p>本文介绍 JPA 常用 API</p>
+<p>Persistence -&gt; EntityManagerFactory -&gt; EntityManager -&gt; EntityTransaction</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="1-Persistence"><a href="#1-Persistence" class="headerlink" title="1. Persistence"></a>1. Persistence</h2><p>Persistence  类是用于获取 EntityManagerFactory 实例。该类包含一个名为 createEntityManagerFactory 的 静态方法 。</p>
+<p>createEntityManagerFactory 方法有如下两个重载版本。</p>
+<ul>
+<li>（常用）带有一个参数的方法以 JPA 配置文件 persistence.xml 中的持久化单元名为参数</li>
+<li>带有两个参数的方法：前一个参数含义相同，后一个参数 Map类型，用于设置 JPA 的相关属性，这时将忽略其它地方设置的属性。Map 对象的属性名必须是 JPA 实现库提供商的名字空间约定的属性名。</li>
+</ul>
+<h2 id="2-EntityManagerFactory"><a href="#2-EntityManagerFactory" class="headerlink" title="2. EntityManagerFactory"></a>2. EntityManagerFactory</h2><p>EntityManagerFactory 接口主要用来创建 EntityManager 实例。该接口约定了如下4个方法：</p>
+<ul>
+<li>（常用）createEntityManager()：用于创建实体管理器对象实例。</li>
+<li>createEntityManager(Map map)：用于创建实体管理器对象实例的重载方法，Map 参数用于提供 EntityManager 的属性。</li>
+<li>isOpen()：检查 EntityManagerFactory 是否处于打开状态。实体管理器工厂创建后一直处于打开状态，除非调用close()方法将其关闭。</li>
+<li>（常用）close()：关闭 EntityManagerFactory 。 EntityManagerFactory 关闭后将释放所有资源，isOpen()方法测试将返回 false，其它方法将不能调用，否则将导致IllegalStateException异常。</li>
+</ul>
+<h2 id="3-EntityManager"><a href="#3-EntityManager" class="headerlink" title="3. EntityManager"></a>3. EntityManager</h2><p><strong>EntityManager 对象在一组实体类与底层数据源之间进行 O/R 映射的管理。</strong></p>
+<p>在 JPA 规范中, EntityManager 是完成持久化操作的核心对象。实体作为普通 Java 对象，<strong>只有在调用 EntityManager 将其持久化后才会变成持久化对象。</strong></p>
+<p>它可以用来管理和更新 Entity Bean, 根椐主键查找 Entity Bean, 还可以通过JPQL语句查询实体。</p>
+<blockquote>
+<p>PS:实体的状态:</p>
+<ul>
+<li>新建状态:   新创建的对象，尚未拥有持久性主键。</li>
+<li>持久化状态：已经拥有持久性主键并和持久化建立了上下文环境</li>
+<li>游离状态：拥有持久化主键，但是没有与持久化建立上下文环境</li>
+<li>删除状态:  拥有持久化主键，已经和持久化建立上下文环境，但是从数据库中删除。</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>基本方法测试</p>
+<ul>
+<li>find (Class<T> entityClass,Object primaryKey)</li>
+<li>getReference(Class<T> entityClass,Object primaryKey)</li>
+<li>persist(Object entity)</li>
+<li>remove(Object entity)</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.sust;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.sust.entity.Customer;</span><br><span class="line"><span class="keyword">import</span> org.junit.After;</span><br><span class="line"><span class="keyword">import</span> org.junit.Before;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.persistence.EntityManager;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.EntityManagerFactory;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.EntityTransaction;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.Persistence;</span><br><span class="line"><span class="keyword">import</span> java.util.Random;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EntityManagerTest1</span> </span>&#123;</span><br><span class="line"><span class="keyword">private</span> EntityManagerFactory entityManagerFactory;</span><br><span class="line"><span class="keyword">private</span> EntityManager entityManager;</span><br><span class="line"><span class="keyword">private</span> EntityTransaction transaction;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="comment">//        1.testFind()</span></span><br><span class="line"><span class="comment">//        Customer customer = testFind(1);</span></span><br><span class="line"><span class="comment">//        System.out.println(&quot;--------Before use customer--------&quot;);</span></span><br><span class="line"><span class="comment">//        System.out.println(customer);</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//        2.testGetReference()</span></span><br><span class="line"><span class="comment">//        Customer customer = testGetReference(1);</span></span><br><span class="line"><span class="comment">//        System.out.println(&quot;--------Before use customer--------&quot;);</span></span><br><span class="line"><span class="comment">//        System.out.println(customer);</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//        3.testPersist() 注：插入10条数据，并且每一个customer都被持久化，获得了数据库自增id字段的值</span></span><br><span class="line"><span class="comment">//        for (int i = 1; i &lt;= 10; i++) &#123;</span></span><br><span class="line"><span class="comment">//            Customer customer = new Customer();</span></span><br><span class="line"><span class="comment">//            customer.setLastName(&quot;testPersist_&quot; + i);</span></span><br><span class="line"><span class="comment">//            customer.setAge(new Random().nextInt(100));</span></span><br><span class="line"><span class="comment">//            customer.setEmail(new Random().nextInt(99999) + &quot;@sust.edu.cn&quot;);</span></span><br><span class="line"><span class="comment">//            testPersist(customer);</span></span><br><span class="line"><span class="comment">//            System.out.println(customer.getId());</span></span><br><span class="line"><span class="comment">//        &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//        4.testRemove() 注：方法作用于持久化状态的对象，故需要查询用ID出来才可以删除！</span></span><br><span class="line"><span class="comment">//        Customer customer = testFind(1);</span></span><br><span class="line"><span class="comment">//        testRemove(customer);</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* find (Class&lt;T&gt; entityClass,Object primaryKey)</span></span><br><span class="line"><span class="comment">* 直接返回持久化对象（缓存中没有就查数据库），不存在则返回NULL</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Customer <span class="title">testFind</span><span class="params">(Integer primaryKey)</span> </span>&#123;</span><br><span class="line"><span class="keyword">return</span> entityManager.find(Customer.class, primaryKey);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* getReference(Class&lt;T&gt; entityClass,Object primaryKey)</span></span><br><span class="line"><span class="comment">* 懒加载，返回entityClass的代理，</span></span><br><span class="line"><span class="comment">* 当用到返回代理类时执行真正的查询</span></span><br><span class="line"><span class="comment">* 如果此entity在数据库中不存在，getReference()会抛出EntityNotFoundException</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Customer <span class="title">testGetReference</span><span class="params">(Integer primaryKey)</span> </span>&#123;</span><br><span class="line"><span class="keyword">return</span> entityManager.getReference(Customer.class, primaryKey);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* </span></span><br><span class="line"><span class="comment">* 方法传入的将要被持久化的对象不能拥有ID（即临时对象），否则持久化失败</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">testPersist</span><span class="params">(Customer customer)</span> </span>&#123;</span><br><span class="line">entityManager.persist(customer);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* remove(Object entity)</span></span><br><span class="line"><span class="comment">* 方法作用于持久化状态的对象，故需要查询用ID出来才可以删除</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">testRemove</span><span class="params">(Customer customer)</span> </span>&#123;</span><br><span class="line">entityManager.remove(customer);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 直接update了</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testUpdate</span><span class="params">()</span></span>&#123;</span><br><span class="line">Customer customer = entityManager.find(Customer.class, <span class="number">13</span>);</span><br><span class="line">customer.setAge(<span class="number">19</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Before</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">entityManagerFactory = Persistence.createEntityManagerFactory(<span class="string">&quot;myPersistenceUnit-1&quot;</span>);</span><br><span class="line">entityManager = entityManagerFactory.createEntityManager();</span><br><span class="line">transaction = entityManager.getTransaction();</span><br><span class="line">transaction.begin();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@After</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">after</span><span class="params">()</span> </span>&#123;</span><br><span class="line">transaction.commit();</span><br><span class="line">entityManager.close();</span><br><span class="line">entityManagerFactory.close();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><strong>merge (T entity) 方法</strong></p>
+<p>merge() 用于处理 Entity 的同步。即数据库的插入和更新操作</p>
+<p>简单来说：</p>
+<ol>
+<li>传入的entity若无主键，则会执行insert，并返回一个新的持久化对象   </li>
+<li>传入entity若有主键，但数据库不存在此主键，则会执行insert，并返回一个新的持久化对象</li>
+<li>传入entity若有主键，且数据库已存在此主键，则进行update操作，并返回一个新的持久化对象 </li>
+</ol>
+<blockquote>
+<p>注意，第三种情况这里有个大坑</p>
+<p>如果你传入的游离对象，没有填入所有属性，那么这些属性会在update时被填入Null，</p>
+<p>即使加入@DynamicUpdate也没用</p>
+<p>这是因为merge()第三种情况update时存在一个属性拷贝，具体可以参照流程图，不详细介绍</p>
+</blockquote>
+<p>流程图：</p>
+<p><img src="http://image.sun1999.top/20190823173249.png"></p>
+<p>用merage()模拟update操作：（不知道有啥用）</p>
+<blockquote>
+<p>且要先将所更新的对象查出，也就是我们要将更改的数据填入查询出对象中，对其重新持久化（这里面也存在一个复制操作），而不是直接传入一个新建对象</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testMerge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Customer foundedCustomer = entityManager.find(Customer.class, <span class="number">13</span>);</span><br><span class="line">    System.out.println(<span class="string">&quot;-------After find()&quot;</span>);</span><br><span class="line">    System.out.println(<span class="string">&quot;foundedCustomer:&quot;</span> + foundedCustomer);</span><br><span class="line">    <span class="keyword">if</span> (foundedCustomer == <span class="keyword">null</span>) &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;米有此条目&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//更新字段</span></span><br><span class="line">    foundedCustomer.setLastName(<span class="string">&quot;13&quot;</span>);</span><br><span class="line"></span><br><span class="line">    Customer mergedCustomer = entityManager.merge(foundedCustomer);</span><br><span class="line">    System.out.println(<span class="string">&quot;-------After merge()&quot;</span>);</span><br><span class="line">    System.out.println(<span class="string">&quot;mergedCustomer:&quot;</span> + mergedCustomer);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//提交</span></span><br><span class="line">    transaction.commit();</span><br><span class="line">    System.out.println(<span class="string">&quot;-------After commit()&quot;</span>);</span><br><span class="line">    System.out.println(<span class="string">&quot;mergedCustomer:&quot;</span> + mergedCustomer);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>console打印的主要信息</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">Hibernate: </span><br><span class="line">    <span class="keyword">select</span></span><br><span class="line">        customer0_.id <span class="keyword">as</span> id1_0_0_,</span><br><span class="line">        customer0_.age <span class="keyword">as</span> age2_0_0_,</span><br><span class="line">        customer0_.birthday <span class="keyword">as</span> birthday3_0_0_,</span><br><span class="line">      customer0_.create_time <span class="keyword">as</span> create_t4_0_0_,</span><br><span class="line">        customer0_.email <span class="keyword">as</span> email5_0_0_,</span><br><span class="line">        customer0_.last_name <span class="keyword">as</span> last_nam6_0_0_,</span><br><span class="line">        customer0_.update_time <span class="keyword">as</span> update_t7_0_0_ </span><br><span class="line">    <span class="keyword">from</span></span><br><span class="line">        jpa_customers customer0_ </span><br><span class="line">    <span class="keyword">where</span></span><br><span class="line">        customer0_.id<span class="operator">=</span>?</span><br><span class="line"><span class="comment">-------After find()</span></span><br><span class="line">foundedCustomer:Customer(id<span class="operator">=</span><span class="number">13</span>, email<span class="operator">=</span><span class="number">0</span>, lastName<span class="operator">=</span><span class="number">11</span>, age<span class="operator">=</span><span class="number">0</span>, createTime<span class="operator">=</span><span class="number">2019</span><span class="number">-08</span><span class="number">-23</span> <span class="number">18</span>:<span class="number">32</span>:<span class="number">25.908</span>, updateTime<span class="operator">=</span><span class="number">2019</span><span class="number">-08</span><span class="number">-23</span> <span class="number">19</span>:<span class="number">00</span>:<span class="number">18.515</span>, birthday<span class="operator">=</span><span class="number">2019</span><span class="number">-08</span><span class="number">-23</span>)</span><br><span class="line"><span class="comment">-------After merge()</span></span><br><span class="line">mergedCustomer:Customer(id<span class="operator">=</span><span class="number">13</span>, email<span class="operator">=</span><span class="number">0</span>, lastName<span class="operator">=</span><span class="number">13</span>, age<span class="operator">=</span><span class="number">0</span>, createTime<span class="operator">=</span><span class="number">2019</span><span class="number">-08</span><span class="number">-23</span> <span class="number">18</span>:<span class="number">32</span>:<span class="number">25.908</span>, updateTime<span class="operator">=</span><span class="number">2019</span><span class="number">-08</span><span class="number">-23</span> <span class="number">19</span>:<span class="number">00</span>:<span class="number">18.515</span>, birthday<span class="operator">=</span><span class="number">2019</span><span class="number">-08</span><span class="number">-23</span>)</span><br><span class="line">Hibernate: </span><br><span class="line">    <span class="keyword">update</span></span><br><span class="line">        jpa_customers </span><br><span class="line">    <span class="keyword">set</span></span><br><span class="line">        age<span class="operator">=</span>?,</span><br><span class="line">        last_name<span class="operator">=</span>?,</span><br><span class="line">        update_time<span class="operator">=</span>? </span><br><span class="line">    <span class="keyword">where</span></span><br><span class="line">        id<span class="operator">=</span>?</span><br><span class="line"><span class="comment">-------After commit()//注意提交后的updateTime字段</span></span><br><span class="line">mergedCustomer:Customer(id<span class="operator">=</span><span class="number">13</span>, email<span class="operator">=</span><span class="number">0</span>, lastName<span class="operator">=</span><span class="number">13</span>, age<span class="operator">=</span><span class="number">0</span>, createTime<span class="operator">=</span><span class="number">2019</span><span class="number">-08</span><span class="number">-23</span> <span class="number">18</span>:<span class="number">32</span>:<span class="number">25.908</span>, updateTime<span class="operator">=</span>Fri Aug <span class="number">23</span> <span class="number">19</span>:<span class="number">01</span>:<span class="number">54</span> CST <span class="number">2019</span>, birthday<span class="operator">=</span><span class="number">2019</span><span class="number">-08</span><span class="number">-23</span>)</span><br></pre></td></tr></table></figure></li>
+<li><p>由以上实验得出结论：</p>
+<p>我们在做更新操作时，merge()之后，其返回的持久化对象实际<strong>并没有更新</strong>，因为没有提交事务，还未与数据库通信。</p>
+<p>我们要想安全的使用更新后的对象（保证所有字段与数据库相同，如例子中的updateTime字段）就必须在<code>transaction.commit();</code>之后使用merge()所返回的对象   </p>
+</li>
+<li><p>其余一些常用方法：</p>
+<ul>
+<li>flush ()：同步持久上下文环境，即将持久上下文环境的所有未保存实体的状态信息保存到数据库中。</li>
+<li>refresh (Object entity)：用数据库实体记录的值更新实体对象的状态，即更新实例的属性值。</li>
+<li>clear ()：清除持久上下文环境，断开所有关联的实体。如果这时还有未提交的更新则会被撤消。</li>
+<li>contains (Object entity)：判断一个实例是否属于当前持久上下文环境管理的实体。</li>
+<li>isOpen ()：判断当前的实体管理器是否是打开状态。</li>
+<li>getTransaction ()：返回资源层的事务对象。EntityTransaction实例可以用于开始和提交多个事务。</li>
+<li>close ()：关闭实体管理器。之后若调用实体管理器实例的方法或其派生的查询对象的方法都将抛出 IllegalstateException 异常，除了getTransaction 和 isOpen方法(返回 false)。不过，当与实体管理器关联的事务处于活动状态时，调用 close 方法后持久上下文将仍处于被管理状态，直到事务完成。</li>
+</ul>
+</li>
+<li><p>JPQL方法：</p>
+<ul>
+<li>createQuery (String qlString)：创建一个查询对象。</li>
+<li>createNamedQuery (String name)：根据命名的查询语句块创建查询对象。参数为命名的查询语句。</li>
+<li>createNativeQuery (String sqlString)：使用标准 SQL语句创建查询对象。参数为标准SQL语句字符串。</li>
+<li>createNativeQuery (String sqls, String resultSetMapping)：使用标准SQL语句创建查询对象，并指定返回结果集 Map的 名称。</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-EntityTransaction"><a href="#4-EntityTransaction" class="headerlink" title="4.  EntityTransaction"></a>4.  EntityTransaction</h2><p>EntityTransaction 接口用来管理资源层实体管理器的事务操作。通过调用实体管理器的getTransaction方法 获得其实例。</p>
+<ul>
+<li><p>begin () 用于启动一个事务，此后的多个数据库操作将作为整体被提交或撤消。若这时事务已启动则会抛出 IllegalStateException 异常。</p>
+</li>
+<li><p>commit () 用于提交当前事务。即将事务启动以后的所有数据库更新操作持久化至数据库中。</p>
+</li>
+<li><p>rollback () 撤消(回滚)当前事务。即撤消事务启动后的所有数据库更新操作，从而不对数据库产生影响。</p>
+</li>
+<li><p>setRollbackOnly () 使当前事务只能被撤消。</p>
+</li>
+<li><p>getRollbackOnly () 查看当前事务是否设置了只能撤消标志。</p>
+</li>
+<li><p>isActive () 查看当前事务是否是活动的。如果返回true则不能调用begin方法，否则将抛出 IllegalStateException 异常；如果返回 false 则不能调用 commit、rollback、setRollbackOnly 及 getRollbackOnly 方法，否则将抛出 IllegalStateException 异常。</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/JPA/" rel="tag"># JPA</a>
+              <a href="/tags/Hibernate/" rel="tag"># Hibernate</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/jpa%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97-1.html" rel="prev" title="JPA使用指南-1">
+      <i class="fa fa-chevron-left"></i> JPA使用指南-1
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/jpa%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97-3.html" rel="next" title="JPA使用指南-3">
+      JPA使用指南-3 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Persistence"><span class="nav-number">1.</span> <span class="nav-text">1. Persistence</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-EntityManagerFactory"><span class="nav-number">2.</span> <span class="nav-text">2. EntityManagerFactory</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-EntityManager"><span class="nav-number">3.</span> <span class="nav-text">3. EntityManager</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-EntityTransaction"><span class="nav-number">4.</span> <span class="nav-text">4.  EntityTransaction</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Sunny Grocery</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sunny Grocery</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">110k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:20</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
