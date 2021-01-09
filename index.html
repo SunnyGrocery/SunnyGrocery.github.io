@@ -19,7 +19,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"www.sun1999.top","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":20,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"www.sun1999.top","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":20,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta property="og:type" content="website">
@@ -124,6 +124,16 @@
         <li class="menu-item menu-item-home">
 
     <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-archives">
@@ -571,42 +581,6 @@
 <ul>
 <li>测试hadoop时务必使用hadoop用户操作</li>
 </ul>
-<h2 id="网络配置详情"><a href="#网络配置详情" class="headerlink" title="网络配置详情"></a>网络配置详情</h2><h3 id="虚拟机外围配置"><a href="#虚拟机外围配置" class="headerlink" title="虚拟机外围配置"></a>虚拟机外围配置</h3><blockquote>
-<p>环境：VMware® Workstation 15 Pro 15.0.0 build-10134415</p>
-</blockquote>
-<ul>
-<li>虚拟网络VMnet配置</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>名称</th>
-<th>类型</th>
-<th>外部链接</th>
-<th>主机连接</th>
-<th>DHCP</th>
-<th>子网地址</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>VMnet8</td>
-<td>NAT模式</td>
-<td>NAT模式</td>
-<td>已连接</td>
-<td>-</td>
-<td>192.169.100.0</td>
-</tr>
-</tbody></table>
-<ul>
-<li><p>关闭DHCP服务</p>
-</li>
-<li><p>子网IP：192.168.100.0             子网掩码：255.255.255.0</p>
-</li>
-<li><p>网关IP：192.168.100.2</p>
-</li>
-<li><p>关闭IPV6</p>
-</li>
-</ul>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/article/hadoop%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97.html#more" rel="contents">
@@ -796,91 +770,16 @@
 <li>port   服务器端口，http默认80,https默认443</li>
 <li>path 资源访问的路径</li>
 <li>query-string 发送给http服务器的数据</li>
-<li>anchor 锚，当使用命名锚（named anchors）时，我们可以创建直接跳至该命名锚（比如页面中某个小节）的链接，这样使用者就无需不停地滚动页面来寻找他们需要的信息了。</li>
+<li>anchor 锚，当使用命名锚（named anchors）时，我们可以创建直接跳至该命名锚（比如页面中某个小节）的链接，这样使用者就无需不停地滚动页面来寻找他们需要的信息了。   </li>
 </ul>
-<h3 id="请求"><a href="#请求" class="headerlink" title="请求"></a>请求</h3><p>格式：请求行、消息报头、请求正文</p>
-<ul>
-<li><p>请求行：Method Request-URI HTTP-Version CRLF (请求方法 请求地址 请求所使用的HTTP版本号（v1.0、v1.1）回车换行)</p>
-<p>eg. GET/HTTP/1.1</p>
-</li>
-</ul>
-<h3 id="响应"><a href="#响应" class="headerlink" title="响应"></a>响应</h3><p>格式：状态行、消息报头、响应正文</p>
-<ul>
-<li><p>状态行：HTTP-Version Status-Code Reason-Phrase CRLF</p>
-<p>eg. HTTP/1.1 200 OK</p>
-<p>常用状态码：</p>
-<ul>
-<li>200 OK //客户端请求成功</li>
-<li>400 Bad Request //客户端请求有语法错误，服务器无法理解</li>
-<li>401 Unauthorized //服务器收到请求，但拒绝服务</li>
-<li>404 Not Found //服务器无法根据客户端的请求找到资源</li>
-<li>500 Internal Server Error //服务器内部错误，即有bug啊</li>
-<li>503 Service Unavailable //由于超载或系统维护，服务器暂时的无法处理客户端的请求。</li>
-</ul>
-</li>
-</ul>
-<h2 id="设计RESTful-API"><a href="#设计RESTful-API" class="headerlink" title="设计RESTful API"></a>设计RESTful API</h2><h3 id="资源路径"><a href="#资源路径" class="headerlink" title="资源路径"></a>资源路径</h3><p>在RESTful架构中，每个网址代表一种资源，所以网址中不能有动词，只能有名词。</p>
-<p>一般来说API的名词应该使用复数</p>
-<p>举例：</p>
-<p>举例来说，有一个API提供动物园的信息，还包括各种动物和雇员的信息，则它的路径应该设计成下面这样：</p>
-<ul>
-<li><p>动物园资源:<code>https://api.example.com/vi/zoos</code> ，版本号也可以放在请求头中</p>
-</li>
-<li><p>动物资源:<code>https://api.example.com/vi/animals</code></p>
-</li>
-<li><p>雇员资源:<code>https://api.example.com/vi/employees</code></p>
-</li>
-</ul>
-<h3 id="请求Method"><a href="#请求Method" class="headerlink" title="请求Method"></a>请求Method</h3><ul>
-<li>POST/zoos:新建一个动物园</li>
-<li>GET/zoos/ID：获取某个指定动物园的信息</li>
-<li>PUT/zoos/ID：更新某个指定动物园的信息</li>
-<li>DELETE/zoos/ID：删除某个动物园</li>
-</ul>
-<h3 id="过滤信息"><a href="#过滤信息" class="headerlink" title="过滤信息"></a>过滤信息</h3><p>如果记录数量很多，服务器不可能都将他们返回给客户，API应该提供参数，过滤返回结果（分页）</p>
-<p>举例：</p>
-<ul>
-<li>?offset=10：指定返回记录的开始位置</li>
-<li>?page=2&amp;per_page=100：指定第几页，以及每页的记录数</li>
-<li>?sortby=name&amp;order=asc：指定返回结果序列，以及排序顺序</li>
-<li>?animal_type_id=1：指定筛选条件</li>
-</ul>
-<h3 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h3><ul>
-<li><p>200 OK 服务器成功返回用户请求的数据，该操作是幂等的</p>
-</li>
-<li><p>201 CREATED 新建或修改数据成功</p>
-</li>
-<li><p>204 NO CONTENT 删除数据成功//删除数据时是没有响应体的</p>
-</li>
-<li><p>400 BAD REQUEST 用户发出的请求有错误，该操作幂等</p>
-</li>
-<li><p>401 Unauthorized 表示该用户没有认证，不能执行当前操作   //没有提供认证参数</p>
-</li>
-<li><p>403 Forbidden 表示用户权限不足，无权执行当前操作   //提供了认证参数，但还是被拒绝</p>
-</li>
-<li><p>422 Unprocesable Entity 创建/更新对象时，发生数据验证错误 ，配合响应体返回相应信息</p>
-</li>
-<li><p>500 Internal Server Error 服务器内部错误，无法完成请求</p>
-</li>
-</ul>
-<h3 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h3><p>如果状态码是4xx或者5xx，就应该向用户返回出错信息。一般返回信息中将”error“作为key，出错信息作为value(为了安全，不要将具体的服务器错误调用栈返回出去)</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">   <span class="attr">&quot;error&quot;</span> : <span class="string">&quot;参数错误&quot;</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="返回结果"><a href="#返回结果" class="headerlink" title="返回结果"></a>返回结果</h3><p>针对不同操作，服务器向用户返回的结果应该符合以下规范：</p>
-<ul>
-<li><p>GET/collections：返回资源对象的列表（数组）</p>
-</li>
-<li><p>GET/collections/identity：返回单个资源对象</p>
-</li>
-<li><p>POST/collections/identity：返回新生成的资源对象</p>
-</li>
-<li><p>PUT/collections/identity：返回更新后的完整的资源对象</p>
-</li>
-<li><p>PATCH/collections/identity：返回资源被修改的属性</p>
-</li>
-<li><p>DELETE/collections/identity：返回204状态码和一个空的响应体</p>
-</li>
-</ul>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/article/%E7%AE%80%E6%98%93%E7%9A%84restfulapi%E8%AE%BE%E8%AE%A1%E6%8C%87%E5%8D%97.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1164,11 +1063,13 @@
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
+          
         <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
+          
         <span class="site-state-item-count">34</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
@@ -1222,32 +1123,15 @@
     <span title="站点阅读时长">3:20</span>
 </div>
 <div class="powered-by">
-    Powered by 
+    Erstellt mit 
     <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a>
-  </div>
-  <div class="beian"><span class="exturl" data-url="aHR0cHM6Ly9iZWlhbi5taWl0Lmdvdi5jbg==">陕ICP备19009013号 </span>
-  </div>
+    <span class="post-meta-divider">|</span>
+      <a href="https://beian.miit.gov.cn" rel="noopener external nofollow noreferrer" target="_blank" class="exturl" title="">陕 ICP 备 19009013 号 </a>
+</div>
 
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-user"></i>
-      </span>
-      <span class="site-uv" title="总访客量">
-        <span id="busuanzi_value_site_uv"></span>
-      </span>
-    </span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-eye"></i>
-      </span>
-      <span class="site-pv" title="总访问量">
-        <span id="busuanzi_value_site_pv"></span>
-      </span>
-    </span>
 </div>
 
 
@@ -1264,6 +1148,7 @@
   
   <script size="230" alpha="0.2" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
   <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
   <script src="/lib/velocity/velocity.min.js"></script>
   <script src="/lib/velocity/velocity.ui.min.js"></script>
 
@@ -1303,6 +1188,7 @@
   
 
   
+
 
 </body>
 </html>

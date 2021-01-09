@@ -9,6 +9,22 @@
 
 
     <url>
+        <loc>http://www.sun1999.top/article/hadoop%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97.html</loc>
+        <lastmod>2021-01-09T16:24:17.587Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.sun1999.top/article/%E7%AE%80%E6%98%93%E7%9A%84restfulapi%E8%AE%BE%E8%AE%A1%E6%8C%87%E5%8D%97.html</loc>
+        <lastmod>2021-01-09T16:23:38.560Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://www.sun1999.top/article/2020%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93.html</loc>
         <lastmod>2021-01-06T14:05:12.648Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -49,14 +65,6 @@
     </url>
 
     <url>
-        <loc>http://www.sun1999.top/article/hadoop%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97.html</loc>
-        <lastmod>2019-09-23T14:48:48.768Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>http://www.sun1999.top/article/hi-hexo.html</loc>
         <lastmod>2019-09-23T05:50:36.015Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -75,14 +83,6 @@
     <url>
         <loc>http://www.sun1999.top/article/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1%E6%8C%87%E5%8D%97.html</loc>
         <lastmod>2019-09-10T06:09:22.943Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.sun1999.top/article/%E7%AE%80%E6%98%93%E7%9A%84restfulapi%E8%AE%BE%E8%AE%A1%E6%8C%87%E5%8D%97.html</loc>
-        <lastmod>2019-09-10T05:46:30.437Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
