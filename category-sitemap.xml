@@ -2,119 +2,119 @@
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
     <url>
-        <loc>https://www.sun1999.top/</loc>
+        <loc>http://www.sun1999.top/</loc>
         <changefreq>daily</changefreq>
         <priority>1</priority>
     </url>
 
 
     <url>
-        <loc>https://www.sun1999.top/categories/Life/</loc>
+        <loc>http://www.sun1999.top/categories/Life/</loc>
         <lastmod>2021-01-06T14:05:12.648Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://www.sun1999.top/categories/BigData/Hadoop/</loc>
+        <loc>http://www.sun1999.top/categories/BigData/Hadoop/</loc>
         <lastmod>2019-10-13T09:31:58.629Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://www.sun1999.top/categories/BigData/</loc>
+        <loc>http://www.sun1999.top/categories/BigData/</loc>
         <lastmod>2019-10-13T09:31:58.629Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://www.sun1999.top/categories/Java/Spring/</loc>
+        <loc>http://www.sun1999.top/categories/Java/Spring/</loc>
         <lastmod>2019-10-13T09:18:10.206Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://www.sun1999.top/categories/Java/</loc>
+        <loc>http://www.sun1999.top/categories/Java/</loc>
         <lastmod>2019-10-13T09:18:10.206Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://www.sun1999.top/categories/Hexo/</loc>
+        <loc>http://www.sun1999.top/categories/Hexo/</loc>
         <lastmod>2019-09-23T05:50:36.015Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://www.sun1999.top/categories/Java/SpringMVC/</loc>
+        <loc>http://www.sun1999.top/categories/Java/SpringMVC/</loc>
         <lastmod>2019-09-18T08:17:30.189Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://www.sun1999.top/categories/DataBase/</loc>
+        <loc>http://www.sun1999.top/categories/DataBase/</loc>
         <lastmod>2019-09-10T06:09:22.943Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://www.sun1999.top/categories/Web/</loc>
+        <loc>http://www.sun1999.top/categories/Web/</loc>
         <lastmod>2019-09-10T05:46:30.437Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://www.sun1999.top/categories/Java/JPA/</loc>
+        <loc>http://www.sun1999.top/categories/Java/JPA/</loc>
         <lastmod>2019-08-25T16:42:09.716Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://www.sun1999.top/categories/Java/SpringBoot/</loc>
+        <loc>http://www.sun1999.top/categories/Java/SpringBoot/</loc>
         <lastmod>2019-08-21T13:34:04.069Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://www.sun1999.top/categories/Java/Mybatis/</loc>
+        <loc>http://www.sun1999.top/categories/Java/Mybatis/</loc>
         <lastmod>2019-07-14T15:37:15.650Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://www.sun1999.top/categories/Algorithm/</loc>
+        <loc>http://www.sun1999.top/categories/Algorithm/</loc>
         <lastmod>2019-07-11T17:28:06.446Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://www.sun1999.top/categories/Java/%25E5%259F%25BA%25E7%25A1%2580/%25E6%25B3%25A8%25E8%25A7%25A3/</loc>
+        <loc>http://www.sun1999.top/categories/Java/%25E5%259F%25BA%25E7%25A1%2580/%25E6%25B3%25A8%25E8%25A7%25A3/</loc>
         <lastmod>2019-06-16T07:55:15.975Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://www.sun1999.top/categories/Java/%25E5%259F%25BA%25E7%25A1%2580/</loc>
+        <loc>http://www.sun1999.top/categories/Java/%25E5%259F%25BA%25E7%25A1%2580/</loc>
         <lastmod>2019-06-16T07:55:15.975Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://www.sun1999.top/categories/Java/%25E5%259F%25BA%25E7%25A1%2580/%25E6%25AD%25A3%25E5%2588%2599%25E8%25A1%25A8%25E8%25BE%25BE%25E5%25BC%258F/</loc>
+        <loc>http://www.sun1999.top/categories/Java/%25E5%259F%25BA%25E7%25A1%2580/%25E6%25AD%25A3%25E5%2588%2599%25E8%25A1%25A8%25E8%25BE%25BE%25E5%25BC%258F/</loc>
         <lastmod>2019-06-16T07:48:46.357Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
