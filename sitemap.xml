@@ -2,13 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://www.sun1999.top/google68615f6e57e564ee.html</loc>
-    
-    <lastmod>2021-02-14</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://www.sun1999.top/404.html</loc>
     
     <lastmod>2021-02-14</lastmod>
@@ -298,6 +291,20 @@
 
   
   <url>
+    <loc>http://www.sun1999.top/tags/%E6%8E%92%E5%BA%8F/</loc>
+    <lastmod>2021-02-14</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.sun1999.top/tags/%E7%AE%97%E6%B3%95/</loc>
+    <lastmod>2021-02-14</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://www.sun1999.top/tags/BigData/</loc>
     <lastmod>2021-02-14</lastmod>
     <changefreq>daily</changefreq>
@@ -333,20 +340,6 @@
   </url>
   
   <url>
-    <loc>http://www.sun1999.top/tags/%E6%8E%92%E5%BA%8F/</loc>
-    <lastmod>2021-02-14</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://www.sun1999.top/tags/%E7%AE%97%E6%B3%95/</loc>
-    <lastmod>2021-02-14</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>http://www.sun1999.top/tags/Hexo/</loc>
     <lastmod>2021-02-14</lastmod>
     <changefreq>daily</changefreq>
@@ -375,14 +368,14 @@
   </url>
   
   <url>
-    <loc>http://www.sun1999.top/tags/http/</loc>
+    <loc>http://www.sun1999.top/tags/RESTful/</loc>
     <lastmod>2021-02-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>http://www.sun1999.top/tags/RESTful/</loc>
+    <loc>http://www.sun1999.top/tags/http/</loc>
     <lastmod>2021-02-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -473,13 +466,6 @@
   </url>
   
   <url>
-    <loc>http://www.sun1999.top/tags/SpringBoot/</loc>
-    <lastmod>2021-02-14</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>http://www.sun1999.top/tags/AOP/</loc>
     <lastmod>2021-02-14</lastmod>
     <changefreq>daily</changefreq>
@@ -529,6 +515,13 @@
   </url>
   
   <url>
+    <loc>http://www.sun1999.top/tags/SpringBoot/</loc>
+    <lastmod>2021-02-14</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://www.sun1999.top/tags/SpringMVC/</loc>
     <lastmod>2021-02-14</lastmod>
     <changefreq>daily</changefreq>
@@ -536,6 +529,13 @@
   </url>
   
 
+  
+  <url>
+    <loc>http://www.sun1999.top/categories/Algorithm/</loc>
+    <lastmod>2021-02-14</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
   
   <url>
     <loc>http://www.sun1999.top/categories/BigData/</loc>
@@ -552,21 +552,14 @@
   </url>
   
   <url>
-    <loc>http://www.sun1999.top/categories/BigData/Hadoop/</loc>
-    <lastmod>2021-02-14</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://www.sun1999.top/categories/Algorithm/</loc>
-    <lastmod>2021-02-14</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>http://www.sun1999.top/categories/Hexo/</loc>
+    <lastmod>2021-02-14</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.sun1999.top/categories/BigData/Hadoop/</loc>
     <lastmod>2021-02-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -622,14 +615,14 @@
   </url>
   
   <url>
-    <loc>http://www.sun1999.top/categories/Java/SpringBoot/</loc>
+    <loc>http://www.sun1999.top/categories/Java/Spring/</loc>
     <lastmod>2021-02-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>http://www.sun1999.top/categories/Java/Spring/</loc>
+    <loc>http://www.sun1999.top/categories/Java/SpringBoot/</loc>
     <lastmod>2021-02-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
