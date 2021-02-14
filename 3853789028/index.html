@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.sun1999.top","root":"/","scheme":"Mist","version":"7.8.0","exturl":true,"sidebar":{"position":"right","display":"hide","padding":18,"offset":20,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="文章承自JPA使用指南-2 本文介绍映射关联关系 单向多对一；单向一对多；双向多对一；双向一对一；双向多对多">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JPA使用指南-3">
+<meta property="og:url" content="http://www.sun1999.top/3853789028/index.html">
+<meta property="og:site_name" content="Sunny Grocery">
+<meta property="og:description" content="文章承自JPA使用指南-2 本文介绍映射关联关系 单向多对一；单向一对多；双向多对一；双向一对一；双向多对多">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-08-24T04:35:41.000Z">
+<meta property="article:modified_time" content="2021-02-14T05:27:38.063Z">
+<meta property="article:author" content="Sunny Grocery">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="JPA">
+<meta property="article:tag" content="Hibernate">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://www.sun1999.top/3853789028/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>JPA使用指南-3 | Sunny Grocery</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2fd60dce699a7df813aeff6a2451ebae";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Sunny Grocery</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <span class="exturl github-corner" data-url="aHR0cHM6Ly9naXRodWIuY29tL1N1bm55R3JvY2VyeQ==" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></span>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.sun1999.top/3853789028/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Sunny Grocery">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sunny Grocery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JPA使用指南-3
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-08-24 12:35:41" itemprop="dateCreated datePublished" datetime="2019-08-24T12:35:41+08:00">2019-08-24</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/JPA/" itemprop="url" rel="index"><span itemprop="name">JPA</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>15 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>文章承自<a href="https://www.sun1999.top/article/JPA%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97-2.html">JPA使用指南-2</a></p>
+<p>本文介绍映射关联关系</p>
+<p>单向多对一；单向一对多；双向多对一；双向一对一；双向多对多</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="1-单向多对一"><a href="#1-单向多对一" class="headerlink" title="1.单向多对一"></a>1.单向多对一</h2><ul>
+<li>创建Order实体类，Order与Customer的关系为多对一</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.sust.entity;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> lombok.Data;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.persistence.*;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table(name = &quot;jpa_orders&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Order</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * ·<span class="doctag">@ManyToOne</span>·单向多对一，即多个Order对应一个Customer，在Order表中以Customer实体字段表现</span></span><br><span class="line"><span class="comment">     *				cascade 属性可以配置级联操作</span></span><br><span class="line"><span class="comment">     *				fetch 默认为 FetchType.EAGER</span></span><br><span class="line"><span class="comment">     * ·<span class="doctag">@JoinColumn</span>·指定关联中Order与CustomerId左外连接的列名(即Order表外键名)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@ManyToOne(fetch = FetchType.LAZY)</span></span><br><span class="line">    <span class="meta">@JoinColumn(name = &quot;customer_id&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Customer customer;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Column(name = &quot;order_name&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String orderName;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行测试后会自动创建<code>jpa_orders</code>表:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `jpa_orders` (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  `order_name` <span class="type">varchar</span>(<span class="number">255</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `customer_id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  <span class="keyword">PRIMARY</span> <span class="keyword">KEY</span> (`id`),</span><br><span class="line">  KEY `FKd24gr5y1e7xklyx35mqxf51g8` (`customer_id`),</span><br><span class="line">  <span class="keyword">CONSTRAINT</span> `FKd24gr5y1e7xklyx35mqxf51g8` <span class="keyword">FOREIGN</span> <span class="keyword">KEY</span> (`customer_id`) <span class="keyword">REFERENCES</span> `jpa_customers` (`id`)</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB AUTO_INCREMENT<span class="operator">=</span><span class="number">3</span> <span class="keyword">DEFAULT</span> CHARSET<span class="operator">=</span>utf8mb4 <span class="keyword">COLLATE</span><span class="operator">=</span>utf8mb4_0900_ai_ci</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="2-单向一对多"><a href="#2-单向一对多" class="headerlink" title="2. 单向一对多"></a>2. 单向一对多</h2><ul>
+<li>准备<ul>
+<li>注释掉Order实体中的Customer字段</li>
+<li>更改Customer，<strong>在其中添加Order集合字段</strong></li>
+</ul>
+</li>
+<li>运行测试后同样创建与单向多对一相同的<code>jpa_orders</code>表</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//省略掉了无关代码，完整Customer请见 指南-1</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Customer</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * ·<span class="doctag">@OneToMany</span>·单向一对多，即一个Customer对应多个Order，在Customer中以Order集合的形式表现</span></span><br><span class="line"><span class="comment">     *				cascade 属性可以配置级联操作</span></span><br><span class="line"><span class="comment">     *				fetch 默认为 FetchType.LAZY</span></span><br><span class="line"><span class="comment">     * ·<span class="doctag">@JoinColumn</span>·映射外键列，注意这里生成的外键列照样在Order表中,与多对一生成的表结构相同</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@OneToMany</span></span><br><span class="line">    <span class="meta">@JoinColumn(name = &quot;customer_id&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;Order&gt; orderList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="3-双向多对一"><a href="#3-双向多对一" class="headerlink" title="3.双向多对一"></a>3.双向多对一</h2><blockquote>
+<ul>
+<li><p><code>双向多对一 </code>即 <code>单向多对一</code> + <code>单向一对多</code> </p>
+</li>
+<li><p>注意相关联的 <code>JoinColumn</code>的<code>name</code> 字段，也就是<code>多端外键列名</code> 应相等</p>
+<ul>
+<li>Customer：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@OneToMany</span></span><br><span class="line"><span class="meta">@JoinColumn(name = &quot;customer_id&quot;)</span></span><br><span class="line"><span class="keyword">private</span> List&lt;Order&gt; orderList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Order：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ManyToOne(fetch = FetchType.LAZY)</span></span><br><span class="line"><span class="meta">@JoinColumn(name = &quot;customer_id&quot;)</span></span><br><span class="line"><span class="keyword">private</span> Customer customer;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>这里注意，操作双向多对一时，我们应让<code>多</code>端，即Order来维护关联关系，这样可以有效减少向数据库发送的为了维护关联关系所产生的sql语句</p>
+<p><strong>简而言之就是持久化操作时，应先持久化Customer，再持久化Order</strong></p>
+</li>
+</ul>
+</blockquote>
+<p>以上所展示的写法可以实现双向多对一，但是JPA为了维护关联关系会产生额外的sql语句（这里Customer与Order都定义了需要维护的字段）   </p>
+<p>故我们在使用<code>双向多对一</code>时应尽量采用以下方式:</p>
+<hr>
+<ul>
+<li><p>Customer</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *这里的mappedBy所指向的是被<span class="doctag">@JoinColumn</span>注解过的字段在java中的变量名</span></span><br><span class="line"><span class="comment"> *简单来说也就是将维护Customer与Order映射关系的任务都交给了Order</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@OneToMany(fetch = FetchType.LAZY,mappedBy = &quot;customer&quot;)</span></span><br><span class="line"><span class="keyword">private</span> List&lt;Order&gt; orderList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br></pre></td></tr></table></figure></li>
+<li><p>Order:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ManyToOne(fetch = FetchType.LAZY)</span></span><br><span class="line"><span class="meta">@JoinColumn(name = &quot;customer_id&quot;)</span></span><br><span class="line"><span class="keyword">private</span> Customer customer;</span><br></pre></td></tr></table></figure></li>
+<li><p>测试方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testDoubleManyToMany</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">1</span>;</span><br><span class="line">    Customer customer = <span class="keyword">new</span> Customer();</span><br><span class="line">    customer.setAge(i);</span><br><span class="line">    customer.setEmail(i + <span class="string">&quot;@sust.edu.cn&quot;</span>);</span><br><span class="line">    customer.setLastName(<span class="string">&quot;testDoubleManyToMany_&quot;</span> + i);</span><br><span class="line"></span><br><span class="line">    Order order1 = <span class="keyword">new</span> Order();</span><br><span class="line">    order1.setOrderName(<span class="string">&quot;Order_&quot;</span> + i);</span><br><span class="line">    Order order2 = <span class="keyword">new</span> Order();</span><br><span class="line">    order2.setOrderName(<span class="string">&quot;Order_&quot;</span> + (i + <span class="number">1</span>));</span><br><span class="line"></span><br><span class="line">    customer.getOrderList().add(order1);</span><br><span class="line">    customer.getOrderList().add(order2);</span><br><span class="line">    order1.setCustomer(customer);</span><br><span class="line">    order2.setCustomer(customer);</span><br><span class="line"></span><br><span class="line">    entityManager.persist(customer);</span><br><span class="line">    entityManager.persist(order1);</span><br><span class="line">    entityManager.persist(order2);</span><br><span class="line"></span><br><span class="line">    customer.setEmail(<span class="string">&quot;!!!&quot;</span>);</span><br><span class="line">    customer.getOrderList().get(<span class="number">1</span>).setOrderName(<span class="string">&quot;&gt;&gt;&gt;???&quot;</span>);</span><br><span class="line"></span><br><span class="line">    List&lt;Order&gt; orderList = customer.getOrderList();</span><br><span class="line">    System.out.println(<span class="string">&quot;--------&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span> (Order order : orderList) &#123;</span><br><span class="line">        System.out.println(order.getOrderName() + <span class="string">&quot; : &quot;</span> +</span><br><span class="line">                           order.getCustomer().getEmail());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>console输出中的主要部分：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line">Hibernate: </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">create</span> <span class="keyword">table</span> jpa_customers (</span><br><span class="line">       id <span class="type">integer</span> <span class="keyword">not</span> <span class="keyword">null</span> auto_increment,</span><br><span class="line">        age TINYINT,</span><br><span class="line">        birthday <span class="type">date</span>,</span><br><span class="line">        create_time datetime(<span class="number">6</span>),</span><br><span class="line">        email <span class="type">varchar</span>(<span class="number">255</span>),</span><br><span class="line">        last_name <span class="type">varchar</span>(<span class="number">255</span>) <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">        update_time datetime(<span class="number">6</span>),</span><br><span class="line">        <span class="keyword">primary</span> <span class="keyword">key</span> (id)</span><br><span class="line">    ) engine<span class="operator">=</span>InnoDB</span><br><span class="line">八月 <span class="number">24</span>, <span class="number">2019</span> <span class="number">7</span>:<span class="number">32</span>:<span class="number">58</span> 下午 org.hibernate.resource.transaction.backend.jdbc.internal.DdlTransactionIsolatorNonJtaImpl getIsolatedConnection</span><br><span class="line">INFO: HHH10001501: Connection obtained <span class="keyword">from</span> JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess<span class="variable">@1d035be3</span>] <span class="keyword">for</span> (non<span class="operator">-</span>JTA) DDL execution was <span class="keyword">not</span> <span class="keyword">in</span> auto<span class="operator">-</span><span class="keyword">commit</span> mode; the Connection <span class="string">&#x27;local transaction&#x27;</span> will be committed <span class="keyword">and</span> the Connection will be <span class="keyword">set</span> <span class="keyword">into</span> auto<span class="operator">-</span><span class="keyword">commit</span> mode.</span><br><span class="line">Hibernate: </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">create</span> <span class="keyword">table</span> jpa_orders (</span><br><span class="line">       id <span class="type">integer</span> <span class="keyword">not</span> <span class="keyword">null</span> auto_increment,</span><br><span class="line">        order_name <span class="type">varchar</span>(<span class="number">255</span>),</span><br><span class="line">        customer_id <span class="type">integer</span>,</span><br><span class="line">        <span class="keyword">primary</span> <span class="keyword">key</span> (id)</span><br><span class="line">    ) engine<span class="operator">=</span>InnoDB</span><br><span class="line">Hibernate: </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">alter</span> <span class="keyword">table</span> jpa_orders </span><br><span class="line">       <span class="keyword">add</span> <span class="keyword">constraint</span> FKd24gr5y1e7xklyx35mqxf51g8 </span><br><span class="line">       <span class="keyword">foreign</span> <span class="keyword">key</span> (customer_id) </span><br><span class="line">       <span class="keyword">references</span> jpa_customers (id)</span><br><span class="line">八月 <span class="number">24</span>, <span class="number">2019</span> <span class="number">7</span>:<span class="number">32</span>:<span class="number">58</span> 下午 org.hibernate.tool.schema.internal.SchemaCreatorImpl applyImportSources</span><br><span class="line">INFO: HHH000476: Executing import script <span class="string">&#x27;org.hibernate.tool.schema.internal.exec.ScriptSourceInputNonExistentImpl@58faa93b&#x27;</span></span><br><span class="line">Hibernate: </span><br><span class="line">    <span class="keyword">insert</span> </span><br><span class="line">    <span class="keyword">into</span></span><br><span class="line">        jpa_customers</span><br><span class="line">        (age, birthday, create_time, email, last_name, update_time) </span><br><span class="line">    <span class="keyword">values</span></span><br><span class="line">        (?, ?, ?, ?, ?, ?)</span><br><span class="line">Hibernate: </span><br><span class="line">    <span class="keyword">insert</span> </span><br><span class="line">    <span class="keyword">into</span></span><br><span class="line">        jpa_orders</span><br><span class="line">        (customer_id, order_name) </span><br><span class="line">    <span class="keyword">values</span></span><br><span class="line">        (?, ?)</span><br><span class="line">Hibernate: </span><br><span class="line">    <span class="keyword">insert</span> </span><br><span class="line">    <span class="keyword">into</span></span><br><span class="line">        jpa_orders</span><br><span class="line">        (customer_id, order_name) </span><br><span class="line">    <span class="keyword">values</span></span><br><span class="line">        (?, ?)</span><br><span class="line"><span class="comment">--------</span></span><br><span class="line">Order_1 : <span class="operator">!</span><span class="operator">!</span><span class="operator">!</span></span><br><span class="line"><span class="operator">&gt;&gt;</span><span class="operator">&gt;</span>??? : <span class="operator">!</span><span class="operator">!</span><span class="operator">!</span></span><br><span class="line">Hibernate: </span><br><span class="line">    <span class="keyword">update</span></span><br><span class="line">        jpa_customers </span><br><span class="line">    <span class="keyword">set</span></span><br><span class="line">        age<span class="operator">=</span>?,</span><br><span class="line">        email<span class="operator">=</span>?,</span><br><span class="line">        update_time<span class="operator">=</span>? </span><br><span class="line">    <span class="keyword">where</span></span><br><span class="line">        id<span class="operator">=</span>?</span><br><span class="line">Hibernate: </span><br><span class="line">    <span class="keyword">update</span></span><br><span class="line">        jpa_orders </span><br><span class="line">    <span class="keyword">set</span></span><br><span class="line">        customer_id<span class="operator">=</span>?,</span><br><span class="line">        order_name<span class="operator">=</span>? </span><br><span class="line">    <span class="keyword">where</span></span><br><span class="line">        id<span class="operator">=</span>?</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<h2 id="4-双向一对一"><a href="#4-双向一对一" class="headerlink" title="4.双向一对一"></a>4.双向一对一</h2><ul>
+<li><p>准备</p>
+<ul>
+<li><p>创建Department</p>
+<ul>
+<li><code>manager</code> 字段用<code>@OneToOne</code>来声明一对一关系，建议开启懒加载，否则查询会使用左外连接，效率比较差</li>
+<li><code>@JoinColumn(name = &quot;manager_id&quot;, unique = true)</code> 则用来声明外键列名为<code>department_id</code>   </li>
+<li>配置<code>unique</code>属性确保外键值唯一</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table(name = &quot;jpa_departments&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Department</span> </span>&#123;</span><br><span class="line">    <span class="meta">@OneToOne(fetch = FetchType.LAZY)</span></span><br><span class="line">    <span class="meta">@JoinColumn(name = &quot;manager_id&quot;, unique = true)</span></span><br><span class="line">    <span class="keyword">private</span> Manager manager;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    <span class="meta">@Column(nullable = false)</span></span><br><span class="line">    <span class="keyword">private</span> String departmentName;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>创建Manager</p>
+<ul>
+<li><code>department</code> 字段用<code>@OneToOne</code>来声明一对一关系，需同样配置懒加载</li>
+<li>配置<code>mappedBy</code>属性，将维护工作交给Department的<code>manager</code>属性</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table(name = &quot;jpa_managers&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Manager</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@OneToOne(mappedBy = &quot;manager&quot;,fetch = FetchType.LAZY)</span></span><br><span class="line">    <span class="keyword">private</span> Department department;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    <span class="meta">@Column(nullable = false)</span></span><br><span class="line">    <span class="keyword">private</span> String managerName;</span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>插入测试</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testOneToOne</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Manager manager = <span class="keyword">new</span> Manager();</span><br><span class="line">    manager.setAge(<span class="number">19</span>);</span><br><span class="line">    manager.setManagerName(<span class="string">&quot;菜虚鲲&quot;</span>);</span><br><span class="line"></span><br><span class="line">    Department department = <span class="keyword">new</span> Department();</span><br><span class="line">    department.setDepartmentName(<span class="string">&quot;天庭&quot;</span>);</span><br><span class="line"></span><br><span class="line">    department.setManager(manager);</span><br><span class="line">    manager.setDepartment(department);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 这里一定注意先持久化不维护关联关系的实体</span></span><br><span class="line"><span class="comment">     * 而由后持久化的对象负责维护关联关系</span></span><br><span class="line"><span class="comment">     * 否则多出的update外键列的语句会对效率有较大影响</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    entityManager.persist(manager);</span><br><span class="line">    entityManager.persist(department);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="5-双向多对多"><a href="#5-双向多对多" class="headerlink" title="5. 双向多对多"></a>5. 双向多对多</h2></li>
+<li><p>创建Item</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table(name = &quot;jpa_items&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Item</span> </span>&#123;</span><br><span class="line">    <span class="meta">@ManyToMany</span></span><br><span class="line">    <span class="meta">@JoinTable(name = &quot;items_categories&quot;,</span></span><br><span class="line"><span class="meta">            joinColumns = &#123;@JoinColumn(name = &quot;items_id&quot;, </span></span><br><span class="line"><span class="meta">                                       referencedColumnName = &quot;id&quot;)&#125;,</span></span><br><span class="line"><span class="meta">            inverseJoinColumns = &#123;@JoinColumn(name = &quot;categories_id&quot;, </span></span><br><span class="line"><span class="meta">                                              referencedColumnName = &quot;id&quot;)&#125;</span></span><br><span class="line"><span class="meta">    )</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;Category&gt; categoryList;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column(name = &quot;item_name&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String itemName;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>@joinColumns</code> ：映射关联表，name指定关联表表名</li>
+<li><code>joinColumns</code>属性：映射当前类所在表（jpa_items）在关联表（items_categories）中的外键(id)</li>
+<li><code>inverseJoinColumns</code>属性：映射关联的实体类所对应的表（jpa_categories）在关联表中的外键(id)</li>
+<li>注意<code>@JoinColumn</code>注解中，name属性只是对列的新命名，referencedColumnName才指定了主键，不过referencedColumnName可以省略，这样会默认映射到注释实体对应表的主键</li>
+<li>默认启用懒加载哦~</li>
+</ul>
+</li>
+<li><p>创建Category</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table(name = &quot;jpa_categories&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Category</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column(name = &quot;category_name&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String categoryName;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@ManyToMany(mappedBy = &quot;categoryList&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;Item&gt; itemList;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>这里一定注意，多对多关系只配置一方(这里选择了Item)维护关系，故在另一方（Category），我们需要给<code>@ManyToMany</code>配置mappedBy属性（里面填存在维护关系注解的变量的名称）来托管维护</li>
+</ul>
+</li>
+<li><p><code>@JoinTable</code> 所生成的表DDL:</p>
+  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `items_categories` (</span><br><span class="line">  `items_id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `categories_id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  KEY `FKovymsahbi6ua0ubka76qbvb90` (`categories_id`),</span><br><span class="line">  KEY `FKn42kdeg73kpktyl367aw9ljck` (`items_id`),</span><br><span class="line">  <span class="keyword">CONSTRAINT</span> `FKn42kdeg73kpktyl367aw9ljck` </span><br><span class="line">    <span class="keyword">FOREIGN</span> <span class="keyword">KEY</span> (`items_id`) <span class="keyword">REFERENCES</span> `jpa_items` (`id`),</span><br><span class="line">  <span class="keyword">CONSTRAINT</span> `FKovymsahbi6ua0ubka76qbvb90` </span><br><span class="line">    <span class="keyword">FOREIGN</span> <span class="keyword">KEY</span> (`categories_id`) <span class="keyword">REFERENCES</span> `jpa_categories` (`id`)</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB <span class="keyword">DEFAULT</span> CHARSET<span class="operator">=</span>utf8mb4 <span class="keyword">COLLATE</span><span class="operator">=</span>utf8mb4_0900_ai_ci</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Sunny Grocery
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://www.sun1999.top/3853789028/" title="JPA使用指南-3">http://www.sun1999.top/3853789028/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/JPA/" rel="tag"># JPA</a>
+              <a href="/tags/Hibernate/" rel="tag"># Hibernate</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2461210610/" rel="prev" title="JPA使用指南-2">
+      <i class="fa fa-chevron-left"></i> JPA使用指南-2
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/1412537915/" rel="next" title="简易的RESTfulAPI设计指南">
+      简易的RESTfulAPI设计指南 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80NDEzMy8yMDY2OA"></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%8D%95%E5%90%91%E5%A4%9A%E5%AF%B9%E4%B8%80"><span class="nav-number">1.</span> <span class="nav-text">1.单向多对一</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%8D%95%E5%90%91%E4%B8%80%E5%AF%B9%E5%A4%9A"><span class="nav-number">2.</span> <span class="nav-text">2. 单向一对多</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%8F%8C%E5%90%91%E5%A4%9A%E5%AF%B9%E4%B8%80"><span class="nav-number">3.</span> <span class="nav-text">3.双向多对一</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E5%8F%8C%E5%90%91%E4%B8%80%E5%AF%B9%E4%B8%80"><span class="nav-number">4.</span> <span class="nav-text">4.双向一对一</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E5%8F%8C%E5%90%91%E5%A4%9A%E5%AF%B9%E5%A4%9A"><span class="nav-number">5.</span> <span class="nav-text">5. 双向多对多</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Sunny Grocery"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Sunny Grocery</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9zdW4taW4tbW92aWUvYWN0aXZpdGllcw==" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;sun-in-movie&#x2F;activities"><i class="fab fa-zhihu fa-fw"></i></span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly85OTYuaWN1LyMvemhfQ04=" title="996ICU → https:&#x2F;&#x2F;996.icu&#x2F;#&#x2F;zh_CN"><i class="fas fa-procedures fa-fw"></i></span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL1N1bm55R3JvY2VyeQ==" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;SunnyGrocery"><i class="fab fa-github fa-fw"></i></span>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        <div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sunny Grocery</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">118k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:35</span>
+</div>
+<div class="powered-by">
+    Erstellt mit 
+    <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a>
+    <span class="post-meta-divider">|</span>
+      <a href="https://beian.miit.gov.cn" rel="noopener external nofollow noreferrer" target="_blank" class="exturl" title="">陕ICP备19009013号-1</a>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="200" alpha="0.2" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>
