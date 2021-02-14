@@ -1,116 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>InsertSort-插入排序</title>
-    <url>/article/382324010.html</url>
-    <content><![CDATA[<blockquote>
-<p>​    老实讲，自己算法水平就是个战五渣，大二数据结构学的还行，但是过了一学期也记忆模糊，加上从来没有接触过算法训练，而且下学期的算法课……</p>
-<p>​    种种原因促使我得靠假期恶补下自己的算法水平，算法还是用c++写吧，java总觉得怪怪的，类似于拿着叉子吃面？也算是个人偏见吧==</p>
-</blockquote>
-<a id="more"></a>
-
-
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">	Name: InsertSort 插入排序 </span></span><br><span class="line"><span class="comment">	Copyright: SUST </span></span><br><span class="line"><span class="comment">	Author: SunnyGrocery  </span></span><br><span class="line"><span class="comment">	Date: 12/07/19 00:49</span></span><br><span class="line"><span class="comment">	Description: 空间复杂度要求为O(1)  </span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stack&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">int</span> SIZE = <span class="number">10</span>; </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; <span class="title">insertSort</span><span class="params">(<span class="keyword">int</span>* random)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; R ;<span class="comment">//random</span></span><br><span class="line">    <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; S ;<span class="comment">//sorted</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i ;i&lt;SIZE;i++)&#123;</span><br><span class="line">        R.push(random[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//取出待排序栈栈顶元素 ,以临时变量t保存 </span></span><br><span class="line">    <span class="keyword">int</span> t = R.top();R.pop();</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">    *(!S.empty() &amp;&amp; S.top() &gt; t)是为了当判定当R为空时，t是否小于S的栈顶元素</span></span><br><span class="line"><span class="comment">    *如果小于，则还需要进入循环(首先进入else),直到最后当R为空时，t将大于有序列的栈顶元素</span></span><br><span class="line"><span class="comment">    *保证了将最后的t压入时，S不受最后t的影响，仍有序</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="keyword">while</span>(!R.empty() || (!S.empty() &amp;&amp; t &lt; S.top()))&#123;</span><br><span class="line">        <span class="comment">//小于等于号保证了此算法为稳定排序 </span></span><br><span class="line">        <span class="keyword">if</span>(S.empty()||S.top() &lt;= t)&#123;</span><br><span class="line">            S.push(t);<span class="comment">//有序列压入t</span></span><br><span class="line">            t = R.top(); R.pop();<span class="comment">//更新t </span></span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            R.push(S.top());S.pop();<span class="comment">//显然S不为空，若t比S栈顶元素小则 将S中元素放入R中暂存 </span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//将最后的t压入S中 </span></span><br><span class="line">    S.push(t);</span><br><span class="line">    <span class="keyword">return</span> S;</span><br><span class="line">&#125; </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> random[SIZE] = &#123;<span class="number">5</span>,<span class="number">7</span>,<span class="number">6</span>,<span class="number">9</span>,<span class="number">8</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">4</span>&#125;;</span><br><span class="line">	<span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; T = insertSort(random);</span><br><span class="line">	<span class="keyword">while</span>(!T.empty())&#123;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; T.top()&lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line">		T.pop();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Algorithm</category>
-      </categories>
-      <tags>
-        <tag>排序</tag>
-        <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>数据库设计指南</title>
-    <url>/article/685644911.html</url>
-    <content><![CDATA[<blockquote>
-<p>原文章出自<span class="exturl" data-url="aHR0cDovL3d3dy5oYWNrYmFzZS5jb20v">www.hackbase.com<i class="fa fa-external-link-alt"></i></span>，本文对其排版做了部分优化，作者不可考，感谢前人贡献</p>
-<p>转自<a href="https://tech.china.com/zh_cn/netschool/programme/167721/20050809/12555491.html"><strong>数据库设计中的14个技巧</strong></a></p>
-<p>虽然文章很棒，但年代比较远，关于数据库冗余等的争议性问题，我并不认同文章中的做法，因为现代数据库更注重效率，数据库冗余权衡还是要因地制宜，不可一概而论</p>
-</blockquote>
-<h3 id="1-原始单据与实体之间的关系"><a href="#1-原始单据与实体之间的关系" class="headerlink" title="1. 原始单据与实体之间的关系"></a>1. 原始单据与实体之间的关系</h3><p>　　可以是一对一、一对多、多对多的关系。在一般情况下，它们是一对一的关系：即一张原始单据对应且只对应一个实体。在特殊情况下，它们可能是一对多或多对一的关系，即一张原始单据对应多个实体，或多张原始单据对应一个实体。这里的实体可以理解为基本表。明确这种对应关系后，对我们设计录入界面大有好处。</p>
-<p>　　〖例1〗：一份员工履历资料，在人力资源信息系统中，就对应三个基本表：员工基本情况表、社会关系表、工作简历表。这就是“一张原始单据对应多个实体”的典型例子。</p>
-<a id="more"></a>
-
-<h3 id="2-主键与外键"><a href="#2-主键与外键" class="headerlink" title="2. 主键与外键"></a>2. 主键与外键</h3><p>　　一般而言，一个实体不能既无主键又无外键。在E－R 图中, 处于叶子部位的实体, 可以定义主键，也可以不定义主键(因为它无子孙), 但必须要有外键(因为它有父亲)。</p>
-<p>　　主键与外键的设计，在全局数据库的设计中，占有重要地位。当全局数据库的设计完成以后，有个美国数据库设计专家说：“键，到处都是键，除了键之外，什么也没有”，这就是他的数据库设计经验之谈，也反映了他对信息系统核心(数据模型)的高度抽象思想。因为：主键是实体的高度抽象，主键与外键的配对，表示实体之间的连接</p>
-<h3 id="3-基本表的性质"><a href="#3-基本表的性质" class="headerlink" title="3. 基本表的性质"></a>3. 基本表的性质</h3><p>基本表与中间表、临时表不同，因为它具有如下四个特性：</p>
-<ul>
-<li>原子性。基本表中的字段是不可再分解的。</li>
-<li>原始性。基本表中的记录是原始数据（基础数据）的记录。</li>
-<li>演绎性。由基本表与代码表中的数据，可以派生出所有的输出数据。</li>
-<li>稳定性。基本表的结构是相对稳定的，表中的记录是要长期保存的。</li>
-</ul>
-<p>理解基本表的性质后，在设计数据库时，就能将基本表与中间表、临时表区分开来。</p>
-<h3 id="4-范式标准"><a href="#4-范式标准" class="headerlink" title="4. 范式标准"></a>4. 范式标准</h3><p>　　基本表及其字段之间的关系, 应尽量满足第三范式。但是，满足第三范式的数据库设计，往往不是最好的设计。为了提高数据库的运行效率，常常需要降低范式标准：适当增加冗余，达到以空间换时间的目的。</p>
-<p>　　〖例2〗：有一张存放商品的基本表，如表1所示。“金额”这个字段的存在，表明该表的设计不满足第三范式，因为“金额”可以由“单价”乘以“数量”得到，说明“金额”是冗余字段。但是，增加“金额”这个冗余字段，可以提高查询统计的速度，这就是以空间换时间的作法。</p>
-<p>　　在Rose 2002中，规定列有两种类型：数据列和计算列。“金额”这样的列被称为“计算列”，而“单价”和“数量”这样的列被称为“数据列”。</p>
-<p>　　表1.商品表的表结构</p>
-<table>
-<thead>
-<tr>
-<th>商品名称</th>
-<th>商品型号</th>
-<th>单价</th>
-<th>数量</th>
-<th>金额</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>电视</td>
-<td>29吋</td>
-<td>2,500</td>
-<td>40</td>
-<td>100,000</td>
-</tr>
-</tbody></table>
-<h3 id="5-通俗地理解三个范式"><a href="#5-通俗地理解三个范式" class="headerlink" title="5. 通俗地理解三个范式"></a>5. 通俗地理解三个范式</h3><p>　　通俗地理解三个范式，对于数据库设计大有好处。在数据库设计中，为了更好地应用三个范式，就必须通俗地理解三个范式(通俗地理解是够用的理解，并不是最科学最准确的理解)：</p>
-<p>　　第一范式：1NF是对属性的原子性约束，要求属性具有原子性，不可再分解；</p>
-<p>　　第二范式：2NF是对记录的惟一性约束，要求记录有惟一标识，即实体的惟一性；</p>
-<p>　　第三范式：3NF是对字段冗余性的约束，即任何字段不能由其他字段派生出来，它要求字段没有冗余。</p>
-<p>　　没有冗余的数据库设计可以做到。但是，没有冗余的数据库未必是最好的数据库，有时为了提高运行效率，就必须降低范式标准，适当保留冗余数据。具体做法是：在概念数据模型设计时遵守第三范式，降低范式标准的工作放到物理数据模型设计时考虑。降低范式就是增加字段，允许冗余。</p>
-<h3 id="6-要善于识别与正确处理多对多的关系"><a href="#6-要善于识别与正确处理多对多的关系" class="headerlink" title="6. 要善于识别与正确处理多对多的关系"></a>6. 要善于识别与正确处理多对多的关系</h3><p>　　若两个实体之间存在多对多的关系，则应消除这种关系。消除的办法是，在两者之间增加第三个实体。这样，原来一个多对多的关系，现在变为两个一对多的关系。要将原来两个实体的属性合理地分配到三个实体中去。这里的第三个实体，实质上是一个较复杂的关系，它对应一张基本表。一般来讲，数据库设计工具不能识别多对多的关系，但能处理多对多的关系。</p>
-<p>　　〖例3〗：在“图书馆信息系统”中，“图书”是一个实体，“读者”也是一个实体。这两个实体之间的关系，是一个典型的多对多关系：一本图书在不同时间可以被多个读者借阅，一个读者又可以借多本图书。为此，要在二者之间增加第三个实体，该实体取名为“借还书”，它的属性为：借还时间、借还标志(0表示借书，1表示还书)，另外，它还应该有两个外键(“图书”的主键，“读者”的主键)，使它能与“图书”和“读者”连接。  </p>
-<h3 id="7-主键PK的取值方法"><a href="#7-主键PK的取值方法" class="headerlink" title="7. 主键PK的取值方法"></a>7. 主键PK的取值方法</h3><p>　　PK是供程序员使用的表间连接工具，可以是一无物理意义的数字串, 由程序自动加1来实现。也可以是有物理意义的字段名或字段名的组合。不过前者比后者好。当PK是字段名的组合时，建议字段的个数不要太多，多了不但索引占用空间大，而且速度也慢。</p>
-<h3 id="8-正确认识数据冗余"><a href="#8-正确认识数据冗余" class="headerlink" title="8. 正确认识数据冗余"></a>8. 正确认识数据冗余</h3><p>　　主键与外键在多表中的重复出现, 不属于数据冗余，这个概念必须清楚，事实上有许多人还不清楚。非键字段的重复出现, 才是数据冗余！而且是一种低级冗余，即重复性的冗余。高级冗余不是字段的重复出现，而是字段的派生出现。</p>
-<p>　　〖例4〗：商品中的“单价、数量、金额”三个字段，“金额”就是由“单价”乘以“数量”派生出来的，它就是冗余，而且是一种高级冗余。冗余的目的是为了提高处理速度。只有低级冗余才会增加数据的不一致性，因为同一数据，可能从不同时间、地点、角色上多次录入。因此，我们提倡高级冗余(派生性冗余)，反对低级冗余(重复性冗余)。</p>
-<h3 id="9-E－R图没有标准答案"><a href="#9-E－R图没有标准答案" class="headerlink" title="9. E－R图没有标准答案"></a>9. E－R图没有标准答案</h3><p>　　信息系统的E－R图没有标准答案，因为它的设计与画法不是惟一的，只要它覆盖了系统需求的业务范围和功能内容，就是可行的。反之要修改E－R图。尽管它没有惟一的标准答案，并不意味着可以随意设计。好的E－图的标准是：结构清晰、关联简洁、实体个数适中、属性分配合理、没有低级冗余。</p>
-<h3 id="10-视图技术在数据库设计中很有用"><a href="#10-视图技术在数据库设计中很有用" class="headerlink" title="10. 视图技术在数据库设计中很有用"></a>10. 视图技术在数据库设计中很有用</h3><p>　　与基本表、代码表、中间表不同，视图是一种虚表，它依赖数据源的实表而存在。视图是供程序员使用数据库的一个窗口，是基表数据综合的一种形式, 是数据处理的一种方法，是用户数据保密的一种手段。为了进行复杂处理、提高运算速度和节省存储空间, 视图的定义深度一般不得超过三层。 若三层视图仍不够用, 则应在视图上定义临时表, 在临时表上再定义视图。这样反复交迭定义, 视图的深度就不受限制了。</p>
-<p>　　对于某些与国家政治、经济、技术、军事和安全利益有关的信息系统，视图的作用更加重要。这些系统的基本表完成物理设计之后，立即在基本表上建立第一层视图，这层视图的个数和结构，与基本表的个数和结构是完全相同。并且规定，所有的程序员，一律只准在视图上操作。只有数据库管理员，带着多个人员共同掌握的“安全钥匙”，才能直接在基本表上操作。请读者想想：这是为什么？</p>
-<h3 id="11-中间表、报表和临时表"><a href="#11-中间表、报表和临时表" class="headerlink" title="11. 中间表、报表和临时表"></a>11. 中间表、报表和临时表</h3><p>　　中间表是存放统计数据的表，它是为数据仓库、输出报表或查询结果而设计的，有时它没有主键与外键(数据仓库除外)。临时表是程序员个人设计的，存放临时记录，为个人所用。基表和中间表由DBA维护，临时表由程序员自己用程序自动维护。</p>
-<h3 id="12-完整性约束表现在三个方面"><a href="#12-完整性约束表现在三个方面" class="headerlink" title="12. 完整性约束表现在三个方面"></a>12. 完整性约束表现在三个方面</h3><p>　　域的完整性：用Check来实现约束，在数据库设计工具中，对字段的取值范围进行定义时，有一个Check按钮，通过它定义字段的值城。</p>
-<p>　　参照完整性：用PK、FK、表级触发器来实现。</p>
-<p>　　用户定义完整性：它是一些业务规则，用存储过程和触发器来实现。  </p>
-<h3 id="13-防止数据库设计打补丁的方法是“三少原则”"><a href="#13-防止数据库设计打补丁的方法是“三少原则”" class="headerlink" title="13. 防止数据库设计打补丁的方法是“三少原则”"></a>13. 防止数据库设计打补丁的方法是“三少原则”</h3><ol>
-<li>一个数据库中表的个数越少越好。只有表的个数少了，才能说明系统的E－R图少而精，去掉了重复的多余的实体，形成了对客观世界的高度抽象，进行了系统的数据集成，防止了打补丁式的设计；</li>
-<li> 一个表中组合主键的字段个数越少越好。因为主键的作用，一是建主键索引，二是做为子表的外键，所以组合主键的字段个数少了，不仅节省了运行时间，而且节省了索引存储空间；</li>
-<li>一个表中的字段个数越少越好。只有字段的个数少了，才能说明在系统中不存在数据重复，且很少有数据冗余，更重要的是督促读者学会“列变行”，这样就防止了将子表中的字段拉入到主表中去，在主表中留下许多空余的字段。所谓“列变行”，就是将主表中的一部分内容拉出去，另外单独建一个子表。这个方法很简单，有的人就是不习惯、不采纳、不执行。</li>
-</ol>
-<p>　　数据库设计的实用原则是：在数据冗余和处理速度之间找到合适的平衡点。“三少”是一个整体概念，综合观点，不能孤立某一个原则。该原则是相对的，不是绝对的。“三多”原则肯定是错误的。试想：若覆盖系统同样的功能，一百个实体(共一千个属性) 的E－R图，肯定比二百个实体(共二千个属性)的E－R图，要好得多。</p>
-<p>　　提倡“三少”原则，是叫读者学会利用数据库设计技术进行系统的数据集成。数据集成的步骤是将文件系统集成为应用数据库，将应用数据库集成为主题数据库，将主题数据库集成为全局综合数据库。集成的程度越高，数据共享性就越强，信息孤岛现象就越少，整个企业信息系统的全局E—R图中实体的个数、主键的个数、属性的个数就会越少。</p>
-<p>　　提倡“三少”原则的目的，是防止读者利用打补丁技术，不断地对数据库进行增删改，使企业数据库变成了随意设计数据库表的“垃圾堆”，或数据库表的“大杂院”，最后造成数据库中的基本表、代码表、中间表、临时表杂乱无章，不计其数，导致企事业单位的信息系统无法维护而瘫痪。</p>
-<p>　　“三多”原则任何人都可以做到，该原则是“打补丁方法”设计数据库的歪理学说。“三少”原则是少而精的原则，它要求有较高的数据库设计技巧与艺术，不是任何人都能做到的，因为该原则是杜绝用“打补丁方法”设计数据库的理论依据。</p>
-<h3 id="14-提高数据库运行效率的办法"><a href="#14-提高数据库运行效率的办法" class="headerlink" title="14. 提高数据库运行效率的办法"></a>14. 提高数据库运行效率的办法</h3><p>在给定的系统硬件和系统软件条件下，提高数据库系统的运行效率的办法是：    </p>
-<ol>
-<li>在数据库物理设计时，降低范式，增加冗余, 少用触发器, 多用存储过程。</li>
-<li>当计算非常复杂、而且记录条数非常巨大时(例如一千万条)，复杂计算要先在数据库外面，以文件系统方式用C++语言计算处理完成之后，最后才入库追加到表中去。这是电信计费系统设计的经验。</li>
-<li>发现某个表的记录太多，例如超过一千万条，则要对该表进行水平分割。水平分割的做法是，以该表主键PK的某个值为界线，将该表的记录水平分割为两个表。若发现某个表的字段太多，例如超过八十个，则垂直分割该表，将原来的一个表分解为两个表。</li>
-<li>对数据库管理系统DBMS进行系统优化，即优化各种系统参数，如缓冲区个数。</li>
-<li>在使用面向数据的SQL语言进行程序设计时，尽量采取优化算法。</li>
-</ol>
-<hr>
-<p>　　<strong>总之，要提高数据库的运行效率，必须从数据库系统级优化、数据库设计级优化、程序实现级优化，这三个层次上同时下功夫</strong>。</p>
-<p>　　上述十四个技巧，是许多人在大量的数据库分析与设计实践中，逐步总结出来的。对于这些经验的运用，读者不能生帮硬套，死记硬背，而要消化理解，实事求是，灵活掌握。并逐步做到：在应用中发展，在发展中应用。  </p>
-]]></content>
-      <categories>
-        <category>DataBase</category>
-      </categories>
-      <tags>
-        <tag>DataBase</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Hadoop快速入门指南</title>
-    <url>/article/935350030.html</url>
+    <url>/archives/31833.html</url>
     <content><![CDATA[<blockquote>
 <p>文章多处参考自<span class="exturl" data-url="aHR0cHM6Ly9oYWRvb3AuYXBhY2hlLm9yZy9kb2NzL3N0YWJsZS9oYWRvb3AtcHJvamVjdC1kaXN0L2hhZG9vcC1jb21tb24vU2luZ2xlQ2x1c3Rlci5odG1s">Hadoop: Setting up a Single Node Cluster<i class="fa fa-external-link-alt"></i></span></p>
 </blockquote>
@@ -342,7 +234,7 @@
   </entry>
   <entry>
     <title>NTP—服务端＆客户端搭建指南</title>
-    <url>/article/1413996656.html</url>
+    <url>/archives/43160.html</url>
     <content><![CDATA[<h3 id="◈NTP是什么"><a href="#◈NTP是什么" class="headerlink" title="◈NTP是什么"></a>◈NTP是什么</h3><ul>
 <li>网络时间协议（英语：Network Time Protocol，缩写：NTP）是在数据网络潜伏时间可变的计算机系统之间通过分组交换进行时钟同步的一个网络协议，位于OSI模型的应用层。自1985年以来，NTP是当前仍在使用的最古老的互联网协议之一。NTP由特拉华大学的David L. Mills设计。</li>
 <li>计算机主机一般同多个时钟服务器连接，利用统计学的算法过滤来自不同服务器的时间，以选择最佳的路径和来源以便校正主机时间。即使在主机长时间无法与某一时钟服务器联系的情况下，NTP服务依然可以有效运转。</li>
@@ -441,7 +333,7 @@
   </entry>
   <entry>
     <title>完全分布式集群搭建</title>
-    <url>/article/652832496.html</url>
+    <url>/archives/39657.html</url>
     <content><![CDATA[<h3 id="集群分发脚本"><a href="#集群分发脚本" class="headerlink" title="集群分发脚本"></a>集群分发脚本</h3><ul>
 <li>放在<code>~/bin/</code>下，注意需要配置可执行权限</li>
 <li>for循环中配置节点主机名</li>
@@ -585,8 +477,116 @@
       </tags>
   </entry>
   <entry>
+    <title>数据库设计指南</title>
+    <url>/archives/1759.html</url>
+    <content><![CDATA[<blockquote>
+<p>原文章出自<span class="exturl" data-url="aHR0cDovL3d3dy5oYWNrYmFzZS5jb20v">www.hackbase.com<i class="fa fa-external-link-alt"></i></span>，本文对其排版做了部分优化，作者不可考，感谢前人贡献</p>
+<p>转自<a href="https://tech.china.com/zh_cn/netschool/programme/167721/20050809/12555491.html"><strong>数据库设计中的14个技巧</strong></a></p>
+<p>虽然文章很棒，但年代比较远，关于数据库冗余等的争议性问题，我并不认同文章中的做法，因为现代数据库更注重效率，数据库冗余权衡还是要因地制宜，不可一概而论</p>
+</blockquote>
+<h3 id="1-原始单据与实体之间的关系"><a href="#1-原始单据与实体之间的关系" class="headerlink" title="1. 原始单据与实体之间的关系"></a>1. 原始单据与实体之间的关系</h3><p>　　可以是一对一、一对多、多对多的关系。在一般情况下，它们是一对一的关系：即一张原始单据对应且只对应一个实体。在特殊情况下，它们可能是一对多或多对一的关系，即一张原始单据对应多个实体，或多张原始单据对应一个实体。这里的实体可以理解为基本表。明确这种对应关系后，对我们设计录入界面大有好处。</p>
+<p>　　〖例1〗：一份员工履历资料，在人力资源信息系统中，就对应三个基本表：员工基本情况表、社会关系表、工作简历表。这就是“一张原始单据对应多个实体”的典型例子。</p>
+<a id="more"></a>
+
+<h3 id="2-主键与外键"><a href="#2-主键与外键" class="headerlink" title="2. 主键与外键"></a>2. 主键与外键</h3><p>　　一般而言，一个实体不能既无主键又无外键。在E－R 图中, 处于叶子部位的实体, 可以定义主键，也可以不定义主键(因为它无子孙), 但必须要有外键(因为它有父亲)。</p>
+<p>　　主键与外键的设计，在全局数据库的设计中，占有重要地位。当全局数据库的设计完成以后，有个美国数据库设计专家说：“键，到处都是键，除了键之外，什么也没有”，这就是他的数据库设计经验之谈，也反映了他对信息系统核心(数据模型)的高度抽象思想。因为：主键是实体的高度抽象，主键与外键的配对，表示实体之间的连接</p>
+<h3 id="3-基本表的性质"><a href="#3-基本表的性质" class="headerlink" title="3. 基本表的性质"></a>3. 基本表的性质</h3><p>基本表与中间表、临时表不同，因为它具有如下四个特性：</p>
+<ul>
+<li>原子性。基本表中的字段是不可再分解的。</li>
+<li>原始性。基本表中的记录是原始数据（基础数据）的记录。</li>
+<li>演绎性。由基本表与代码表中的数据，可以派生出所有的输出数据。</li>
+<li>稳定性。基本表的结构是相对稳定的，表中的记录是要长期保存的。</li>
+</ul>
+<p>理解基本表的性质后，在设计数据库时，就能将基本表与中间表、临时表区分开来。</p>
+<h3 id="4-范式标准"><a href="#4-范式标准" class="headerlink" title="4. 范式标准"></a>4. 范式标准</h3><p>　　基本表及其字段之间的关系, 应尽量满足第三范式。但是，满足第三范式的数据库设计，往往不是最好的设计。为了提高数据库的运行效率，常常需要降低范式标准：适当增加冗余，达到以空间换时间的目的。</p>
+<p>　　〖例2〗：有一张存放商品的基本表，如表1所示。“金额”这个字段的存在，表明该表的设计不满足第三范式，因为“金额”可以由“单价”乘以“数量”得到，说明“金额”是冗余字段。但是，增加“金额”这个冗余字段，可以提高查询统计的速度，这就是以空间换时间的作法。</p>
+<p>　　在Rose 2002中，规定列有两种类型：数据列和计算列。“金额”这样的列被称为“计算列”，而“单价”和“数量”这样的列被称为“数据列”。</p>
+<p>　　表1.商品表的表结构</p>
+<table>
+<thead>
+<tr>
+<th>商品名称</th>
+<th>商品型号</th>
+<th>单价</th>
+<th>数量</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>电视</td>
+<td>29吋</td>
+<td>2,500</td>
+<td>40</td>
+<td>100,000</td>
+</tr>
+</tbody></table>
+<h3 id="5-通俗地理解三个范式"><a href="#5-通俗地理解三个范式" class="headerlink" title="5. 通俗地理解三个范式"></a>5. 通俗地理解三个范式</h3><p>　　通俗地理解三个范式，对于数据库设计大有好处。在数据库设计中，为了更好地应用三个范式，就必须通俗地理解三个范式(通俗地理解是够用的理解，并不是最科学最准确的理解)：</p>
+<p>　　第一范式：1NF是对属性的原子性约束，要求属性具有原子性，不可再分解；</p>
+<p>　　第二范式：2NF是对记录的惟一性约束，要求记录有惟一标识，即实体的惟一性；</p>
+<p>　　第三范式：3NF是对字段冗余性的约束，即任何字段不能由其他字段派生出来，它要求字段没有冗余。</p>
+<p>　　没有冗余的数据库设计可以做到。但是，没有冗余的数据库未必是最好的数据库，有时为了提高运行效率，就必须降低范式标准，适当保留冗余数据。具体做法是：在概念数据模型设计时遵守第三范式，降低范式标准的工作放到物理数据模型设计时考虑。降低范式就是增加字段，允许冗余。</p>
+<h3 id="6-要善于识别与正确处理多对多的关系"><a href="#6-要善于识别与正确处理多对多的关系" class="headerlink" title="6. 要善于识别与正确处理多对多的关系"></a>6. 要善于识别与正确处理多对多的关系</h3><p>　　若两个实体之间存在多对多的关系，则应消除这种关系。消除的办法是，在两者之间增加第三个实体。这样，原来一个多对多的关系，现在变为两个一对多的关系。要将原来两个实体的属性合理地分配到三个实体中去。这里的第三个实体，实质上是一个较复杂的关系，它对应一张基本表。一般来讲，数据库设计工具不能识别多对多的关系，但能处理多对多的关系。</p>
+<p>　　〖例3〗：在“图书馆信息系统”中，“图书”是一个实体，“读者”也是一个实体。这两个实体之间的关系，是一个典型的多对多关系：一本图书在不同时间可以被多个读者借阅，一个读者又可以借多本图书。为此，要在二者之间增加第三个实体，该实体取名为“借还书”，它的属性为：借还时间、借还标志(0表示借书，1表示还书)，另外，它还应该有两个外键(“图书”的主键，“读者”的主键)，使它能与“图书”和“读者”连接。  </p>
+<h3 id="7-主键PK的取值方法"><a href="#7-主键PK的取值方法" class="headerlink" title="7. 主键PK的取值方法"></a>7. 主键PK的取值方法</h3><p>　　PK是供程序员使用的表间连接工具，可以是一无物理意义的数字串, 由程序自动加1来实现。也可以是有物理意义的字段名或字段名的组合。不过前者比后者好。当PK是字段名的组合时，建议字段的个数不要太多，多了不但索引占用空间大，而且速度也慢。</p>
+<h3 id="8-正确认识数据冗余"><a href="#8-正确认识数据冗余" class="headerlink" title="8. 正确认识数据冗余"></a>8. 正确认识数据冗余</h3><p>　　主键与外键在多表中的重复出现, 不属于数据冗余，这个概念必须清楚，事实上有许多人还不清楚。非键字段的重复出现, 才是数据冗余！而且是一种低级冗余，即重复性的冗余。高级冗余不是字段的重复出现，而是字段的派生出现。</p>
+<p>　　〖例4〗：商品中的“单价、数量、金额”三个字段，“金额”就是由“单价”乘以“数量”派生出来的，它就是冗余，而且是一种高级冗余。冗余的目的是为了提高处理速度。只有低级冗余才会增加数据的不一致性，因为同一数据，可能从不同时间、地点、角色上多次录入。因此，我们提倡高级冗余(派生性冗余)，反对低级冗余(重复性冗余)。</p>
+<h3 id="9-E－R图没有标准答案"><a href="#9-E－R图没有标准答案" class="headerlink" title="9. E－R图没有标准答案"></a>9. E－R图没有标准答案</h3><p>　　信息系统的E－R图没有标准答案，因为它的设计与画法不是惟一的，只要它覆盖了系统需求的业务范围和功能内容，就是可行的。反之要修改E－R图。尽管它没有惟一的标准答案，并不意味着可以随意设计。好的E－图的标准是：结构清晰、关联简洁、实体个数适中、属性分配合理、没有低级冗余。</p>
+<h3 id="10-视图技术在数据库设计中很有用"><a href="#10-视图技术在数据库设计中很有用" class="headerlink" title="10. 视图技术在数据库设计中很有用"></a>10. 视图技术在数据库设计中很有用</h3><p>　　与基本表、代码表、中间表不同，视图是一种虚表，它依赖数据源的实表而存在。视图是供程序员使用数据库的一个窗口，是基表数据综合的一种形式, 是数据处理的一种方法，是用户数据保密的一种手段。为了进行复杂处理、提高运算速度和节省存储空间, 视图的定义深度一般不得超过三层。 若三层视图仍不够用, 则应在视图上定义临时表, 在临时表上再定义视图。这样反复交迭定义, 视图的深度就不受限制了。</p>
+<p>　　对于某些与国家政治、经济、技术、军事和安全利益有关的信息系统，视图的作用更加重要。这些系统的基本表完成物理设计之后，立即在基本表上建立第一层视图，这层视图的个数和结构，与基本表的个数和结构是完全相同。并且规定，所有的程序员，一律只准在视图上操作。只有数据库管理员，带着多个人员共同掌握的“安全钥匙”，才能直接在基本表上操作。请读者想想：这是为什么？</p>
+<h3 id="11-中间表、报表和临时表"><a href="#11-中间表、报表和临时表" class="headerlink" title="11. 中间表、报表和临时表"></a>11. 中间表、报表和临时表</h3><p>　　中间表是存放统计数据的表，它是为数据仓库、输出报表或查询结果而设计的，有时它没有主键与外键(数据仓库除外)。临时表是程序员个人设计的，存放临时记录，为个人所用。基表和中间表由DBA维护，临时表由程序员自己用程序自动维护。</p>
+<h3 id="12-完整性约束表现在三个方面"><a href="#12-完整性约束表现在三个方面" class="headerlink" title="12. 完整性约束表现在三个方面"></a>12. 完整性约束表现在三个方面</h3><p>　　域的完整性：用Check来实现约束，在数据库设计工具中，对字段的取值范围进行定义时，有一个Check按钮，通过它定义字段的值城。</p>
+<p>　　参照完整性：用PK、FK、表级触发器来实现。</p>
+<p>　　用户定义完整性：它是一些业务规则，用存储过程和触发器来实现。  </p>
+<h3 id="13-防止数据库设计打补丁的方法是“三少原则”"><a href="#13-防止数据库设计打补丁的方法是“三少原则”" class="headerlink" title="13. 防止数据库设计打补丁的方法是“三少原则”"></a>13. 防止数据库设计打补丁的方法是“三少原则”</h3><ol>
+<li>一个数据库中表的个数越少越好。只有表的个数少了，才能说明系统的E－R图少而精，去掉了重复的多余的实体，形成了对客观世界的高度抽象，进行了系统的数据集成，防止了打补丁式的设计；</li>
+<li> 一个表中组合主键的字段个数越少越好。因为主键的作用，一是建主键索引，二是做为子表的外键，所以组合主键的字段个数少了，不仅节省了运行时间，而且节省了索引存储空间；</li>
+<li>一个表中的字段个数越少越好。只有字段的个数少了，才能说明在系统中不存在数据重复，且很少有数据冗余，更重要的是督促读者学会“列变行”，这样就防止了将子表中的字段拉入到主表中去，在主表中留下许多空余的字段。所谓“列变行”，就是将主表中的一部分内容拉出去，另外单独建一个子表。这个方法很简单，有的人就是不习惯、不采纳、不执行。</li>
+</ol>
+<p>　　数据库设计的实用原则是：在数据冗余和处理速度之间找到合适的平衡点。“三少”是一个整体概念，综合观点，不能孤立某一个原则。该原则是相对的，不是绝对的。“三多”原则肯定是错误的。试想：若覆盖系统同样的功能，一百个实体(共一千个属性) 的E－R图，肯定比二百个实体(共二千个属性)的E－R图，要好得多。</p>
+<p>　　提倡“三少”原则，是叫读者学会利用数据库设计技术进行系统的数据集成。数据集成的步骤是将文件系统集成为应用数据库，将应用数据库集成为主题数据库，将主题数据库集成为全局综合数据库。集成的程度越高，数据共享性就越强，信息孤岛现象就越少，整个企业信息系统的全局E—R图中实体的个数、主键的个数、属性的个数就会越少。</p>
+<p>　　提倡“三少”原则的目的，是防止读者利用打补丁技术，不断地对数据库进行增删改，使企业数据库变成了随意设计数据库表的“垃圾堆”，或数据库表的“大杂院”，最后造成数据库中的基本表、代码表、中间表、临时表杂乱无章，不计其数，导致企事业单位的信息系统无法维护而瘫痪。</p>
+<p>　　“三多”原则任何人都可以做到，该原则是“打补丁方法”设计数据库的歪理学说。“三少”原则是少而精的原则，它要求有较高的数据库设计技巧与艺术，不是任何人都能做到的，因为该原则是杜绝用“打补丁方法”设计数据库的理论依据。</p>
+<h3 id="14-提高数据库运行效率的办法"><a href="#14-提高数据库运行效率的办法" class="headerlink" title="14. 提高数据库运行效率的办法"></a>14. 提高数据库运行效率的办法</h3><p>在给定的系统硬件和系统软件条件下，提高数据库系统的运行效率的办法是：    </p>
+<ol>
+<li>在数据库物理设计时，降低范式，增加冗余, 少用触发器, 多用存储过程。</li>
+<li>当计算非常复杂、而且记录条数非常巨大时(例如一千万条)，复杂计算要先在数据库外面，以文件系统方式用C++语言计算处理完成之后，最后才入库追加到表中去。这是电信计费系统设计的经验。</li>
+<li>发现某个表的记录太多，例如超过一千万条，则要对该表进行水平分割。水平分割的做法是，以该表主键PK的某个值为界线，将该表的记录水平分割为两个表。若发现某个表的字段太多，例如超过八十个，则垂直分割该表，将原来的一个表分解为两个表。</li>
+<li>对数据库管理系统DBMS进行系统优化，即优化各种系统参数，如缓冲区个数。</li>
+<li>在使用面向数据的SQL语言进行程序设计时，尽量采取优化算法。</li>
+</ol>
+<hr>
+<p>　　<strong>总之，要提高数据库的运行效率，必须从数据库系统级优化、数据库设计级优化、程序实现级优化，这三个层次上同时下功夫</strong>。</p>
+<p>　　上述十四个技巧，是许多人在大量的数据库分析与设计实践中，逐步总结出来的。对于这些经验的运用，读者不能生帮硬套，死记硬背，而要消化理解，实事求是，灵活掌握。并逐步做到：在应用中发展，在发展中应用。  </p>
+]]></content>
+      <categories>
+        <category>DataBase</category>
+      </categories>
+      <tags>
+        <tag>DataBase</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>InsertSort-插入排序</title>
+    <url>/archives/20135.html</url>
+    <content><![CDATA[<blockquote>
+<p>​    老实讲，自己算法水平就是个战五渣，大二数据结构学的还行，但是过了一学期也记忆模糊，加上从来没有接触过算法训练，而且下学期的算法课……</p>
+<p>​    种种原因促使我得靠假期恶补下自己的算法水平，算法还是用c++写吧，java总觉得怪怪的，类似于拿着叉子吃面？也算是个人偏见吧==</p>
+</blockquote>
+<a id="more"></a>
+
+
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">	Name: InsertSort 插入排序 </span></span><br><span class="line"><span class="comment">	Copyright: SUST </span></span><br><span class="line"><span class="comment">	Author: SunnyGrocery  </span></span><br><span class="line"><span class="comment">	Date: 12/07/19 00:49</span></span><br><span class="line"><span class="comment">	Description: 空间复杂度要求为O(1)  </span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stack&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">int</span> SIZE = <span class="number">10</span>; </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; <span class="title">insertSort</span><span class="params">(<span class="keyword">int</span>* random)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; R ;<span class="comment">//random</span></span><br><span class="line">    <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; S ;<span class="comment">//sorted</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i ;i&lt;SIZE;i++)&#123;</span><br><span class="line">        R.push(random[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//取出待排序栈栈顶元素 ,以临时变量t保存 </span></span><br><span class="line">    <span class="keyword">int</span> t = R.top();R.pop();</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">    *(!S.empty() &amp;&amp; S.top() &gt; t)是为了当判定当R为空时，t是否小于S的栈顶元素</span></span><br><span class="line"><span class="comment">    *如果小于，则还需要进入循环(首先进入else),直到最后当R为空时，t将大于有序列的栈顶元素</span></span><br><span class="line"><span class="comment">    *保证了将最后的t压入时，S不受最后t的影响，仍有序</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="keyword">while</span>(!R.empty() || (!S.empty() &amp;&amp; t &lt; S.top()))&#123;</span><br><span class="line">        <span class="comment">//小于等于号保证了此算法为稳定排序 </span></span><br><span class="line">        <span class="keyword">if</span>(S.empty()||S.top() &lt;= t)&#123;</span><br><span class="line">            S.push(t);<span class="comment">//有序列压入t</span></span><br><span class="line">            t = R.top(); R.pop();<span class="comment">//更新t </span></span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            R.push(S.top());S.pop();<span class="comment">//显然S不为空，若t比S栈顶元素小则 将S中元素放入R中暂存 </span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//将最后的t压入S中 </span></span><br><span class="line">    S.push(t);</span><br><span class="line">    <span class="keyword">return</span> S;</span><br><span class="line">&#125; </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> random[SIZE] = &#123;<span class="number">5</span>,<span class="number">7</span>,<span class="number">6</span>,<span class="number">9</span>,<span class="number">8</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">4</span>&#125;;</span><br><span class="line">	<span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; T = insertSort(random);</span><br><span class="line">	<span class="keyword">while</span>(!T.empty())&#123;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; T.top()&lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line">		T.pop();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Algorithm</category>
+      </categories>
+      <tags>
+        <tag>排序</tag>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Hi Hexo!</title>
-    <url>/article/374161494.html</url>
+    <url>/archives/50024.html</url>
     <content><![CDATA[<h1 id="Hi-Hexo"><a href="#Hi-Hexo" class="headerlink" title="Hi Hexo!"></a>Hi Hexo!</h1><p>这是我第一次真正意义上的建站，原来折腾了就删掉了，毕竟自娱自乐，确实懒的维护。这里，希望自己有恒心将本博客一直做下去。</p>
 <p>以前，学习笔记一直保存在有道云笔记，云笔记里没有用Markdown，导出也都是 pdf ，没办法放上面，觉得还是原来笔记里的写质量好些=_= </p>
 <p>建站的初衷是让自己拥有一个趋近于自由的，可定制化的平台，来记录和分享学习与生活。我也希望相关的技术文章可以让更多人看到，提出批评指正，和大家分享学习过程是一件相当快乐的事，也希望博文可以帮助到大家！</p>
@@ -606,7 +606,7 @@
   </entry>
   <entry>
     <title>改为不蒜子统计</title>
-    <url>/article/1395109062.html</url>
+    <url>/archives/39388.html</url>
     <content><![CDATA[<blockquote>
 <p>​    今天为了让百度更好的收录本站，将一直用的<code>sun1999.top</code>换成了二级域名<code>www.sun1999.top</code></p>
 </blockquote>
@@ -621,7 +621,7 @@
   </entry>
   <entry>
     <title>2020年终总结</title>
-    <url>/article/2141751543.html</url>
+    <url>/archives/41083.html</url>
     <content><![CDATA[<blockquote>
 <p> 说起来一年多没更过blog了，一是懒的写，二是没啥写的。   </p>
 </blockquote>
@@ -711,7 +711,7 @@
   </entry>
   <entry>
     <title>失眠杂谈</title>
-    <url>/article/3828106388.html</url>
+    <url>/archives/58799.html</url>
     <content><![CDATA[<blockquote>
 <p>五味杂陈，说来已为人19朝，至今不知人生来为何?</p>
 </blockquote>
@@ -821,7 +821,7 @@
   </entry>
   <entry>
     <title>Difference between / and /* in servlet mapping url pattern</title>
-    <url>/article/779496036.html</url>
+    <url>/archives/23740.html</url>
     <content><![CDATA[<h3 id="lt-url-pattern-gt-lt-url-pattern-gt"><a href="#lt-url-pattern-gt-lt-url-pattern-gt" class="headerlink" title="&lt;url-pattern&gt;/*&lt;/url-pattern&gt;"></a><code>&lt;url-pattern&gt;/*&lt;/url-pattern&gt;</code></h3><p>The <code>/*</code> on a servlet overrides all other servlets, including all servlets provided by the servletcontainer such as the default servlet and the JSP servlet. Whatever request you fire, it will end up in that servlet. This is thus a bad URL pattern for servlets. Usually, you’d like to use <code>/*</code> on a <a href="http://download.oracle.com/javaee/6/api/javax/servlet/Filter.html"><code>Filter</code></a> only. It is able to let the request continue to any of the servlets listening on a more specific URL pattern by calling [<code>FilterChain#doFilter()</code>](<span class="exturl" data-url="aHR0cDovL2Rvd25sb2FkLm9yYWNsZS5jb20vamF2YWVlLzYvYXBpL2phdmF4L3NlcnZsZXQvRmlsdGVyQ2hhaW4uaHRtbCNkb0ZpbHRlcg==">http://download.oracle.com/javaee/6/api/javax/servlet/FilterChain.html#doFilter<i class="fa fa-external-link-alt"></i></span>(javax.servlet.ServletRequest, javax.servlet.ServletResponse)).</p>
 <a id="more"></a>
 
@@ -849,7 +849,7 @@
   </entry>
   <entry>
     <title>HTTP中GET与POST的区别</title>
-    <url>/article/1075379514.html</url>
+    <url>/archives/54536.html</url>
     <content><![CDATA[<p>GET和POST是HTTP请求的两种基本方法，要说它们的区别，接触过WEB开发的人都能说出一二。</p>
 <p>最直观的区别就是GET把参数包含在URL中，POST通过request body传递参数。</p>
 <p>你可能自己写过无数个GET和POST请求，或者已经看过很多权威网站总结出的他们的区别，你非常清楚知道什么时候该用什么。</p>
@@ -939,7 +939,7 @@
   </entry>
   <entry>
     <title>简易的RESTfulAPI设计指南</title>
-    <url>/article/1412537915.html</url>
+    <url>/archives/24834.html</url>
     <content><![CDATA[<h2 id="HTTP协议"><a href="#HTTP协议" class="headerlink" title="HTTP协议"></a>HTTP协议</h2><p><span class="exturl" data-url="aHR0cHM6Ly93d3cucnVub29iLmNvbS9odHRwL2h0dHAtaW50cm8uaHRtbA==">菜鸟教程—HTTP简介<i class="fa fa-external-link-alt"></i></span> 比本文写的好+.+</p>
 <h3 id="URL"><a href="#URL" class="headerlink" title="URL:"></a>URL:</h3><p>格式：<code>schema://host[:post]/path[?query-string][#anchor]</code></p>
 <ul>
@@ -1045,7 +1045,7 @@
   </entry>
   <entry>
     <title>JPA使用指南-1</title>
-    <url>/article/196757064.html</url>
+    <url>/archives/8182.html</url>
     <content><![CDATA[<p>本文采用Hibernate 3.2+作为JPA的实现方法，脱离常用的框架对 JPA 的 API 进行测试使用</p>
 <blockquote>
 <p>Java Persistence API：用于对象持久化的 API<br>Java EE 5.0 平台标准的 ORM 规范，使得应用程序以统一的方式访问持久层</p>
@@ -1147,7 +1147,7 @@
 <td>66</td>
 <td>2019-08-22</td>
 <td>2019-08-23 05:39:01</td>
-<td><span class="exturl" data-url="bWFpbHRvOiYjNTc7JiM1NzsmIzU3OyYjeDQwOyYjMTE1OyYjMTE3OyYjMTE1OyYjMTE2OyYjeDJlOyYjMTAxOyYjeDY0OyYjeDc1OyYjeDJlOyYjeDYzOyYjMTEwOw==">&#57;&#57;&#57;&#x40;&#115;&#117;&#115;&#116;&#x2e;&#101;&#x64;&#x75;&#x2e;&#x63;&#110;<i class="fa fa-external-link-alt"></i></span></td>
+<td><span class="exturl" data-url="bWFpbHRvOiYjeDM5OyYjNTc7JiN4Mzk7JiM2NDsmIzExNTsmI3g3NTsmI3g3MzsmIzExNjsmI3gyZTsmIzEwMTsmIzEwMDsmI3g3NTsmI3gyZTsmIzk5OyYjMTEwOw==">&#x39;&#57;&#x39;&#64;&#115;&#x75;&#x73;&#116;&#x2e;&#101;&#100;&#x75;&#x2e;&#99;&#110;<i class="fa fa-external-link-alt"></i></span></td>
 <td>Test_1</td>
 <td>2019-08-23 05:39:01</td>
 </tr>
@@ -1156,7 +1156,7 @@
 <td>66</td>
 <td>2019-08-22</td>
 <td>2019-08-23 05:39:02</td>
-<td><span class="exturl" data-url="bWFpbHRvOiYjNTc7JiN4Mzk7JiN4Mzk7JiM2NDsmI3g3MzsmIzExNzsmI3g3MzsmI3g3NDsmIzQ2OyYjeDY1OyYjeDY0OyYjMTE3OyYjeDJlOyYjOTk7JiN4NmU7">&#57;&#x39;&#x39;&#64;&#x73;&#117;&#x73;&#x74;&#46;&#x65;&#x64;&#117;&#x2e;&#99;&#x6e;<i class="fa fa-external-link-alt"></i></span></td>
+<td><span class="exturl" data-url="bWFpbHRvOiYjNTc7JiN4Mzk7JiM1NzsmIzY0OyYjeDczOyYjeDc1OyYjMTE1OyYjMTE2OyYjNDY7JiN4NjU7JiN4NjQ7JiN4NzU7JiM0NjsmI3g2MzsmIzExMDs=">&#57;&#x39;&#57;&#64;&#x73;&#x75;&#115;&#116;&#46;&#x65;&#x64;&#x75;&#46;&#x63;&#110;<i class="fa fa-external-link-alt"></i></span></td>
 <td>Test_1</td>
 <td>2019-08-23 05:39:02</td>
 </tr>
@@ -1165,7 +1165,7 @@
 <td>66</td>
 <td>2019-08-22</td>
 <td>2019-08-23 05:39:02</td>
-<td><span class="exturl" data-url="bWFpbHRvOiYjNTc7JiM1NzsmIzU3OyYjeDQwOyYjeDczOyYjeDc1OyYjeDczOyYjeDc0OyYjNDY7JiN4NjU7JiN4NjQ7JiMxMTc7JiM0NjsmIzk5OyYjMTEwOw==">&#57;&#57;&#57;&#x40;&#x73;&#x75;&#x73;&#x74;&#46;&#x65;&#x64;&#117;&#46;&#99;&#110;<i class="fa fa-external-link-alt"></i></span></td>
+<td><span class="exturl" data-url="bWFpbHRvOiYjNTc7JiM1NzsmI3gzOTsmI3g0MDsmI3g3MzsmIzExNzsmIzExNTsmI3g3NDsmI3gyZTsmIzEwMTsmI3g2NDsmI3g3NTsmI3gyZTsmI3g2MzsmI3g2ZTs=">&#57;&#57;&#x39;&#x40;&#x73;&#117;&#115;&#x74;&#x2e;&#101;&#x64;&#x75;&#x2e;&#x63;&#x6e;<i class="fa fa-external-link-alt"></i></span></td>
 <td>Test_1</td>
 <td>2019-08-23 05:39:02</td>
 </tr>
@@ -1174,7 +1174,7 @@
 <td>66</td>
 <td>2019-08-22</td>
 <td>2019-08-23 05:39:02</td>
-<td><span class="exturl" data-url="bWFpbHRvOiYjNTc7JiM1NzsmIzU3OyYjeDQwOyYjMTE1OyYjMTE3OyYjeDczOyYjMTE2OyYjeDJlOyYjMTAxOyYjeDY0OyYjeDc1OyYjNDY7JiM5OTsmI3g2ZTs=">&#57;&#57;&#57;&#x40;&#115;&#117;&#x73;&#116;&#x2e;&#101;&#x64;&#x75;&#46;&#99;&#x6e;<i class="fa fa-external-link-alt"></i></span></td>
+<td><span class="exturl" data-url="bWFpbHRvOiYjeDM5OyYjNTc7JiN4Mzk7JiN4NDA7JiN4NzM7JiMxMTc7JiMxMTU7JiMxMTY7JiM0NjsmIzEwMTsmI3g2NDsmI3g3NTsmIzQ2OyYjeDYzOyYjeDZlOw==">&#x39;&#57;&#x39;&#x40;&#x73;&#117;&#115;&#116;&#46;&#101;&#x64;&#x75;&#46;&#x63;&#x6e;<i class="fa fa-external-link-alt"></i></span></td>
 <td>Test_1</td>
 <td>2019-08-23 05:39:02</td>
 </tr>
@@ -1183,7 +1183,7 @@
 <td>66</td>
 <td>2019-08-22</td>
 <td>2019-08-23 05:39:02</td>
-<td><span class="exturl" data-url="bWFpbHRvOiYjNTc7JiN4Mzk7JiM1NzsmI3g0MDsmI3g3MzsmI3g3NTsmIzExNTsmI3g3NDsmIzQ2OyYjMTAxOyYjMTAwOyYjeDc1OyYjeDJlOyYjOTk7JiN4NmU7">&#57;&#x39;&#57;&#x40;&#x73;&#x75;&#115;&#x74;&#46;&#101;&#100;&#x75;&#x2e;&#99;&#x6e;<i class="fa fa-external-link-alt"></i></span></td>
+<td><span class="exturl" data-url="bWFpbHRvOiYjeDM5OyYjNTc7JiN4Mzk7JiN4NDA7JiMxMTU7JiMxMTc7JiMxMTU7JiN4NzQ7JiN4MmU7JiN4NjU7JiMxMDA7JiN4NzU7JiM0NjsmIzk5OyYjMTEwOw==">&#x39;&#57;&#x39;&#x40;&#115;&#117;&#115;&#x74;&#x2e;&#x65;&#100;&#x75;&#46;&#99;&#110;<i class="fa fa-external-link-alt"></i></span></td>
 <td>Test_1</td>
 <td>2019-08-23 05:39:02</td>
 </tr>
@@ -1208,7 +1208,7 @@
   </entry>
   <entry>
     <title>JPA使用指南-2</title>
-    <url>/article/2461210610.html</url>
+    <url>/archives/7862.html</url>
     <content><![CDATA[<blockquote>
 <p>文章承自<a href="https://www.sun1999.top/article/jpa%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97-1.html">JPA使用指南-1</a></p>
 <p>本文介绍 JPA 常用 API</p>
@@ -1330,7 +1330,7 @@
   </entry>
   <entry>
     <title>JPA使用指南-3</title>
-    <url>/article/3853789028.html</url>
+    <url>/archives/56951.html</url>
     <content><![CDATA[<blockquote>
 <p>文章承自<a href="https://www.sun1999.top/article/JPA%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97-2.html">JPA使用指南-2</a></p>
 <p>本文介绍映射关联关系</p>
@@ -1451,7 +1451,7 @@
   </entry>
   <entry>
     <title>正则表达式-匹配规则</title>
-    <url>/article/1673564626.html</url>
+    <url>/archives/47645.html</url>
     <content><![CDATA[<h2 id="匹配规则"><a href="#匹配规则" class="headerlink" title="匹配规则"></a>匹配规则</h2><table>
 <thead>
 <tr>
@@ -1596,7 +1596,7 @@
   </entry>
   <entry>
     <title>注解</title>
-    <url>/article/2802795382.html</url>
+    <url>/archives/49545.html</url>
     <content><![CDATA[<blockquote>
 <p>在Spring的学习中，总发现自己基础不扎实，JavaSE知识有所欠缺，所以决定抽空补一下，希望能拾起来忘掉的东西</p>
 </blockquote>
@@ -1725,7 +1725,7 @@
   </entry>
   <entry>
     <title>MyBatis实现模糊查询的几种方式</title>
-    <url>/article/397526806.html</url>
+    <url>/archives/19242.html</url>
     <content><![CDATA[<blockquote>
 <p>这篇文章主要介绍了MyBatis实现模糊查询的几种方式，小编觉得挺不错的，现在分享给大家，也给大家做个参考。一起跟随小编过来看看吧</p>
 </blockquote>
@@ -1786,7 +1786,7 @@
   </entry>
   <entry>
     <title>Mybatis总结[转载]</title>
-    <url>/article/2974437324.html</url>
+    <url>/archives/16793.html</url>
     <content><![CDATA[<h3 id="这里贴两条转载，很有帮助，多谢作者分享"><a href="#这里贴两条转载，很有帮助，多谢作者分享" class="headerlink" title="这里贴两条转载，很有帮助，多谢作者分享~"></a>这里贴两条转载，很有帮助，多谢作者分享~</h3><p><a href="https://blog.csdn.net/ITITII/article/details/79969447"><strong>Mybatis全面详解——上（学习总结）</strong></a></p>
 <p><a href="https://blog.csdn.net/ITITII/article/details/79999481"><strong>Mybatis全面详解——下（学习总结）</strong></a></p>
 <blockquote>
@@ -1804,7 +1804,7 @@
   </entry>
   <entry>
     <title>JavaWeb开发之ServletFilter</title>
-    <url>/article/2190037496.html</url>
+    <url>/archives/59719.html</url>
     <content><![CDATA[<blockquote>
 <p>好文收藏  <span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTMwODc1MTMvYXJ0aWNsZS9kZXRhaWxzLzU2ODM1ODk0">https://blog.csdn.net/u013087513/article/details/56835894<i class="fa fa-external-link-alt"></i></span></p>
 </blockquote>
@@ -1821,7 +1821,7 @@
   </entry>
   <entry>
     <title>SSM基本项目模块架构</title>
-    <url>/article/661055501.html</url>
+    <url>/archives/34532.html</url>
     <content><![CDATA[<h2 id="项目模块划分"><a href="#项目模块划分" class="headerlink" title="项目模块划分"></a>项目模块划分</h2><ol>
 <li><strong>父模块</strong></li>
 </ol>
@@ -1898,8 +1898,120 @@
       </tags>
   </entry>
   <entry>
+    <title>SpringBoot快速入门</title>
+    <url>/archives/2197.html</url>
+    <content><![CDATA[<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>首先，配置文件我们一般用<code>yml</code>格式，且可以分环境在<code>classpath</code>下，创建<code>application.yml</code>为主配置文件</p>
+<p>下来可以创建文件名规范为<code>application-__.yml</code>的yml文件</p>
+<p>例如<code>application-dev.yml</code>,<code>application-prod.yml</code></p>
+<p>在主配置文件<code>application.yml</code>做以下配置，即可使用<code>application-dev.yml</code>下的配置信息；</p>
+<p>注意，无论使用哪个子配置文件，主配置文件中的配置都会生效（相当于通用配置），若子配置文件覆盖掉主配置文件中的相同信息，则最终为子文件中的配置</p>
+<a id="more"></a>
+
+<p>一些基本配置</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8080</span></span><br><span class="line">  <span class="attr">servlet:</span></span><br><span class="line">    <span class="attr">context-path:</span> <span class="string">/your-context-path</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">profiles:</span></span><br><span class="line">  	<span class="comment">#选用dev配置文件</span></span><br><span class="line">    <span class="attr">active:</span> <span class="string">dev</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">driver-class-name:</span> <span class="string">com.mysql.cj.jdbc.Driver</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://127.0.0.1:3306/dataBaseName?serverTimezone=Asia/Shanghai&amp;useUnicode=true&amp;characterEncoding=utf-8</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">password:</span> <span class="number">123456</span></span><br><span class="line">  <span class="attr">jpa:</span></span><br><span class="line">    <span class="attr">hibernate:</span></span><br><span class="line">    <span class="comment">#第一次运行使用create自动生成表，一般使用update</span></span><br><span class="line">      <span class="attr">ddl-auto:</span> <span class="string">create</span></span><br><span class="line">    <span class="comment">#控制台打印出SQL语句</span></span><br><span class="line">    <span class="attr">show-sql:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment">#使用MySQL方言，为了自动生成数据库时使用InnoDB</span></span><br><span class="line">    <span class="attr">database-platform:</span> <span class="string">org.hibernate.dialect.MySQL8Dialect</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="启动方式"><a href="#启动方式" class="headerlink" title="启动方式"></a>启动方式</h3><ol>
+<li><p>开发工具启动</p>
+</li>
+<li><p>项目目录下执行 ：<code>mvn springboot:run</code></p>
+</li>
+<li><p>生产环境</p>
+<ol>
+<li><p>项目目录下执行 <code>mvn clean package</code>编译项目</p>
+</li>
+<li><p>成功后执行<code>cd target</code>进入编译生成的target目录</p>
+</li>
+<li><p>执行<code>java -jar JAR包文件名</code> 启动（这里启动时，可以配置参数，以指定SpringBoot的配置文件）</p>
+<p><code>java -jar 文件名.jar --spring.profiles.active=prod  </code>这样就可以用<code>application-prod.yml</code>启动</p>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="常用注解"><a href="#常用注解" class="headerlink" title="常用注解"></a>常用注解</h3><figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># yml:</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##自定义配置1（使用@Value注入变量）</span></span><br><span class="line"><span class="attr">customParameter1:</span></span><br><span class="line">	<span class="attr">sonPara:</span> <span class="number">1</span></span><br><span class="line"><span class="comment">####使用配置文件中的参数：customParameter2 的实际值为&quot;最小数为1&quot;</span></span><br><span class="line"><span class="attr">customParameter2:</span> <span class="string">最小数为$&#123;customParameter1.sonPara&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##自定义配置2(直接注入对象)</span></span><br><span class="line"><span class="attr">limit:</span></span><br><span class="line">	<span class="attr">ANum:</span> <span class="number">1</span></span><br><span class="line">	<span class="attr">BNum:</span> <span class="string">$&#123;limit.minNum&#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>@Value(&quot;&quot;)</code>  用在 配置变量 的定义上</p>
+<p>主要用于单个自定义配置 </p>
+<p>配置文件中自定义的参数<code>0</code>注入类变量 ,相比于下面的配置类批量注入来说比较繁琐</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//CustomParConfig.java</span></span><br><span class="line">  <span class="meta">@Value(&quot;$&#123;customParameter1&#125;&quot;)</span></span><br><span class="line">  <span class="keyword">private</span> String myCustomPar1;</span><br><span class="line">  <span class="meta">@Value(&quot;$&#123;customParameter2&#125;&quot;)</span></span><br><span class="line">  <span class="keyword">private</span> String myCustomPar2;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>@ConfigurationProperties(perfix = &quot;&quot;)</code>配合<code>@Component</code> 写在配置类上</p>
+<p>主要用于多个自定义配置</p>
+<p>该注释可直接将自定义配置批量注入配置类</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//LimitConfig.java</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;limit&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LimitConfig</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Integer ANum;</span><br><span class="line">    <span class="keyword">private</span> Integer BNum;</span><br><span class="line">    <span class="comment">//省略get()和set()</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样就可以直接将 .yml 中的参数封装到配置类中，其他地方获取只需用@Autowired注入即可</p>
+<hr>
+</li>
+<li><p><code>@RestController</code> 用在Contorller类上</p>
+<p>代替了@Controller，并且还相当于在类的所有方法上都加@ResponseBody注解，即该类下的所有方法都会返回字符串，一般用于返回json格式数据</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//本类中访问根url为http://localhost:8080/hw/...</span></span><br><span class="line"><span class="meta">@RestController()</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/hw&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line">    <span class="comment">//omit....</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><code>@RequestMapping</code>配置url映射</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//postman中以POST请求访问url：url:http://localhost:8080/hw/say</span></span><br><span class="line"><span class="meta">@RequestMapping(value = &quot;/say&quot;,method = RequestMethod.POST)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">say</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">&quot;100&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//页面返回值：100</span></span><br></pre></td></tr></table></figure></li>
+<li><p><code>@___Mapping</code>系列：GetMapping ,PostMapping,</p>
+<p>映射单个url:@GetMapping(“url”)</p>
+<p>映射多个url:@GetMapping({“/url1”,”/url2”})</p>
+</li>
+<li><p><code>@PathVariable(&quot;&quot;)</code> 获取url中的数据</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//url:http://localhost:8080/hw/say/100</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/say/&#123;id&#125;&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">say</span><span class="params">(<span class="meta">@PathVariable(&quot;id&quot;)</span>Integer myId )</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> String.valueOf(myId);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//页面返回值：100</span></span><br></pre></td></tr></table></figure></li>
+<li><p><code>@RequestParam(&quot;&quot;)</code> 获取请求参数的值，也可以选择不传参数，使用默认值</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestParam( value = &quot;id&quot;,required = false,defaultValue = &quot;0&quot;)</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//url:http://localhost:8080/hw/say?100</span></span><br><span class="line"><span class="comment">//或者url:http://localhost:8080/hw/say</span></span><br><span class="line"><span class="comment">//使用form-urlencoded</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/say&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">say</span><span class="params">(<span class="meta">@RequestParam(&quot;id&quot;)</span>Integer myId )</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> String.valueOf(myId);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//页面返回值：100</span></span><br></pre></td></tr></table></figure></li>
+<li><p>使用JPA自动创建表时，有如下的yml配置</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">jpa:</span></span><br><span class="line">    <span class="attr">hibernate:</span></span><br><span class="line">    <span class="comment">#第一次运行使用create自动生成表，一般使用update</span></span><br><span class="line">      <span class="attr">ddl-auto:</span> <span class="string">create</span></span><br><span class="line">    <span class="comment">#控制台打印出SQL语句</span></span><br><span class="line">    <span class="attr">show-sql:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment">#使用MySQL方言，为了自动生成数据库时使用InnoDB</span></span><br><span class="line">    <span class="attr">database-platform:</span> <span class="string">org.hibernate.dialect.MySQL8Dialect</span></span><br></pre></td></tr></table></figure>
+<p>相应的实体类的类：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">*注意，以下注解都为：&#x27;javax.persistence&#x27;包下</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">@Entity</span><span class="comment">//声明需要自动创建表的实体类</span></span><br><span class="line"><span class="meta">@Table(&quot;table_name&quot;)</span><span class="comment">//指定表名，缺省值为驼峰类名的转换:lucky_money</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyEntity</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    *&#x27;@id&#x27; 指定主键</span></span><br><span class="line"><span class="comment">    *&#x27;@GeneratedValue&#x27; 配置自增列，并声明自增策略</span></span><br><span class="line"><span class="comment">    *详情参见：&#x27;https://blog.csdn.net/zhangli0910/article/details/83580855&#x27;</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//必须有一个无参构造器</span></span><br><span class="line">    MyEntity()&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//省略get和set方法</span></span><br></pre></td></tr></table></figure></li>
+<li><p><code>@Transactional</code> 用在映射方法上，使方法中的服务以事务执行</p>
+<p>// org.springframework.transaction.annotation.Transactional</p>
+</li>
+</ul>
+<h3 id="RESTful-API"><a href="#RESTful-API" class="headerlink" title="RESTful API"></a>RESTful API</h3><p>最基本的API设计</p>
+<table>
+<thead>
+<tr>
+<th>请求类型</th>
+<th>请求路径</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET</td>
+<td>/context-path</td>
+<td>查询条目列表</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/context-path</td>
+<td>创建单个记录</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/context-path/id</td>
+<td>查询单个记录</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/context-path/id</td>
+<td>更新单个记录</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>/context-path/id</td>
+<td>删除单个记录</td>
+</tr>
+</tbody></table>
+]]></content>
+      <categories>
+        <category>Java</category>
+        <category>SpringBoot</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>SpringBoot</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>AOP</title>
-    <url>/article/2459122907.html</url>
+    <url>/archives/6244.html</url>
     <content><![CDATA[<h2 id="AOP"><a href="#AOP" class="headerlink" title="AOP"></a>AOP</h2><ul>
 <li><p><strong>Aspect Oriented Programming 的缩写，意为：面向切面编程，通过 预编译方式 和 运行期动态代理 实现程序功能的统一维护的一种技术</strong></p>
 </li>
@@ -2009,7 +2121,7 @@
   </entry>
   <entry>
     <title>Bean的简介</title>
-    <url>/article/1523673066.html</url>
+    <url>/archives/14570.html</url>
     <content><![CDATA[<h2 id="Bean标签作用："><a href="#Bean标签作用：" class="headerlink" title="Bean标签作用："></a>Bean标签作用：</h2><ul>
 <li><p>用于配置对象让 spring 来创建的。</p>
 </li>
@@ -2096,7 +2208,7 @@
   </entry>
   <entry>
     <title>Bean的装配(一)</title>
-    <url>/article/1307116255.html</url>
+    <url>/archives/63714.html</url>
     <content><![CDATA[<h2 id="Autowiring-自动装配"><a href="#Autowiring-自动装配" class="headerlink" title="Autowiring(自动装配)"></a>Autowiring(自动装配)</h2><ul>
 <li>**No（default）:**不做任何操作</li>
 <li>**byName:**根据属性名自动装配。此选项将检查容器并根据名字查找与属性完全一致的 bean，并将其与属性自动装配</li>
@@ -2137,7 +2249,7 @@
   </entry>
   <entry>
     <title>Bean的装配(二)</title>
-    <url>/article/3805845949.html</url>
+    <url>/archives/14406.html</url>
     <content><![CDATA[<h2 id="Autowired"><a href="#Autowired" class="headerlink" title="@Autowired"></a>@Autowired</h2><h3 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h3><ul>
 <li>此注解可以用在Bean的成员变量，setter()方法与构造器上。</li>
 </ul>
@@ -2271,7 +2383,7 @@
   </entry>
   <entry>
     <title>Classpath扫描与组件管理</title>
-    <url>/article/2887671146.html</url>
+    <url>/archives/42894.html</url>
     <content><![CDATA[<p>从 Spring3.0开始，Spring JavaConfig 项目提供了很多特性，包括使用 java 而不是 XML 定义 bean .</p>
 <p><strong>比如</strong>：</p>
 <ul>
@@ -2322,7 +2434,7 @@
   </entry>
   <entry>
     <title>JavaBean的实例化与注入方式</title>
-    <url>/article/3667423931.html</url>
+    <url>/archives/2794.html</url>
     <content><![CDATA[<h2 id="实例化Bean的方式"><a href="#实例化Bean的方式" class="headerlink" title="实例化Bean的方式"></a>实例化Bean的方式</h2><h3 id="spring-xml-样例"><a href="#spring-xml-样例" class="headerlink" title="spring.xml    样例"></a>spring.xml    样例</h3><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="tag"><span class="string">                 http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--通过构造方法实例化Bean--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;bean&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.?.Bean&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--通过静态方法实例化Bean--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;beanFromFactory1&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.***.BeanFactory&quot;</span> <span class="attr">factory-method</span>=<span class="string">&quot;createBean1&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--通过实例方法实例化Bean--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;beanFactory&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.***.BeanFactory&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;beanFromFactory2&quot;</span> <span class="attr">factory-bean</span>=<span class="string">&quot;beanFactory&quot;</span> <span class="attr">factory-method</span>=<span class="string">&quot;createBean2&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--Bean的别名--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;bean1&quot;</span> <span class="attr">name</span>=<span class="string">&quot;bean2, bean3&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.***.Bean&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">alias</span> <span class="attr">name</span>=<span class="string">&quot;bean1&quot;</span> <span class="attr">alias</span>=<span class="string">&quot;bean4&quot;</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <a id="more"></a>
 
@@ -2342,7 +2454,7 @@
   </entry>
   <entry>
     <title>Spring中AspectJ的XML开发</title>
-    <url>/article/400679498.html</url>
+    <url>/archives/38488.html</url>
     <content><![CDATA[<ul>
 <li>schema-defined aspects只支持singleton model，即：所有基于配置文件的切面只支持单例模式</li>
 <li>Spring所有的切面和通知器都必须放在一个<code>&lt;aop:config&gt;</code>内（可以配置包含多个<code>&lt;aop:config&gt;</code>元素），每一个<code>&lt;aop:config&gt;</code>可以包含<code>pointcut</code>，<code>advisor</code>和<code>aspect</code>元素(必须按照以上顺序进行声明）</li>
@@ -2469,7 +2581,7 @@
   </entry>
   <entry>
     <title>Spring中AspectJ的注解开发</title>
-    <url>/article/4122990482.html</url>
+    <url>/archives/19592.html</url>
     <content><![CDATA[<blockquote>
 <p>@AspectJ注解于类名上来声明这个类是一个切面类</p>
 </blockquote>
@@ -2584,7 +2696,7 @@
   </entry>
   <entry>
     <title>Spring中使用JUnit4的过度方法</title>
-    <url>/article/2584467155.html</url>
+    <url>/archives/48524.html</url>
     <content><![CDATA[<blockquote>
 <p>肯定有整合过的单元测试组件用，spring不会有这么不优雅的东西，只是我还不会，暂时凑合着先用    ORZ</p>
 </blockquote>
@@ -2614,8 +2726,33 @@
       </tags>
   </entry>
   <entry>
+    <title>使用注解进行资源文件读取</title>
+    <url>/archives/13500.html</url>
+    <content><![CDATA[<h2 id="使用-ImportResource-和-Value-进行资源文件读取"><a href="#使用-ImportResource-和-Value-进行资源文件读取" class="headerlink" title="使用 @ImportResource 和 @Value 进行资源文件读取"></a>使用 @ImportResource 和 @Value 进行资源文件读取</h2><figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">db.url</span> = <span class="string">127.0.0.1</span></span><br><span class="line"><span class="meta">db.username</span> = <span class="string">root</span></span><br><span class="line"><span class="meta">db.password</span> = <span class="string">pwword</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>注意</strong>：读取<code>properties</code>文件中的数据时，若所在系统环境中有重名的环境变量与<code>properties</code>中<code>key</code>值相同，那么其值会被系统变量中的值所覆盖，这样会导致错误，所以我们一般将  本为<code>url</code>的<code>key</code>改写为<code>db.url</code>，即加上特殊前缀，以防止重命冲突情况的发生。</p>
+</blockquote>
+<a id="more"></a>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ImportResource(&quot;classpath:/com/acme/properties-config.xml&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppConfig</span> </span>&#123;</span><br><span class="line">      <span class="meta">@Value(&quot;$&#123;jdbc.url&#125;&quot;)</span></span><br><span class="line">      <span class="keyword">private</span> String url;</span><br><span class="line">    </span><br><span class="line">      <span class="meta">@Value(&quot;$&#123;jdbc,username&#125;&quot;)</span></span><br><span class="line">      <span class="keyword">private</span> String username;</span><br><span class="line">    </span><br><span class="line">      <span class="meta">@Value(&quot;$&#123;jdbc.passvord&#125;&quot;)</span></span><br><span class="line">      <span class="keyword">private</span> String password;</span><br><span class="line">    </span><br><span class="line">      <span class="meta">@Bean</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> DriverManagerDataSource(url,username,pasaword);</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
+<p>类似于</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:context</span>=<span class="string">&quot;http://www.springframework.org/schema/context&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="tag"><span class="string">        http://www.springframework.org/schema/beans/spring-beans.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">        http://www.springframework.org/schema/context</span></span></span><br><span class="line"><span class="tag"><span class="string">        http://www.springframework.org/schema/context/spring-context.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">&quot;com.***&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:property-placeholder</span> <span class="attr">location</span>=<span class="string">&quot;classpath:/com/acme/jdbc.properties&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;com.acme.AppConfig&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;url&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc,ur1)&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.username&#125;&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.password)&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+]]></content>
+      <categories>
+        <category>Java</category>
+        <category>Spring</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>注解</tag>
+        <tag>Spring</tag>
+        <tag>Bean</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Spring对JSR-330的支持</title>
-    <url>/article/3385503784.html</url>
+    <url>/archives/27107.html</url>
     <content><![CDATA[<ul>
 <li><p>从Spring3.0开始支持JSR330标准注解（依赖注入注解），其扫描方式与Spring注解一致</p>
 </li>
@@ -2649,33 +2786,8 @@
       </tags>
   </entry>
   <entry>
-    <title>使用注解进行资源文件读取</title>
-    <url>/article/1738303061.html</url>
-    <content><![CDATA[<h2 id="使用-ImportResource-和-Value-进行资源文件读取"><a href="#使用-ImportResource-和-Value-进行资源文件读取" class="headerlink" title="使用 @ImportResource 和 @Value 进行资源文件读取"></a>使用 @ImportResource 和 @Value 进行资源文件读取</h2><figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">db.url</span> = <span class="string">127.0.0.1</span></span><br><span class="line"><span class="meta">db.username</span> = <span class="string">root</span></span><br><span class="line"><span class="meta">db.password</span> = <span class="string">pwword</span></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>注意</strong>：读取<code>properties</code>文件中的数据时，若所在系统环境中有重名的环境变量与<code>properties</code>中<code>key</code>值相同，那么其值会被系统变量中的值所覆盖，这样会导致错误，所以我们一般将  本为<code>url</code>的<code>key</code>改写为<code>db.url</code>，即加上特殊前缀，以防止重命冲突情况的发生。</p>
-</blockquote>
-<a id="more"></a>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ImportResource(&quot;classpath:/com/acme/properties-config.xml&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppConfig</span> </span>&#123;</span><br><span class="line">      <span class="meta">@Value(&quot;$&#123;jdbc.url&#125;&quot;)</span></span><br><span class="line">      <span class="keyword">private</span> String url;</span><br><span class="line">    </span><br><span class="line">      <span class="meta">@Value(&quot;$&#123;jdbc,username&#125;&quot;)</span></span><br><span class="line">      <span class="keyword">private</span> String username;</span><br><span class="line">    </span><br><span class="line">      <span class="meta">@Value(&quot;$&#123;jdbc.passvord&#125;&quot;)</span></span><br><span class="line">      <span class="keyword">private</span> String password;</span><br><span class="line">    </span><br><span class="line">      <span class="meta">@Bean</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> DriverManagerDataSource(url,username,pasaword);</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
-<p>类似于</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:context</span>=<span class="string">&quot;http://www.springframework.org/schema/context&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="tag"><span class="string">        http://www.springframework.org/schema/beans/spring-beans.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">        http://www.springframework.org/schema/context</span></span></span><br><span class="line"><span class="tag"><span class="string">        http://www.springframework.org/schema/context/spring-context.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">&quot;com.***&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:property-placeholder</span> <span class="attr">location</span>=<span class="string">&quot;classpath:/com/acme/jdbc.properties&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;com.acme.AppConfig&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;url&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc,ur1)&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.username&#125;&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.password)&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-]]></content>
-      <categories>
-        <category>Java</category>
-        <category>Spring</category>
-      </categories>
-      <tags>
-        <tag>Java</tag>
-        <tag>注解</tag>
-        <tag>Spring</tag>
-        <tag>Bean</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>通过AOP为特定的类引入新的功能</title>
-    <url>/article/3835069194.html</url>
+    <url>/archives/39847.html</url>
     <content><![CDATA[<blockquote>
 <p>如果有这样一个需求，<strong>为一个已知的API添加一个新的功能</strong>。</p>
 <p>由于是已知的API，我们不能修改其类，只能通过外部包装。但是如果通过之前的AOP前置或后置通知，又不太合理，最简单的办法就是实现某个我们自定义的接口，这个接口包含了想要添加的方法。</p>
@@ -2721,120 +2833,8 @@
       </tags>
   </entry>
   <entry>
-    <title>SpringBoot快速入门</title>
-    <url>/article/1288476648.html</url>
-    <content><![CDATA[<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>首先，配置文件我们一般用<code>yml</code>格式，且可以分环境在<code>classpath</code>下，创建<code>application.yml</code>为主配置文件</p>
-<p>下来可以创建文件名规范为<code>application-__.yml</code>的yml文件</p>
-<p>例如<code>application-dev.yml</code>,<code>application-prod.yml</code></p>
-<p>在主配置文件<code>application.yml</code>做以下配置，即可使用<code>application-dev.yml</code>下的配置信息；</p>
-<p>注意，无论使用哪个子配置文件，主配置文件中的配置都会生效（相当于通用配置），若子配置文件覆盖掉主配置文件中的相同信息，则最终为子文件中的配置</p>
-<a id="more"></a>
-
-<p>一些基本配置</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8080</span></span><br><span class="line">  <span class="attr">servlet:</span></span><br><span class="line">    <span class="attr">context-path:</span> <span class="string">/your-context-path</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">profiles:</span></span><br><span class="line">  	<span class="comment">#选用dev配置文件</span></span><br><span class="line">    <span class="attr">active:</span> <span class="string">dev</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">driver-class-name:</span> <span class="string">com.mysql.cj.jdbc.Driver</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://127.0.0.1:3306/dataBaseName?serverTimezone=Asia/Shanghai&amp;useUnicode=true&amp;characterEncoding=utf-8</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">password:</span> <span class="number">123456</span></span><br><span class="line">  <span class="attr">jpa:</span></span><br><span class="line">    <span class="attr">hibernate:</span></span><br><span class="line">    <span class="comment">#第一次运行使用create自动生成表，一般使用update</span></span><br><span class="line">      <span class="attr">ddl-auto:</span> <span class="string">create</span></span><br><span class="line">    <span class="comment">#控制台打印出SQL语句</span></span><br><span class="line">    <span class="attr">show-sql:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment">#使用MySQL方言，为了自动生成数据库时使用InnoDB</span></span><br><span class="line">    <span class="attr">database-platform:</span> <span class="string">org.hibernate.dialect.MySQL8Dialect</span></span><br></pre></td></tr></table></figure>
-
-
-<h3 id="启动方式"><a href="#启动方式" class="headerlink" title="启动方式"></a>启动方式</h3><ol>
-<li><p>开发工具启动</p>
-</li>
-<li><p>项目目录下执行 ：<code>mvn springboot:run</code></p>
-</li>
-<li><p>生产环境</p>
-<ol>
-<li><p>项目目录下执行 <code>mvn clean package</code>编译项目</p>
-</li>
-<li><p>成功后执行<code>cd target</code>进入编译生成的target目录</p>
-</li>
-<li><p>执行<code>java -jar JAR包文件名</code> 启动（这里启动时，可以配置参数，以指定SpringBoot的配置文件）</p>
-<p><code>java -jar 文件名.jar --spring.profiles.active=prod  </code>这样就可以用<code>application-prod.yml</code>启动</p>
-</li>
-</ol>
-</li>
-</ol>
-<h3 id="常用注解"><a href="#常用注解" class="headerlink" title="常用注解"></a>常用注解</h3><figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># yml:</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##自定义配置1（使用@Value注入变量）</span></span><br><span class="line"><span class="attr">customParameter1:</span></span><br><span class="line">	<span class="attr">sonPara:</span> <span class="number">1</span></span><br><span class="line"><span class="comment">####使用配置文件中的参数：customParameter2 的实际值为&quot;最小数为1&quot;</span></span><br><span class="line"><span class="attr">customParameter2:</span> <span class="string">最小数为$&#123;customParameter1.sonPara&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##自定义配置2(直接注入对象)</span></span><br><span class="line"><span class="attr">limit:</span></span><br><span class="line">	<span class="attr">ANum:</span> <span class="number">1</span></span><br><span class="line">	<span class="attr">BNum:</span> <span class="string">$&#123;limit.minNum&#125;</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li><p><code>@Value(&quot;&quot;)</code>  用在 配置变量 的定义上</p>
-<p>主要用于单个自定义配置 </p>
-<p>配置文件中自定义的参数<code>0</code>注入类变量 ,相比于下面的配置类批量注入来说比较繁琐</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//CustomParConfig.java</span></span><br><span class="line">  <span class="meta">@Value(&quot;$&#123;customParameter1&#125;&quot;)</span></span><br><span class="line">  <span class="keyword">private</span> String myCustomPar1;</span><br><span class="line">  <span class="meta">@Value(&quot;$&#123;customParameter2&#125;&quot;)</span></span><br><span class="line">  <span class="keyword">private</span> String myCustomPar2;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>@ConfigurationProperties(perfix = &quot;&quot;)</code>配合<code>@Component</code> 写在配置类上</p>
-<p>主要用于多个自定义配置</p>
-<p>该注释可直接将自定义配置批量注入配置类</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//LimitConfig.java</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;limit&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LimitConfig</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Integer ANum;</span><br><span class="line">    <span class="keyword">private</span> Integer BNum;</span><br><span class="line">    <span class="comment">//省略get()和set()</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这样就可以直接将 .yml 中的参数封装到配置类中，其他地方获取只需用@Autowired注入即可</p>
-<hr>
-</li>
-<li><p><code>@RestController</code> 用在Contorller类上</p>
-<p>代替了@Controller，并且还相当于在类的所有方法上都加@ResponseBody注解，即该类下的所有方法都会返回字符串，一般用于返回json格式数据</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//本类中访问根url为http://localhost:8080/hw/...</span></span><br><span class="line"><span class="meta">@RestController()</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/hw&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line">    <span class="comment">//omit....</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p><code>@RequestMapping</code>配置url映射</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//postman中以POST请求访问url：url:http://localhost:8080/hw/say</span></span><br><span class="line"><span class="meta">@RequestMapping(value = &quot;/say&quot;,method = RequestMethod.POST)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">say</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">&quot;100&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//页面返回值：100</span></span><br></pre></td></tr></table></figure></li>
-<li><p><code>@___Mapping</code>系列：GetMapping ,PostMapping,</p>
-<p>映射单个url:@GetMapping(“url”)</p>
-<p>映射多个url:@GetMapping({“/url1”,”/url2”})</p>
-</li>
-<li><p><code>@PathVariable(&quot;&quot;)</code> 获取url中的数据</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//url:http://localhost:8080/hw/say/100</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/say/&#123;id&#125;&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">say</span><span class="params">(<span class="meta">@PathVariable(&quot;id&quot;)</span>Integer myId )</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> String.valueOf(myId);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//页面返回值：100</span></span><br></pre></td></tr></table></figure></li>
-<li><p><code>@RequestParam(&quot;&quot;)</code> 获取请求参数的值，也可以选择不传参数，使用默认值</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestParam( value = &quot;id&quot;,required = false,defaultValue = &quot;0&quot;)</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//url:http://localhost:8080/hw/say?100</span></span><br><span class="line"><span class="comment">//或者url:http://localhost:8080/hw/say</span></span><br><span class="line"><span class="comment">//使用form-urlencoded</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/say&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">say</span><span class="params">(<span class="meta">@RequestParam(&quot;id&quot;)</span>Integer myId )</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> String.valueOf(myId);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//页面返回值：100</span></span><br></pre></td></tr></table></figure></li>
-<li><p>使用JPA自动创建表时，有如下的yml配置</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">jpa:</span></span><br><span class="line">    <span class="attr">hibernate:</span></span><br><span class="line">    <span class="comment">#第一次运行使用create自动生成表，一般使用update</span></span><br><span class="line">      <span class="attr">ddl-auto:</span> <span class="string">create</span></span><br><span class="line">    <span class="comment">#控制台打印出SQL语句</span></span><br><span class="line">    <span class="attr">show-sql:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment">#使用MySQL方言，为了自动生成数据库时使用InnoDB</span></span><br><span class="line">    <span class="attr">database-platform:</span> <span class="string">org.hibernate.dialect.MySQL8Dialect</span></span><br></pre></td></tr></table></figure>
-<p>相应的实体类的类：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">*注意，以下注解都为：&#x27;javax.persistence&#x27;包下</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">@Entity</span><span class="comment">//声明需要自动创建表的实体类</span></span><br><span class="line"><span class="meta">@Table(&quot;table_name&quot;)</span><span class="comment">//指定表名，缺省值为驼峰类名的转换:lucky_money</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyEntity</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    *&#x27;@id&#x27; 指定主键</span></span><br><span class="line"><span class="comment">    *&#x27;@GeneratedValue&#x27; 配置自增列，并声明自增策略</span></span><br><span class="line"><span class="comment">    *详情参见：&#x27;https://blog.csdn.net/zhangli0910/article/details/83580855&#x27;</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//必须有一个无参构造器</span></span><br><span class="line">    MyEntity()&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//省略get和set方法</span></span><br></pre></td></tr></table></figure></li>
-<li><p><code>@Transactional</code> 用在映射方法上，使方法中的服务以事务执行</p>
-<p>// org.springframework.transaction.annotation.Transactional</p>
-</li>
-</ul>
-<h3 id="RESTful-API"><a href="#RESTful-API" class="headerlink" title="RESTful API"></a>RESTful API</h3><p>最基本的API设计</p>
-<table>
-<thead>
-<tr>
-<th>请求类型</th>
-<th>请求路径</th>
-<th>功能</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>GET</td>
-<td>/context-path</td>
-<td>查询条目列表</td>
-</tr>
-<tr>
-<td>POST</td>
-<td>/context-path</td>
-<td>创建单个记录</td>
-</tr>
-<tr>
-<td>GET</td>
-<td>/context-path/id</td>
-<td>查询单个记录</td>
-</tr>
-<tr>
-<td>PUT</td>
-<td>/context-path/id</td>
-<td>更新单个记录</td>
-</tr>
-<tr>
-<td>DELETE</td>
-<td>/context-path/id</td>
-<td>删除单个记录</td>
-</tr>
-</tbody></table>
-]]></content>
-      <categories>
-        <category>Java</category>
-        <category>SpringBoot</category>
-      </categories>
-      <tags>
-        <tag>Java</tag>
-        <tag>SpringBoot</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>MVC模式</title>
-    <url>/article/3233635005.html</url>
+    <url>/archives/12522.html</url>
     <content><![CDATA[<p>MVC是一种架构模式</p>
 <ul>
 <li>程序分层，分工合作，既相互独立，又协同工作。</li>
@@ -2866,7 +2866,7 @@
   </entry>
   <entry>
     <title>SpringMVC基本概念</title>
-    <url>/article/4215085851.html</url>
+    <url>/archives/15033.html</url>
     <content><![CDATA[<h3 id="各组件介绍"><a href="#各组件介绍" class="headerlink" title="各组件介绍"></a>各组件介绍</h3><ul>
 <li><p>DispatcherServlet：</p>
 <ul>
@@ -2928,7 +2928,7 @@
   </entry>
   <entry>
     <title>什么是P问题、NP问题和NPC问题</title>
-    <url>/article/3573228156.html</url>
+    <url>/archives/10695.html</url>
     <content><![CDATA[<p> 这或许是众多OIer最大的误区之一。</p>
 <p> 你会经常看到网上出现“这怎么做，这不是NP问题吗”、“这个只有搜了，这已经被证明是NP问题了”之类的话。你要知道，大多数人此时所说的NP问题其实都是指的NPC问题。他们没有搞清楚NP问题和NPC问题的概念。NP问题并不是那种“只有搜才行”的问题，NPC问题才是。好，行了，基本上这个误解已经被澄清了。下面的内容都是在讲什么是P问题，什么是NP问题，什么是NPC问题，你如果不是很感兴趣就可以不看了。接下来你可以看到，把NP问题当成是 NPC问题是一个多大的错误。</p>
 <a id="more"></a>
