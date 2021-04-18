@@ -820,6 +820,34 @@
       </tags>
   </entry>
   <entry>
+    <title>Difference between / and /* in servlet mapping url pattern</title>
+    <url>/archives/23740.html</url>
+    <content><![CDATA[<h3 id="lt-url-pattern-gt-lt-url-pattern-gt"><a href="#lt-url-pattern-gt-lt-url-pattern-gt" class="headerlink" title="&lt;url-pattern&gt;/*&lt;/url-pattern&gt;"></a><code>&lt;url-pattern&gt;/*&lt;/url-pattern&gt;</code></h3><p>The <code>/*</code> on a servlet overrides all other servlets, including all servlets provided by the servletcontainer such as the default servlet and the JSP servlet. Whatever request you fire, it will end up in that servlet. This is thus a bad URL pattern for servlets. Usually, you’d like to use <code>/*</code> on a <a href="http://download.oracle.com/javaee/6/api/javax/servlet/Filter.html"><code>Filter</code></a> only. It is able to let the request continue to any of the servlets listening on a more specific URL pattern by calling [<code>FilterChain#doFilter()</code>](<span class="exturl" data-url="aHR0cDovL2Rvd25sb2FkLm9yYWNsZS5jb20vamF2YWVlLzYvYXBpL2phdmF4L3NlcnZsZXQvRmlsdGVyQ2hhaW4uaHRtbCNkb0ZpbHRlcg==">http://download.oracle.com/javaee/6/api/javax/servlet/FilterChain.html#doFilter<i class="fa fa-external-link-alt"></i></span>(javax.servlet.ServletRequest, javax.servlet.ServletResponse)).</p>
+<a id="more"></a>
+
+<h3 id="lt-url-pattern-gt-lt-url-pattern-gt-1"><a href="#lt-url-pattern-gt-lt-url-pattern-gt-1" class="headerlink" title="&lt;url-pattern&gt;/&lt;/url-pattern&gt;"></a><code>&lt;url-pattern&gt;/&lt;/url-pattern&gt;</code></h3><p>The <code>/</code> doesn’t override any other servlet. It only replaces the servletcontainer’s builtin default servlet for all requests which doesn’t match any other registered servlet. This is normally only invoked on static resources (CSS/JS/image/etc) and directory listings. The servletcontainer’s builtin default servlet is also capable of dealing with HTTP cache requests, media (audio/video) streaming and file download resumes. </p>
+<p>Usually, you don’t want to override the default servlet as you would otherwise have to take care of all its tasks, which is not exactly trivial (JSF utility library <span class="exturl" data-url="aHR0cDovL29tbmlmYWNlcy5vcmcv">OmniFaces<i class="fa fa-external-link-alt"></i></span> has an <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL29tbmlmYWNlcy9vbW5pZmFjZXMvYmxvYi9tYXN0ZXIvc3JjL21haW4vamF2YS9vcmcvb21uaWZhY2VzL3NlcnZsZXQvRmlsZVNlcnZsZXQuamF2YQ==">open source<i class="fa fa-external-link-alt"></i></span> <span class="exturl" data-url="aHR0cDovL3Nob3djYXNlLm9tbmlmYWNlcy5vcmcvc2VydmxldHMvRmlsZVNlcnZsZXQ=">example<i class="fa fa-external-link-alt"></i></span>). </p>
+<blockquote>
+<p>译：通常，你并不希望覆盖默认的servlet，因为这样您必须处理它的所有任务，这并不容易(JSF实用程序库OmniFaces有一个开源示例)。</p>
+<p>注：SpringMVC就是要接管所有任务，所以要我们要覆盖容器默认的servlet，静态文件配置<code>&lt;mvc:default-servlet-handler/&gt;</code>即可排除</p>
+</blockquote>
+<p>This is thus also a bad URL pattern for servlets. As to why JSP pages doesn’t hit this servlet, it’s because the servletcontainer’s builtin JSP servlet will be invoked, which is already by default mapped on the more specific URL pattern <code>*.jsp</code>.</p>
+<h3 id="lt-url-pattern-gt-lt-url-pattern-gt-2"><a href="#lt-url-pattern-gt-lt-url-pattern-gt-2" class="headerlink" title="&lt;url-pattern&gt;&lt;/url-pattern&gt;"></a><code>&lt;url-pattern&gt;&lt;/url-pattern&gt;</code></h3><p>Then there’s also the empty string URL pattern . This will be invoked when the context root is requested. This is different from the <a href="https://stackoverflow.com/questions/14648167/how-to-configure-welcome-file-list-in-web-xml/"><code>&lt;welcome-file&gt;</code></a> approach that it isn’t invoked when any subfolder is requested. This is most likely the URL pattern you’re actually looking for in case you want a “<span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMzMyNDg0NzMvY2hhbmdlLWRlZmF1bHQtaG9tZXBhZ2UtaW4tcm9vdC1wYXRoLXRvLXNlcnZsZXQtd2l0aC1kb2dldC8=">home page servlet<i class="fa fa-external-link-alt"></i></span>“. I only have to admit that I’d intuitively expect the empty string URL pattern <code> </code> and the slash URL pattern <code>/</code> be defined exactly the other way round, so I can understand that a lot of starters got confused on this. But it is what it is.</p>
+<h3 id="Front-Controller"><a href="#Front-Controller" class="headerlink" title="Front Controller"></a>Front Controller</h3><p>In case you <em>actually</em> intend to have a front controller servlet, then you’d best map it on a more specific URL pattern like <code>*.html</code>, <code>*.do</code>, <code>/pages/*</code>, <code>/app/*</code>, etc. You can hide away the front controller URL pattern and cover static resources on a common URL pattern like <code>/resources/*</code>, <code>/static/*</code>, etc with help of a servlet filter. See also <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMTM1MjE5NDYvaG93LXRvLXByZXZlbnQtc3RhdGljLXJlc291cmNlcy1mcm9tLWJlaW5nLWhhbmRsZWQtYnktZnJvbnQtY29udHJvbGxlci1zZXJ2bGV0LXc=">How to prevent static resources from being handled by front controller servlet which is mapped on /*<i class="fa fa-external-link-alt"></i></span>. Noted should be that Spring MVC has a builtin static resource servlet, so that’s why you could map its front controller on <code>/</code> if you configure a common URL pattern for static resources in Spring. See also <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMTQ4MzA2My9zcHJpbmctbXZjLTMtYW5kLWhhbmRsaW5nLXN0YXRpYy1jb250ZW50LWFtLWktbWlzc2luZy1zb21ldGhpbmc=">How to handle static content in Spring MVC?<i class="fa fa-external-link-alt"></i></span></p>
+<blockquote>
+<p>作者：<span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy8xNTc4ODIvYmFsdXNj">BalusC<i class="fa fa-external-link-alt"></i></span></p>
+<p>文章转载自：<span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvNDE0MDQ0OC9kaWZmZXJlbmNlLWJldHdlZW4tYW5kLWluLXNlcnZsZXQtbWFwcGluZy11cmwtcGF0dGVybg==">Difference between / and /* in servlet mapping url pattern<i class="fa fa-external-link-alt"></i></span></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Web</category>
+      </categories>
+      <tags>
+        <tag>web</tag>
+        <tag>servlet</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>HTTP中GET与POST的区别</title>
     <url>/archives/54536.html</url>
     <content><![CDATA[<p>GET和POST是HTTP请求的两种基本方法，要说它们的区别，接触过WEB开发的人都能说出一二。</p>
@@ -907,34 +935,6 @@
       <tags>
         <tag>web</tag>
         <tag>http</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Difference between / and /* in servlet mapping url pattern</title>
-    <url>/archives/23740.html</url>
-    <content><![CDATA[<h3 id="lt-url-pattern-gt-lt-url-pattern-gt"><a href="#lt-url-pattern-gt-lt-url-pattern-gt" class="headerlink" title="&lt;url-pattern&gt;/*&lt;/url-pattern&gt;"></a><code>&lt;url-pattern&gt;/*&lt;/url-pattern&gt;</code></h3><p>The <code>/*</code> on a servlet overrides all other servlets, including all servlets provided by the servletcontainer such as the default servlet and the JSP servlet. Whatever request you fire, it will end up in that servlet. This is thus a bad URL pattern for servlets. Usually, you’d like to use <code>/*</code> on a <a href="http://download.oracle.com/javaee/6/api/javax/servlet/Filter.html"><code>Filter</code></a> only. It is able to let the request continue to any of the servlets listening on a more specific URL pattern by calling [<code>FilterChain#doFilter()</code>](<span class="exturl" data-url="aHR0cDovL2Rvd25sb2FkLm9yYWNsZS5jb20vamF2YWVlLzYvYXBpL2phdmF4L3NlcnZsZXQvRmlsdGVyQ2hhaW4uaHRtbCNkb0ZpbHRlcg==">http://download.oracle.com/javaee/6/api/javax/servlet/FilterChain.html#doFilter<i class="fa fa-external-link-alt"></i></span>(javax.servlet.ServletRequest, javax.servlet.ServletResponse)).</p>
-<a id="more"></a>
-
-<h3 id="lt-url-pattern-gt-lt-url-pattern-gt-1"><a href="#lt-url-pattern-gt-lt-url-pattern-gt-1" class="headerlink" title="&lt;url-pattern&gt;/&lt;/url-pattern&gt;"></a><code>&lt;url-pattern&gt;/&lt;/url-pattern&gt;</code></h3><p>The <code>/</code> doesn’t override any other servlet. It only replaces the servletcontainer’s builtin default servlet for all requests which doesn’t match any other registered servlet. This is normally only invoked on static resources (CSS/JS/image/etc) and directory listings. The servletcontainer’s builtin default servlet is also capable of dealing with HTTP cache requests, media (audio/video) streaming and file download resumes. </p>
-<p>Usually, you don’t want to override the default servlet as you would otherwise have to take care of all its tasks, which is not exactly trivial (JSF utility library <span class="exturl" data-url="aHR0cDovL29tbmlmYWNlcy5vcmcv">OmniFaces<i class="fa fa-external-link-alt"></i></span> has an <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL29tbmlmYWNlcy9vbW5pZmFjZXMvYmxvYi9tYXN0ZXIvc3JjL21haW4vamF2YS9vcmcvb21uaWZhY2VzL3NlcnZsZXQvRmlsZVNlcnZsZXQuamF2YQ==">open source<i class="fa fa-external-link-alt"></i></span> <span class="exturl" data-url="aHR0cDovL3Nob3djYXNlLm9tbmlmYWNlcy5vcmcvc2VydmxldHMvRmlsZVNlcnZsZXQ=">example<i class="fa fa-external-link-alt"></i></span>). </p>
-<blockquote>
-<p>译：通常，你并不希望覆盖默认的servlet，因为这样您必须处理它的所有任务，这并不容易(JSF实用程序库OmniFaces有一个开源示例)。</p>
-<p>注：SpringMVC就是要接管所有任务，所以要我们要覆盖容器默认的servlet，静态文件配置<code>&lt;mvc:default-servlet-handler/&gt;</code>即可排除</p>
-</blockquote>
-<p>This is thus also a bad URL pattern for servlets. As to why JSP pages doesn’t hit this servlet, it’s because the servletcontainer’s builtin JSP servlet will be invoked, which is already by default mapped on the more specific URL pattern <code>*.jsp</code>.</p>
-<h3 id="lt-url-pattern-gt-lt-url-pattern-gt-2"><a href="#lt-url-pattern-gt-lt-url-pattern-gt-2" class="headerlink" title="&lt;url-pattern&gt;&lt;/url-pattern&gt;"></a><code>&lt;url-pattern&gt;&lt;/url-pattern&gt;</code></h3><p>Then there’s also the empty string URL pattern . This will be invoked when the context root is requested. This is different from the <a href="https://stackoverflow.com/questions/14648167/how-to-configure-welcome-file-list-in-web-xml/"><code>&lt;welcome-file&gt;</code></a> approach that it isn’t invoked when any subfolder is requested. This is most likely the URL pattern you’re actually looking for in case you want a “<span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMzMyNDg0NzMvY2hhbmdlLWRlZmF1bHQtaG9tZXBhZ2UtaW4tcm9vdC1wYXRoLXRvLXNlcnZsZXQtd2l0aC1kb2dldC8=">home page servlet<i class="fa fa-external-link-alt"></i></span>“. I only have to admit that I’d intuitively expect the empty string URL pattern <code> </code> and the slash URL pattern <code>/</code> be defined exactly the other way round, so I can understand that a lot of starters got confused on this. But it is what it is.</p>
-<h3 id="Front-Controller"><a href="#Front-Controller" class="headerlink" title="Front Controller"></a>Front Controller</h3><p>In case you <em>actually</em> intend to have a front controller servlet, then you’d best map it on a more specific URL pattern like <code>*.html</code>, <code>*.do</code>, <code>/pages/*</code>, <code>/app/*</code>, etc. You can hide away the front controller URL pattern and cover static resources on a common URL pattern like <code>/resources/*</code>, <code>/static/*</code>, etc with help of a servlet filter. See also <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMTM1MjE5NDYvaG93LXRvLXByZXZlbnQtc3RhdGljLXJlc291cmNlcy1mcm9tLWJlaW5nLWhhbmRsZWQtYnktZnJvbnQtY29udHJvbGxlci1zZXJ2bGV0LXc=">How to prevent static resources from being handled by front controller servlet which is mapped on /*<i class="fa fa-external-link-alt"></i></span>. Noted should be that Spring MVC has a builtin static resource servlet, so that’s why you could map its front controller on <code>/</code> if you configure a common URL pattern for static resources in Spring. See also <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMTQ4MzA2My9zcHJpbmctbXZjLTMtYW5kLWhhbmRsaW5nLXN0YXRpYy1jb250ZW50LWFtLWktbWlzc2luZy1zb21ldGhpbmc=">How to handle static content in Spring MVC?<i class="fa fa-external-link-alt"></i></span></p>
-<blockquote>
-<p>作者：<span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy8xNTc4ODIvYmFsdXNj">BalusC<i class="fa fa-external-link-alt"></i></span></p>
-<p>文章转载自：<span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvNDE0MDQ0OC9kaWZmZXJlbmNlLWJldHdlZW4tYW5kLWluLXNlcnZsZXQtbWFwcGluZy11cmwtcGF0dGVybg==">Difference between / and /* in servlet mapping url pattern<i class="fa fa-external-link-alt"></i></span></p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Web</category>
-      </categories>
-      <tags>
-        <tag>web</tag>
-        <tag>servlet</tag>
       </tags>
   </entry>
   <entry>
@@ -1147,7 +1147,7 @@
 <td>66</td>
 <td>2019-08-22</td>
 <td>2019-08-23 05:39:01</td>
-<td><span class="exturl" data-url="bWFpbHRvOiYjNTc7JiN4Mzk7JiM1NzsmIzY0OyYjMTE1OyYjMTE3OyYjeDczOyYjMTE2OyYjNDY7JiMxMDE7JiMxMDA7JiMxMTc7JiN4MmU7JiN4NjM7JiN4NmU7">&#57;&#x39;&#57;&#64;&#115;&#117;&#x73;&#116;&#46;&#101;&#100;&#117;&#x2e;&#x63;&#x6e;<i class="fa fa-external-link-alt"></i></span></td>
+<td><span class="exturl" data-url="bWFpbHRvOiYjeDM5OyYjNTc7JiN4Mzk7JiN4NDA7JiMxMTU7JiN4NzU7JiN4NzM7JiMxMTY7JiM0NjsmI3g2NTsmIzEwMDsmIzExNzsmI3gyZTsmI3g2MzsmIzExMDs=">&#x39;&#57;&#x39;&#x40;&#115;&#x75;&#x73;&#116;&#46;&#x65;&#100;&#117;&#x2e;&#x63;&#110;<i class="fa fa-external-link-alt"></i></span></td>
 <td>Test_1</td>
 <td>2019-08-23 05:39:01</td>
 </tr>
@@ -1156,7 +1156,7 @@
 <td>66</td>
 <td>2019-08-22</td>
 <td>2019-08-23 05:39:02</td>
-<td><span class="exturl" data-url="bWFpbHRvOiYjeDM5OyYjNTc7JiM1NzsmI3g0MDsmI3g3MzsmIzExNzsmI3g3MzsmI3g3NDsmI3gyZTsmI3g2NTsmI3g2NDsmI3g3NTsmIzQ2OyYjOTk7JiN4NmU7">&#x39;&#57;&#57;&#x40;&#x73;&#117;&#x73;&#x74;&#x2e;&#x65;&#x64;&#x75;&#46;&#99;&#x6e;<i class="fa fa-external-link-alt"></i></span></td>
+<td><span class="exturl" data-url="bWFpbHRvOiYjeDM5OyYjeDM5OyYjeDM5OyYjNjQ7JiMxMTU7JiMxMTc7JiMxMTU7JiN4NzQ7JiN4MmU7JiMxMDE7JiMxMDA7JiN4NzU7JiN4MmU7JiN4NjM7JiMxMTA7">&#x39;&#x39;&#x39;&#64;&#115;&#117;&#115;&#x74;&#x2e;&#101;&#100;&#x75;&#x2e;&#x63;&#110;<i class="fa fa-external-link-alt"></i></span></td>
 <td>Test_1</td>
 <td>2019-08-23 05:39:02</td>
 </tr>
@@ -1165,7 +1165,7 @@
 <td>66</td>
 <td>2019-08-22</td>
 <td>2019-08-23 05:39:02</td>
-<td><span class="exturl" data-url="bWFpbHRvOiYjeDM5OyYjeDM5OyYjeDM5OyYjNjQ7JiN4NzM7JiN4NzU7JiMxMTU7JiN4NzQ7JiN4MmU7JiN4NjU7JiMxMDA7JiMxMTc7JiM0NjsmIzk5OyYjeDZlOw==">&#x39;&#x39;&#x39;&#64;&#x73;&#x75;&#115;&#x74;&#x2e;&#x65;&#100;&#117;&#46;&#99;&#x6e;<i class="fa fa-external-link-alt"></i></span></td>
+<td><span class="exturl" data-url="bWFpbHRvOiYjeDM5OyYjeDM5OyYjNTc7JiN4NDA7JiN4NzM7JiN4NzU7JiMxMTU7JiN4NzQ7JiN4MmU7JiN4NjU7JiMxMDA7JiMxMTc7JiN4MmU7JiN4NjM7JiN4NmU7">&#x39;&#x39;&#57;&#x40;&#x73;&#x75;&#115;&#x74;&#x2e;&#x65;&#100;&#117;&#x2e;&#x63;&#x6e;<i class="fa fa-external-link-alt"></i></span></td>
 <td>Test_1</td>
 <td>2019-08-23 05:39:02</td>
 </tr>
@@ -1174,7 +1174,7 @@
 <td>66</td>
 <td>2019-08-22</td>
 <td>2019-08-23 05:39:02</td>
-<td><span class="exturl" data-url="bWFpbHRvOiYjeDM5OyYjeDM5OyYjeDM5OyYjNjQ7JiN4NzM7JiN4NzU7JiMxMTU7JiMxMTY7JiM0NjsmI3g2NTsmI3g2NDsmI3g3NTsmI3gyZTsmI3g2MzsmI3g2ZTs=">&#x39;&#x39;&#x39;&#64;&#x73;&#x75;&#115;&#116;&#46;&#x65;&#x64;&#x75;&#x2e;&#x63;&#x6e;<i class="fa fa-external-link-alt"></i></span></td>
+<td><span class="exturl" data-url="bWFpbHRvOiYjNTc7JiM1NzsmIzU3OyYjeDQwOyYjeDczOyYjMTE3OyYjeDczOyYjeDc0OyYjNDY7JiN4NjU7JiN4NjQ7JiMxMTc7JiN4MmU7JiM5OTsmIzExMDs=">&#57;&#57;&#57;&#x40;&#x73;&#117;&#x73;&#x74;&#46;&#x65;&#x64;&#117;&#x2e;&#99;&#110;<i class="fa fa-external-link-alt"></i></span></td>
 <td>Test_1</td>
 <td>2019-08-23 05:39:02</td>
 </tr>
@@ -1183,7 +1183,7 @@
 <td>66</td>
 <td>2019-08-22</td>
 <td>2019-08-23 05:39:02</td>
-<td><span class="exturl" data-url="bWFpbHRvOiYjNTc7JiN4Mzk7JiM1NzsmI3g0MDsmIzExNTsmIzExNzsmIzExNTsmIzExNjsmIzQ2OyYjeDY1OyYjeDY0OyYjeDc1OyYjeDJlOyYjeDYzOyYjeDZlOw==">&#57;&#x39;&#57;&#x40;&#115;&#117;&#115;&#116;&#46;&#x65;&#x64;&#x75;&#x2e;&#x63;&#x6e;<i class="fa fa-external-link-alt"></i></span></td>
+<td><span class="exturl" data-url="bWFpbHRvOiYjNTc7JiN4Mzk7JiM1NzsmI3g0MDsmIzExNTsmIzExNzsmIzExNTsmI3g3NDsmIzQ2OyYjeDY1OyYjMTAwOyYjMTE3OyYjeDJlOyYjOTk7JiN4NmU7">&#57;&#x39;&#57;&#x40;&#115;&#117;&#115;&#x74;&#46;&#x65;&#100;&#117;&#x2e;&#99;&#x6e;<i class="fa fa-external-link-alt"></i></span></td>
 <td>Test_1</td>
 <td>2019-08-23 05:39:02</td>
 </tr>
@@ -1450,6 +1450,151 @@
       </tags>
   </entry>
   <entry>
+    <title>正则表达式-匹配规则</title>
+    <url>/archives/47645.html</url>
+    <content><![CDATA[<h2 id="匹配规则"><a href="#匹配规则" class="headerlink" title="匹配规则"></a>匹配规则</h2><table>
+<thead>
+<tr>
+<th>符号</th>
+<th>字符</th>
+<th>正则</th>
+<th>Java字符串</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td><code>abc</code></td>
+<td><code>abc</code></td>
+<td><code>abc</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>\</code></td>
+<td><code>a&amp;c</code></td>
+<td><code>a\&amp;c</code></td>
+<td><code>a\\&amp;c</code></td>
+<td>正则中特殊字符需要<code>\</code>来表示转义，而Java字符串中需要表达正则中的转义标志<code>\</code>，则需要另一个<code>\</code>来转义正则中的<code>\</code>字符,<strong>故Java字符串中需要<code>\\</code>来表示转义</strong></td>
+</tr>
+<tr>
+<td><code>\u####</code></td>
+<td><code>a和c</code></td>
+<td><code>a\u548cc</code></td>
+<td></td>
+<td>非ASCII字符用<code>\u####</code>表示</td>
+</tr>
+<tr>
+<td><code>.</code></td>
+<td><code>abc</code>,<code>a&amp;c</code></td>
+<td><code>a.c</code></td>
+<td><code>a.c</code></td>
+<td><code>.</code>匹配任意字符,能且只能匹配一个,**这里不能用<code>\**</code></td>
+</tr>
+<tr>
+<td><code>\d</code></td>
+<td><code>007</code>,<code>008</code></td>
+<td><code>00\d</code></td>
+<td></td>
+<td><code>\d</code>匹配数字,能且只能匹配一个</td>
+</tr>
+<tr>
+<td><code>\D</code></td>
+<td><code>00A</code>,<code>00#</code></td>
+<td><code>00\D</code></td>
+<td></td>
+<td><code>\D</code>匹配<strong>非</strong>数字,能且只能匹配一个</td>
+</tr>
+<tr>
+<td><code>\w</code></td>
+<td><code>javac</code>,<code>java8</code>,<code>java_</code>,</td>
+<td><code>java\w</code></td>
+<td></td>
+<td><code>\w</code>匹配字母、数字或下划线，能且只能匹配一个<br />注意不能匹配特殊字与Space，比如<code>java#</code></td>
+</tr>
+<tr>
+<td><code>\W</code></td>
+<td><code>java!</code>,<code>java(space)</code>,</td>
+<td><code>java\W</code></td>
+<td></td>
+<td><code>\W</code>匹配<strong>非</strong>字母、数字或下划线，能且只能匹配一个<br />也就是可以特殊匹配字符与space</td>
+</tr>
+<tr>
+<td><code>\s</code></td>
+<td><code>A B</code>（space）                          <code>A    B</code>(tab)</td>
+<td><code>A\sB</code></td>
+<td></td>
+<td><code>\s</code>匹配空白字符，能且只能匹配一个，且可以匹配<code>tab</code>字符</td>
+</tr>
+<tr>
+<td><code>\S</code></td>
+<td><code>A&amp;B</code>,<code>AAB</code></td>
+<td><code>A\sB</code></td>
+<td></td>
+<td><code>\S</code>匹配<strong>非</strong>空白字符</td>
+</tr>
+<tr>
+<td><code>*</code></td>
+<td><code>A</code>,<code>A1</code>,<code>A007</code></td>
+<td><code>A\d*</code></td>
+<td></td>
+<td>修饰符<code>*</code>匹配任意个字符<br />这里正则的含义是：首先匹配<code>A</code>字符,接着<strong>匹配任意个数字</strong></td>
+</tr>
+<tr>
+<td><code>+</code></td>
+<td><code>A1</code>,<code>A007</code></td>
+<td><code>A\d+</code></td>
+<td></td>
+<td>修饰符<code>+</code>匹配至少一个字符<br />这里正则的含义是：首先匹配<code>A</code>字符,接着<strong>匹配至少一个数字</strong></td>
+</tr>
+<tr>
+<td><code>?</code></td>
+<td><code>A</code>,<code>A1</code>,<code>A&amp;</code></td>
+<td><code>A\d?</code></td>
+<td></td>
+<td>修饰符<code>?</code>匹配零个或一个字符<br />这里正则的含义是：首先匹配<code>A</code>字符,接着<strong>匹配零个或一个数字</strong></td>
+</tr>
+<tr>
+<td><code>&#123;n&#125;</code></td>
+<td><code>123456</code>,<code>99999</code></td>
+<td><code>\d&#123;6&#125;</code></td>
+<td></td>
+<td>修饰符<code>&#123;n&#125;</code>匹配n个字符<br />这里正则的含义是：<strong>匹配6个数字</strong></td>
+</tr>
+<tr>
+<td><code>&#123;n，m&#125;</code></td>
+<td><code>123</code>,<code>1234</code>,<code>12345</code></td>
+<td><code>\d&#123;3,5&#125;</code></td>
+<td></td>
+<td>修饰符<code>&#123;n,m&#125;</code>匹配n-m个字符<br />这里正则的含义是：<strong>匹配3-5个数字</strong></td>
+</tr>
+<tr>
+<td><code>&#123;n,&#125;</code></td>
+<td><code>123</code>,<code>12345678999</code></td>
+<td><code>\d&#123;3,&#125;</code></td>
+<td></td>
+<td>修饰符<code>&#123;n,&#125;</code>匹配至少n个字符<br />这里正则的含义是：<strong>匹配至少3个数字</strong></td>
+</tr>
+</tbody></table>
+<a id="more"></a>
+
+<p>示例：判断用户输入的年份是否是19xx年</p>
+<p>规则：<code>1 9  0-9 0-9</code></p>
+<p>正则：<code>1 9   \d   \d</code></p>
+<p>Java字符串：<code>&quot;19\\d\\d&quot;</code></p>
+<p>Java代码:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">String input = <span class="string">&quot;1990&quot;</span>;</span><br><span class="line"><span class="keyword">boolean</span> is19xx = <span class="keyword">false</span>;</span><br><span class="line"><span class="keyword">if</span>(input!=<span class="keyword">null</span>)&#123;</span><br><span class="line">     is19xx = input.matches(<span class="string">&quot;19\\d\\d&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Java</category>
+        <category>基础</category>
+        <category>正则表达式</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>RegExp</tag>
+        <tag>正则表达式</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>注解</title>
     <url>/archives/49545.html</url>
     <content><![CDATA[<blockquote>
@@ -1640,151 +1785,6 @@
       </tags>
   </entry>
   <entry>
-    <title>正则表达式-匹配规则</title>
-    <url>/archives/47645.html</url>
-    <content><![CDATA[<h2 id="匹配规则"><a href="#匹配规则" class="headerlink" title="匹配规则"></a>匹配规则</h2><table>
-<thead>
-<tr>
-<th>符号</th>
-<th>字符</th>
-<th>正则</th>
-<th>Java字符串</th>
-<th>解释</th>
-</tr>
-</thead>
-<tbody><tr>
-<td></td>
-<td><code>abc</code></td>
-<td><code>abc</code></td>
-<td><code>abc</code></td>
-<td></td>
-</tr>
-<tr>
-<td><code>\</code></td>
-<td><code>a&amp;c</code></td>
-<td><code>a\&amp;c</code></td>
-<td><code>a\\&amp;c</code></td>
-<td>正则中特殊字符需要<code>\</code>来表示转义，而Java字符串中需要表达正则中的转义标志<code>\</code>，则需要另一个<code>\</code>来转义正则中的<code>\</code>字符,<strong>故Java字符串中需要<code>\\</code>来表示转义</strong></td>
-</tr>
-<tr>
-<td><code>\u####</code></td>
-<td><code>a和c</code></td>
-<td><code>a\u548cc</code></td>
-<td></td>
-<td>非ASCII字符用<code>\u####</code>表示</td>
-</tr>
-<tr>
-<td><code>.</code></td>
-<td><code>abc</code>,<code>a&amp;c</code></td>
-<td><code>a.c</code></td>
-<td><code>a.c</code></td>
-<td><code>.</code>匹配任意字符,能且只能匹配一个,**这里不能用<code>\**</code></td>
-</tr>
-<tr>
-<td><code>\d</code></td>
-<td><code>007</code>,<code>008</code></td>
-<td><code>00\d</code></td>
-<td></td>
-<td><code>\d</code>匹配数字,能且只能匹配一个</td>
-</tr>
-<tr>
-<td><code>\D</code></td>
-<td><code>00A</code>,<code>00#</code></td>
-<td><code>00\D</code></td>
-<td></td>
-<td><code>\D</code>匹配<strong>非</strong>数字,能且只能匹配一个</td>
-</tr>
-<tr>
-<td><code>\w</code></td>
-<td><code>javac</code>,<code>java8</code>,<code>java_</code>,</td>
-<td><code>java\w</code></td>
-<td></td>
-<td><code>\w</code>匹配字母、数字或下划线，能且只能匹配一个<br />注意不能匹配特殊字与Space，比如<code>java#</code></td>
-</tr>
-<tr>
-<td><code>\W</code></td>
-<td><code>java!</code>,<code>java(space)</code>,</td>
-<td><code>java\W</code></td>
-<td></td>
-<td><code>\W</code>匹配<strong>非</strong>字母、数字或下划线，能且只能匹配一个<br />也就是可以特殊匹配字符与space</td>
-</tr>
-<tr>
-<td><code>\s</code></td>
-<td><code>A B</code>（space）                          <code>A    B</code>(tab)</td>
-<td><code>A\sB</code></td>
-<td></td>
-<td><code>\s</code>匹配空白字符，能且只能匹配一个，且可以匹配<code>tab</code>字符</td>
-</tr>
-<tr>
-<td><code>\S</code></td>
-<td><code>A&amp;B</code>,<code>AAB</code></td>
-<td><code>A\sB</code></td>
-<td></td>
-<td><code>\S</code>匹配<strong>非</strong>空白字符</td>
-</tr>
-<tr>
-<td><code>*</code></td>
-<td><code>A</code>,<code>A1</code>,<code>A007</code></td>
-<td><code>A\d*</code></td>
-<td></td>
-<td>修饰符<code>*</code>匹配任意个字符<br />这里正则的含义是：首先匹配<code>A</code>字符,接着<strong>匹配任意个数字</strong></td>
-</tr>
-<tr>
-<td><code>+</code></td>
-<td><code>A1</code>,<code>A007</code></td>
-<td><code>A\d+</code></td>
-<td></td>
-<td>修饰符<code>+</code>匹配至少一个字符<br />这里正则的含义是：首先匹配<code>A</code>字符,接着<strong>匹配至少一个数字</strong></td>
-</tr>
-<tr>
-<td><code>?</code></td>
-<td><code>A</code>,<code>A1</code>,<code>A&amp;</code></td>
-<td><code>A\d?</code></td>
-<td></td>
-<td>修饰符<code>?</code>匹配零个或一个字符<br />这里正则的含义是：首先匹配<code>A</code>字符,接着<strong>匹配零个或一个数字</strong></td>
-</tr>
-<tr>
-<td><code>&#123;n&#125;</code></td>
-<td><code>123456</code>,<code>99999</code></td>
-<td><code>\d&#123;6&#125;</code></td>
-<td></td>
-<td>修饰符<code>&#123;n&#125;</code>匹配n个字符<br />这里正则的含义是：<strong>匹配6个数字</strong></td>
-</tr>
-<tr>
-<td><code>&#123;n，m&#125;</code></td>
-<td><code>123</code>,<code>1234</code>,<code>12345</code></td>
-<td><code>\d&#123;3,5&#125;</code></td>
-<td></td>
-<td>修饰符<code>&#123;n,m&#125;</code>匹配n-m个字符<br />这里正则的含义是：<strong>匹配3-5个数字</strong></td>
-</tr>
-<tr>
-<td><code>&#123;n,&#125;</code></td>
-<td><code>123</code>,<code>12345678999</code></td>
-<td><code>\d&#123;3,&#125;</code></td>
-<td></td>
-<td>修饰符<code>&#123;n,&#125;</code>匹配至少n个字符<br />这里正则的含义是：<strong>匹配至少3个数字</strong></td>
-</tr>
-</tbody></table>
-<a id="more"></a>
-
-<p>示例：判断用户输入的年份是否是19xx年</p>
-<p>规则：<code>1 9  0-9 0-9</code></p>
-<p>正则：<code>1 9   \d   \d</code></p>
-<p>Java字符串：<code>&quot;19\\d\\d&quot;</code></p>
-<p>Java代码:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">String input = <span class="string">&quot;1990&quot;</span>;</span><br><span class="line"><span class="keyword">boolean</span> is19xx = <span class="keyword">false</span>;</span><br><span class="line"><span class="keyword">if</span>(input!=<span class="keyword">null</span>)&#123;</span><br><span class="line">     is19xx = input.matches(<span class="string">&quot;19\\d\\d&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Java</category>
-        <category>基础</category>
-        <category>正则表达式</category>
-      </categories>
-      <tags>
-        <tag>Java</tag>
-        <tag>RegExp</tag>
-        <tag>正则表达式</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Mybatis总结[转载]</title>
     <url>/archives/16793.html</url>
     <content><![CDATA[<h3 id="这里贴两条转载，很有帮助，多谢作者分享"><a href="#这里贴两条转载，很有帮助，多谢作者分享" class="headerlink" title="这里贴两条转载，很有帮助，多谢作者分享~"></a>这里贴两条转载，很有帮助，多谢作者分享~</h3><p><a href="https://blog.csdn.net/ITITII/article/details/79969447"><strong>Mybatis全面详解——上（学习总结）</strong></a></p>
@@ -1895,6 +1895,118 @@
         <tag>Java</tag>
         <tag>SSM</tag>
         <tag>Spring</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringBoot快速入门</title>
+    <url>/archives/2197.html</url>
+    <content><![CDATA[<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>首先，配置文件我们一般用<code>yml</code>格式，且可以分环境在<code>classpath</code>下，创建<code>application.yml</code>为主配置文件</p>
+<p>下来可以创建文件名规范为<code>application-__.yml</code>的yml文件</p>
+<p>例如<code>application-dev.yml</code>,<code>application-prod.yml</code></p>
+<p>在主配置文件<code>application.yml</code>做以下配置，即可使用<code>application-dev.yml</code>下的配置信息；</p>
+<p>注意，无论使用哪个子配置文件，主配置文件中的配置都会生效（相当于通用配置），若子配置文件覆盖掉主配置文件中的相同信息，则最终为子文件中的配置</p>
+<a id="more"></a>
+
+<p>一些基本配置</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8080</span></span><br><span class="line">  <span class="attr">servlet:</span></span><br><span class="line">    <span class="attr">context-path:</span> <span class="string">/your-context-path</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">profiles:</span></span><br><span class="line">  	<span class="comment">#选用dev配置文件</span></span><br><span class="line">    <span class="attr">active:</span> <span class="string">dev</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">driver-class-name:</span> <span class="string">com.mysql.cj.jdbc.Driver</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://127.0.0.1:3306/dataBaseName?serverTimezone=Asia/Shanghai&amp;useUnicode=true&amp;characterEncoding=utf-8</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">password:</span> <span class="number">123456</span></span><br><span class="line">  <span class="attr">jpa:</span></span><br><span class="line">    <span class="attr">hibernate:</span></span><br><span class="line">    <span class="comment">#第一次运行使用create自动生成表，一般使用update</span></span><br><span class="line">      <span class="attr">ddl-auto:</span> <span class="string">create</span></span><br><span class="line">    <span class="comment">#控制台打印出SQL语句</span></span><br><span class="line">    <span class="attr">show-sql:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment">#使用MySQL方言，为了自动生成数据库时使用InnoDB</span></span><br><span class="line">    <span class="attr">database-platform:</span> <span class="string">org.hibernate.dialect.MySQL8Dialect</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="启动方式"><a href="#启动方式" class="headerlink" title="启动方式"></a>启动方式</h3><ol>
+<li><p>开发工具启动</p>
+</li>
+<li><p>项目目录下执行 ：<code>mvn springboot:run</code></p>
+</li>
+<li><p>生产环境</p>
+<ol>
+<li><p>项目目录下执行 <code>mvn clean package</code>编译项目</p>
+</li>
+<li><p>成功后执行<code>cd target</code>进入编译生成的target目录</p>
+</li>
+<li><p>执行<code>java -jar JAR包文件名</code> 启动（这里启动时，可以配置参数，以指定SpringBoot的配置文件）</p>
+<p><code>java -jar 文件名.jar --spring.profiles.active=prod  </code>这样就可以用<code>application-prod.yml</code>启动</p>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="常用注解"><a href="#常用注解" class="headerlink" title="常用注解"></a>常用注解</h3><figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># yml:</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##自定义配置1（使用@Value注入变量）</span></span><br><span class="line"><span class="attr">customParameter1:</span></span><br><span class="line">	<span class="attr">sonPara:</span> <span class="number">1</span></span><br><span class="line"><span class="comment">####使用配置文件中的参数：customParameter2 的实际值为&quot;最小数为1&quot;</span></span><br><span class="line"><span class="attr">customParameter2:</span> <span class="string">最小数为$&#123;customParameter1.sonPara&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##自定义配置2(直接注入对象)</span></span><br><span class="line"><span class="attr">limit:</span></span><br><span class="line">	<span class="attr">ANum:</span> <span class="number">1</span></span><br><span class="line">	<span class="attr">BNum:</span> <span class="string">$&#123;limit.minNum&#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>@Value(&quot;&quot;)</code>  用在 配置变量 的定义上</p>
+<p>主要用于单个自定义配置 </p>
+<p>配置文件中自定义的参数<code>0</code>注入类变量 ,相比于下面的配置类批量注入来说比较繁琐</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//CustomParConfig.java</span></span><br><span class="line">  <span class="meta">@Value(&quot;$&#123;customParameter1&#125;&quot;)</span></span><br><span class="line">  <span class="keyword">private</span> String myCustomPar1;</span><br><span class="line">  <span class="meta">@Value(&quot;$&#123;customParameter2&#125;&quot;)</span></span><br><span class="line">  <span class="keyword">private</span> String myCustomPar2;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>@ConfigurationProperties(perfix = &quot;&quot;)</code>配合<code>@Component</code> 写在配置类上</p>
+<p>主要用于多个自定义配置</p>
+<p>该注释可直接将自定义配置批量注入配置类</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//LimitConfig.java</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;limit&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LimitConfig</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Integer ANum;</span><br><span class="line">    <span class="keyword">private</span> Integer BNum;</span><br><span class="line">    <span class="comment">//省略get()和set()</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样就可以直接将 .yml 中的参数封装到配置类中，其他地方获取只需用@Autowired注入即可</p>
+<hr>
+</li>
+<li><p><code>@RestController</code> 用在Contorller类上</p>
+<p>代替了@Controller，并且还相当于在类的所有方法上都加@ResponseBody注解，即该类下的所有方法都会返回字符串，一般用于返回json格式数据</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//本类中访问根url为http://localhost:8080/hw/...</span></span><br><span class="line"><span class="meta">@RestController()</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/hw&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line">    <span class="comment">//omit....</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><code>@RequestMapping</code>配置url映射</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//postman中以POST请求访问url：url:http://localhost:8080/hw/say</span></span><br><span class="line"><span class="meta">@RequestMapping(value = &quot;/say&quot;,method = RequestMethod.POST)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">say</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">&quot;100&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//页面返回值：100</span></span><br></pre></td></tr></table></figure></li>
+<li><p><code>@___Mapping</code>系列：GetMapping ,PostMapping,</p>
+<p>映射单个url:@GetMapping(“url”)</p>
+<p>映射多个url:@GetMapping({“/url1”,”/url2”})</p>
+</li>
+<li><p><code>@PathVariable(&quot;&quot;)</code> 获取url中的数据</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//url:http://localhost:8080/hw/say/100</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/say/&#123;id&#125;&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">say</span><span class="params">(<span class="meta">@PathVariable(&quot;id&quot;)</span>Integer myId )</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> String.valueOf(myId);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//页面返回值：100</span></span><br></pre></td></tr></table></figure></li>
+<li><p><code>@RequestParam(&quot;&quot;)</code> 获取请求参数的值，也可以选择不传参数，使用默认值</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestParam( value = &quot;id&quot;,required = false,defaultValue = &quot;0&quot;)</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//url:http://localhost:8080/hw/say?100</span></span><br><span class="line"><span class="comment">//或者url:http://localhost:8080/hw/say</span></span><br><span class="line"><span class="comment">//使用form-urlencoded</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/say&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">say</span><span class="params">(<span class="meta">@RequestParam(&quot;id&quot;)</span>Integer myId )</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> String.valueOf(myId);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//页面返回值：100</span></span><br></pre></td></tr></table></figure></li>
+<li><p>使用JPA自动创建表时，有如下的yml配置</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">jpa:</span></span><br><span class="line">    <span class="attr">hibernate:</span></span><br><span class="line">    <span class="comment">#第一次运行使用create自动生成表，一般使用update</span></span><br><span class="line">      <span class="attr">ddl-auto:</span> <span class="string">create</span></span><br><span class="line">    <span class="comment">#控制台打印出SQL语句</span></span><br><span class="line">    <span class="attr">show-sql:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment">#使用MySQL方言，为了自动生成数据库时使用InnoDB</span></span><br><span class="line">    <span class="attr">database-platform:</span> <span class="string">org.hibernate.dialect.MySQL8Dialect</span></span><br></pre></td></tr></table></figure>
+<p>相应的实体类的类：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">*注意，以下注解都为：&#x27;javax.persistence&#x27;包下</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">@Entity</span><span class="comment">//声明需要自动创建表的实体类</span></span><br><span class="line"><span class="meta">@Table(&quot;table_name&quot;)</span><span class="comment">//指定表名，缺省值为驼峰类名的转换:lucky_money</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyEntity</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    *&#x27;@id&#x27; 指定主键</span></span><br><span class="line"><span class="comment">    *&#x27;@GeneratedValue&#x27; 配置自增列，并声明自增策略</span></span><br><span class="line"><span class="comment">    *详情参见：&#x27;https://blog.csdn.net/zhangli0910/article/details/83580855&#x27;</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//必须有一个无参构造器</span></span><br><span class="line">    MyEntity()&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//省略get和set方法</span></span><br></pre></td></tr></table></figure></li>
+<li><p><code>@Transactional</code> 用在映射方法上，使方法中的服务以事务执行</p>
+<p>// org.springframework.transaction.annotation.Transactional</p>
+</li>
+</ul>
+<h3 id="RESTful-API"><a href="#RESTful-API" class="headerlink" title="RESTful API"></a>RESTful API</h3><p>最基本的API设计</p>
+<table>
+<thead>
+<tr>
+<th>请求类型</th>
+<th>请求路径</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET</td>
+<td>/context-path</td>
+<td>查询条目列表</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/context-path</td>
+<td>创建单个记录</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/context-path/id</td>
+<td>查询单个记录</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/context-path/id</td>
+<td>更新单个记录</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>/context-path/id</td>
+<td>删除单个记录</td>
+</tr>
+</tbody></table>
+]]></content>
+      <categories>
+        <category>Java</category>
+        <category>SpringBoot</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>SpringBoot</tag>
       </tags>
   </entry>
   <entry>
@@ -2583,6 +2695,37 @@
       </tags>
   </entry>
   <entry>
+    <title>Spring中使用JUnit4的过度方法</title>
+    <url>/archives/48524.html</url>
+    <content><![CDATA[<blockquote>
+<p>肯定有整合过的单元测试组件用，spring不会有这么不优雅的东西，只是我还不会，暂时凑合着先用    ORZ</p>
+</blockquote>
+<ul>
+<li><p>创建UnitTestBase类（放在Test目录好看点），完成对Spring配置文件的加载、销毁所有的单元测试类都继承自UnitTestBase，通过它的getBean方法获取想要得到的对象</p>
+</li>
+<li><p>子类（具体执行单元测试的类）加注解：</p>
+<p>@RunWith(BlockJUnit4ClassRunner.class)</p>
+</li>
+<li><p>单元测试方法加注解：@Test</p>
+</li>
+<li><p>右键选择要执行的单元测试方法执行或者执行一个类的全部单元测试方法</p>
+</li>
+</ul>
+<h2 id="UnitTestBase工具类"><a href="#UnitTestBase工具类" class="headerlink" title="UnitTestBase工具类"></a>UnitTestBase工具类</h2><a id="more"></a>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.***;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.junit.After;</span><br><span class="line"><span class="keyword">import</span> org.junit.Before;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.BeansException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.util.StringUtils;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UnitTestBase</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> ClassPathXmlApplicationContext context;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> String springXmlpath;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">UnitTestBase</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">UnitTestBase</span><span class="params">(String springXmlpath)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.springXmlpath = springXmlpath;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Before</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">before</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (StringUtils.isEmpty(springXmlpath)) &#123;</span><br><span class="line">			springXmlpath = <span class="string">&quot;classpath*:spring-*.xml&quot;</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			context = <span class="keyword">new</span> ClassPathXmlApplicationContext(springXmlpath.split(<span class="string">&quot;[,\\s]+&quot;</span>));</span><br><span class="line">			context.start();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (BeansException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@After</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">after</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		context.destroy();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line">	<span class="keyword">protected</span> &lt;T extends Object&gt; <span class="function">T <span class="title">getBean</span><span class="params">(String beanId)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> (T)context.getBean(beanId);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (BeansException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">protected</span> &lt;T extends Object&gt; <span class="function">T <span class="title">getBean</span><span class="params">(Class&lt;T&gt; clazz)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> context.getBean(clazz);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (BeansException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Java</category>
+        <category>Spring</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>Spring</tag>
+        <tag>单元测试</tag>
+        <tag>JUnit4</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Spring对JSR-330的支持</title>
     <url>/archives/27107.html</url>
     <content><![CDATA[<ul>
@@ -2615,149 +2758,6 @@
         <tag>注解</tag>
         <tag>Spring</tag>
         <tag>Bean</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Spring中使用JUnit4的过度方法</title>
-    <url>/archives/48524.html</url>
-    <content><![CDATA[<blockquote>
-<p>肯定有整合过的单元测试组件用，spring不会有这么不优雅的东西，只是我还不会，暂时凑合着先用    ORZ</p>
-</blockquote>
-<ul>
-<li><p>创建UnitTestBase类（放在Test目录好看点），完成对Spring配置文件的加载、销毁所有的单元测试类都继承自UnitTestBase，通过它的getBean方法获取想要得到的对象</p>
-</li>
-<li><p>子类（具体执行单元测试的类）加注解：</p>
-<p>@RunWith(BlockJUnit4ClassRunner.class)</p>
-</li>
-<li><p>单元测试方法加注解：@Test</p>
-</li>
-<li><p>右键选择要执行的单元测试方法执行或者执行一个类的全部单元测试方法</p>
-</li>
-</ul>
-<h2 id="UnitTestBase工具类"><a href="#UnitTestBase工具类" class="headerlink" title="UnitTestBase工具类"></a>UnitTestBase工具类</h2><a id="more"></a>
-
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.***;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.junit.After;</span><br><span class="line"><span class="keyword">import</span> org.junit.Before;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.BeansException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.util.StringUtils;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UnitTestBase</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> ClassPathXmlApplicationContext context;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> String springXmlpath;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">UnitTestBase</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">UnitTestBase</span><span class="params">(String springXmlpath)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.springXmlpath = springXmlpath;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Before</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">before</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (StringUtils.isEmpty(springXmlpath)) &#123;</span><br><span class="line">			springXmlpath = <span class="string">&quot;classpath*:spring-*.xml&quot;</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			context = <span class="keyword">new</span> ClassPathXmlApplicationContext(springXmlpath.split(<span class="string">&quot;[,\\s]+&quot;</span>));</span><br><span class="line">			context.start();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (BeansException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@After</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">after</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		context.destroy();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line">	<span class="keyword">protected</span> &lt;T extends Object&gt; <span class="function">T <span class="title">getBean</span><span class="params">(String beanId)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> (T)context.getBean(beanId);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (BeansException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">protected</span> &lt;T extends Object&gt; <span class="function">T <span class="title">getBean</span><span class="params">(Class&lt;T&gt; clazz)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> context.getBean(clazz);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (BeansException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Java</category>
-        <category>Spring</category>
-      </categories>
-      <tags>
-        <tag>Java</tag>
-        <tag>Spring</tag>
-        <tag>单元测试</tag>
-        <tag>JUnit4</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>SpringBoot快速入门</title>
-    <url>/archives/2197.html</url>
-    <content><![CDATA[<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>首先，配置文件我们一般用<code>yml</code>格式，且可以分环境在<code>classpath</code>下，创建<code>application.yml</code>为主配置文件</p>
-<p>下来可以创建文件名规范为<code>application-__.yml</code>的yml文件</p>
-<p>例如<code>application-dev.yml</code>,<code>application-prod.yml</code></p>
-<p>在主配置文件<code>application.yml</code>做以下配置，即可使用<code>application-dev.yml</code>下的配置信息；</p>
-<p>注意，无论使用哪个子配置文件，主配置文件中的配置都会生效（相当于通用配置），若子配置文件覆盖掉主配置文件中的相同信息，则最终为子文件中的配置</p>
-<a id="more"></a>
-
-<p>一些基本配置</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8080</span></span><br><span class="line">  <span class="attr">servlet:</span></span><br><span class="line">    <span class="attr">context-path:</span> <span class="string">/your-context-path</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">profiles:</span></span><br><span class="line">  	<span class="comment">#选用dev配置文件</span></span><br><span class="line">    <span class="attr">active:</span> <span class="string">dev</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">driver-class-name:</span> <span class="string">com.mysql.cj.jdbc.Driver</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://127.0.0.1:3306/dataBaseName?serverTimezone=Asia/Shanghai&amp;useUnicode=true&amp;characterEncoding=utf-8</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">password:</span> <span class="number">123456</span></span><br><span class="line">  <span class="attr">jpa:</span></span><br><span class="line">    <span class="attr">hibernate:</span></span><br><span class="line">    <span class="comment">#第一次运行使用create自动生成表，一般使用update</span></span><br><span class="line">      <span class="attr">ddl-auto:</span> <span class="string">create</span></span><br><span class="line">    <span class="comment">#控制台打印出SQL语句</span></span><br><span class="line">    <span class="attr">show-sql:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment">#使用MySQL方言，为了自动生成数据库时使用InnoDB</span></span><br><span class="line">    <span class="attr">database-platform:</span> <span class="string">org.hibernate.dialect.MySQL8Dialect</span></span><br></pre></td></tr></table></figure>
-
-
-<h3 id="启动方式"><a href="#启动方式" class="headerlink" title="启动方式"></a>启动方式</h3><ol>
-<li><p>开发工具启动</p>
-</li>
-<li><p>项目目录下执行 ：<code>mvn springboot:run</code></p>
-</li>
-<li><p>生产环境</p>
-<ol>
-<li><p>项目目录下执行 <code>mvn clean package</code>编译项目</p>
-</li>
-<li><p>成功后执行<code>cd target</code>进入编译生成的target目录</p>
-</li>
-<li><p>执行<code>java -jar JAR包文件名</code> 启动（这里启动时，可以配置参数，以指定SpringBoot的配置文件）</p>
-<p><code>java -jar 文件名.jar --spring.profiles.active=prod  </code>这样就可以用<code>application-prod.yml</code>启动</p>
-</li>
-</ol>
-</li>
-</ol>
-<h3 id="常用注解"><a href="#常用注解" class="headerlink" title="常用注解"></a>常用注解</h3><figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># yml:</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##自定义配置1（使用@Value注入变量）</span></span><br><span class="line"><span class="attr">customParameter1:</span></span><br><span class="line">	<span class="attr">sonPara:</span> <span class="number">1</span></span><br><span class="line"><span class="comment">####使用配置文件中的参数：customParameter2 的实际值为&quot;最小数为1&quot;</span></span><br><span class="line"><span class="attr">customParameter2:</span> <span class="string">最小数为$&#123;customParameter1.sonPara&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##自定义配置2(直接注入对象)</span></span><br><span class="line"><span class="attr">limit:</span></span><br><span class="line">	<span class="attr">ANum:</span> <span class="number">1</span></span><br><span class="line">	<span class="attr">BNum:</span> <span class="string">$&#123;limit.minNum&#125;</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li><p><code>@Value(&quot;&quot;)</code>  用在 配置变量 的定义上</p>
-<p>主要用于单个自定义配置 </p>
-<p>配置文件中自定义的参数<code>0</code>注入类变量 ,相比于下面的配置类批量注入来说比较繁琐</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//CustomParConfig.java</span></span><br><span class="line">  <span class="meta">@Value(&quot;$&#123;customParameter1&#125;&quot;)</span></span><br><span class="line">  <span class="keyword">private</span> String myCustomPar1;</span><br><span class="line">  <span class="meta">@Value(&quot;$&#123;customParameter2&#125;&quot;)</span></span><br><span class="line">  <span class="keyword">private</span> String myCustomPar2;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>@ConfigurationProperties(perfix = &quot;&quot;)</code>配合<code>@Component</code> 写在配置类上</p>
-<p>主要用于多个自定义配置</p>
-<p>该注释可直接将自定义配置批量注入配置类</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//LimitConfig.java</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;limit&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LimitConfig</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Integer ANum;</span><br><span class="line">    <span class="keyword">private</span> Integer BNum;</span><br><span class="line">    <span class="comment">//省略get()和set()</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这样就可以直接将 .yml 中的参数封装到配置类中，其他地方获取只需用@Autowired注入即可</p>
-<hr>
-</li>
-<li><p><code>@RestController</code> 用在Contorller类上</p>
-<p>代替了@Controller，并且还相当于在类的所有方法上都加@ResponseBody注解，即该类下的所有方法都会返回字符串，一般用于返回json格式数据</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//本类中访问根url为http://localhost:8080/hw/...</span></span><br><span class="line"><span class="meta">@RestController()</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/hw&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line">    <span class="comment">//omit....</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p><code>@RequestMapping</code>配置url映射</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//postman中以POST请求访问url：url:http://localhost:8080/hw/say</span></span><br><span class="line"><span class="meta">@RequestMapping(value = &quot;/say&quot;,method = RequestMethod.POST)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">say</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">&quot;100&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//页面返回值：100</span></span><br></pre></td></tr></table></figure></li>
-<li><p><code>@___Mapping</code>系列：GetMapping ,PostMapping,</p>
-<p>映射单个url:@GetMapping(“url”)</p>
-<p>映射多个url:@GetMapping({“/url1”,”/url2”})</p>
-</li>
-<li><p><code>@PathVariable(&quot;&quot;)</code> 获取url中的数据</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//url:http://localhost:8080/hw/say/100</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/say/&#123;id&#125;&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">say</span><span class="params">(<span class="meta">@PathVariable(&quot;id&quot;)</span>Integer myId )</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> String.valueOf(myId);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//页面返回值：100</span></span><br></pre></td></tr></table></figure></li>
-<li><p><code>@RequestParam(&quot;&quot;)</code> 获取请求参数的值，也可以选择不传参数，使用默认值</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestParam( value = &quot;id&quot;,required = false,defaultValue = &quot;0&quot;)</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//url:http://localhost:8080/hw/say?100</span></span><br><span class="line"><span class="comment">//或者url:http://localhost:8080/hw/say</span></span><br><span class="line"><span class="comment">//使用form-urlencoded</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/say&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">say</span><span class="params">(<span class="meta">@RequestParam(&quot;id&quot;)</span>Integer myId )</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> String.valueOf(myId);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//页面返回值：100</span></span><br></pre></td></tr></table></figure></li>
-<li><p>使用JPA自动创建表时，有如下的yml配置</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">jpa:</span></span><br><span class="line">    <span class="attr">hibernate:</span></span><br><span class="line">    <span class="comment">#第一次运行使用create自动生成表，一般使用update</span></span><br><span class="line">      <span class="attr">ddl-auto:</span> <span class="string">create</span></span><br><span class="line">    <span class="comment">#控制台打印出SQL语句</span></span><br><span class="line">    <span class="attr">show-sql:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment">#使用MySQL方言，为了自动生成数据库时使用InnoDB</span></span><br><span class="line">    <span class="attr">database-platform:</span> <span class="string">org.hibernate.dialect.MySQL8Dialect</span></span><br></pre></td></tr></table></figure>
-<p>相应的实体类的类：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">*注意，以下注解都为：&#x27;javax.persistence&#x27;包下</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">@Entity</span><span class="comment">//声明需要自动创建表的实体类</span></span><br><span class="line"><span class="meta">@Table(&quot;table_name&quot;)</span><span class="comment">//指定表名，缺省值为驼峰类名的转换:lucky_money</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyEntity</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    *&#x27;@id&#x27; 指定主键</span></span><br><span class="line"><span class="comment">    *&#x27;@GeneratedValue&#x27; 配置自增列，并声明自增策略</span></span><br><span class="line"><span class="comment">    *详情参见：&#x27;https://blog.csdn.net/zhangli0910/article/details/83580855&#x27;</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//必须有一个无参构造器</span></span><br><span class="line">    MyEntity()&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//省略get和set方法</span></span><br></pre></td></tr></table></figure></li>
-<li><p><code>@Transactional</code> 用在映射方法上，使方法中的服务以事务执行</p>
-<p>// org.springframework.transaction.annotation.Transactional</p>
-</li>
-</ul>
-<h3 id="RESTful-API"><a href="#RESTful-API" class="headerlink" title="RESTful API"></a>RESTful API</h3><p>最基本的API设计</p>
-<table>
-<thead>
-<tr>
-<th>请求类型</th>
-<th>请求路径</th>
-<th>功能</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>GET</td>
-<td>/context-path</td>
-<td>查询条目列表</td>
-</tr>
-<tr>
-<td>POST</td>
-<td>/context-path</td>
-<td>创建单个记录</td>
-</tr>
-<tr>
-<td>GET</td>
-<td>/context-path/id</td>
-<td>查询单个记录</td>
-</tr>
-<tr>
-<td>PUT</td>
-<td>/context-path/id</td>
-<td>更新单个记录</td>
-</tr>
-<tr>
-<td>DELETE</td>
-<td>/context-path/id</td>
-<td>删除单个记录</td>
-</tr>
-</tbody></table>
-]]></content>
-      <categories>
-        <category>Java</category>
-        <category>SpringBoot</category>
-      </categories>
-      <tags>
-        <tag>Java</tag>
-        <tag>SpringBoot</tag>
       </tags>
   </entry>
   <entry>
@@ -2965,6 +2965,171 @@
       </categories>
       <tags>
         <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>2020年终总结</title>
+    <url>/archives/38086.html</url>
+    <content><![CDATA[<blockquote>
+<p><strong>本文采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC9kZWVkLnpo">CC BY-NC 4.0<i class="fa fa-external-link-alt"></i></span> 许可协议，您可以自由地分享、演绎该作品，但必须遵循署名、非商业使用、没有附加限制这三项条件。</strong></p>
+</blockquote>
+<h1 id="一些写在前面的话"><a href="#一些写在前面的话" class="headerlink" title="一些写在前面的话"></a>一些写在前面的话</h1><ol>
+<li>首先，确定是否要考研，因为路有很多种：<ul>
+<li>对于<strong>计算机相关专业</strong>的同学，我给的建议是<ul>
+<li>首先权衡：如果将一天真的能将高强度学习的考研劲头用在找工作上，比如夯实专业课基础，做出拿得出手的项目、多刷leetcode、多背面经、海投简历等等。从我身边的人来看，结果以及回报也会很好。</li>
+<li>不像找工作，考研付出多，周期长，只有一次初试，一次复试（也很可能没有）的机会，所以风险高。尤其对于860而言，复试又晚，专业课别的学校也不认可，<strong>基本没得调剂</strong>，所以说必须要有一战成硕的决心；</li>
+<li>还有一点就是对于应届生来说除了考研找工作，其实还可以考公，参军，条件允许的话也可以考雅思出国，所以<strong>路真的很多</strong>，做出考研的决定需要<strong>慎重</strong>（我就很草率）；</li>
+</ul>
+</li>
+<li>对于<strong>跨考</strong>的同学，我建议不多，我这里提醒一点：信软的<strong>复试专业问题课程很多</strong>（计组、数据结构、数据库、计网、软工、操作系统），所以说要做好初试结束后就开始好好复习的准备；</li>
+<li>对于工作后考研的各位，我觉得压力应该蛮大，很钦佩你们的勇气，同时祝你们得偿所愿！</li>
+</ul>
+</li>
+</ol>
+<a id="more"></a>
+
+<ol start="2">
+<li>如果决定考研，虽然风险大，但我觉得还是<strong>别给自己留退路</strong>（例如先找一份工作之类的，甚至中途考公、考教资）。因为确实很辛苦，有了回旋的余地的话，在坚持不下去的时候，很可能会想：放松下没事，考不上了还有工作能上。但仅对我自己而言，我认为留后路这种做法会对我的考研决心产生动摇从而不会全力以赴。</li>
+<li>由于这段时间已经有学校变更408，而成电并没有消息，所以我个人臆断22年考研专业课应该不会变408。但23年就未可知了，所以说尽量一战成硕，否则如果23改408，二战就会血亏；</li>
+<li>如果要开始，4月开始也不算晚，但不要因为学校有课、学校安排实习或别的原因耽搁复习，所以说到底怎么挤时间要自己有打算，总之要<strong>尽力保证每日足够的学习时长</strong>；</li>
+<li>就考研而言，我认为<strong>选择比努力更重要</strong>，至少挑一个有信心，且不会炸的专业（就拿成电深圳研究所来说，今年第一年独立招生没人敢报（我就没敢报），全员280，点击就送，但明年究竟如何也未可知；反观今年科软考前都说这专业血赚，然后就被奶炸了。但是也总得努力，线都过不了也没得选；</li>
+<li>最后，成电的软工专硕相比其他985的计算机专业来说，相对比较好考，这几年每年大概只涨10分左右，性价比很高，当然西电也是。具体择校需要自己有一个全面的判断；</li>
+<li>推荐几个我用的公众号：一烫，考研军火库，给力考研资料，灰灰考研。</li>
+</ol>
+<h1 id="初试经验"><a href="#初试经验" class="headerlink" title="初试经验"></a>初试经验</h1><p>首先，初试复习的过程蛮难顶的，尽量有一个明确的学习计划，但是我认为每个考研的人心里必须<strong>有一个学习计划</strong>（心里，纸质，电子 都可）。应至少做到计划今天完成什么（每日时间表）以及这个月完成什么（考研进度规划）。像打游戏过任务点一样，自我驱动，而不是学多少算多少，千万别自己骗自己。</p>
+<p>下面是我的情况：</p>
+<ul>
+<li>自己的数学和英语基础很差，而这俩本身也不好学，但是数学分数很高不能放弃，所以说我在数学花了很多的时间，每天4-5h；</li>
+<li>英语每天一篇阅读时间在1h，也就马马虎虎的，前期还有1个小时单词书，后期单词的话就晚上宿舍随便背背的百词斩；</li>
+<li>由于860专业课我觉得高分不难，虽然区分度不高但是也可以来开差距，所以我一直将专业课排在比较高的优先级，开始的也非常的早，花的时间每天在2-3h；</li>
+<li>政治听课+1000题的话要花2h，只听或者只做题只要1h足以；</li>
+<li>每天有效学习时间大约在9h左右，尤其是在专业课和政治复习时特别容易走神，需要克服。</li>
+<li>我本科是双非计科，学校大三只有很短的生产实习，相对来说复习时间充足，对于时间紧的同学，要自己把握住每天的学习时常；</li>
+</ul>
+<hr>
+<p>以下给出的我的体会以及建议</p>
+<ul>
+<li><p><strong>政治(71)：</strong></p>
+<p>印象里相比别人来说，政治我开始的比较早。主要就是视频徐涛强化，1000题选择3遍，肖四全背，今年卷子全是原题就离谱，花了大把时间在政治（平均每天两小时），最后考71分属实不满意，不知道哪里出了问题，也可能我字太烂了。</p>
+<p>建议如下：</p>
+<ol>
+<li><strong>1000题非常不错</strong>，值得做3遍，所以也应该打印出一个做题的标记本，网上很多的。并且错误选项一定要搞清楚哪里是出的问题。我没有听过腿姐的技巧班，评价还是很高的，但我认为1000题掌握的到位的话，不需要所谓的技巧；</li>
+<li>大题的话前中期都不用管，后期肖八的选择好好利用，查漏补缺。大题觉得光肖四不稳的话，肖八的马原大题也可以背，其实<strong>最后背完肖四就行</strong>。我最后花两周时间，每天晚上两小时，把肖四背了两遍；</li>
+<li>教材的话建议：精讲精练+1000题+肖四肖八。中后期选择题背书的话，我用了<strong>腿姐的冲刺笔记</strong>，这本册子精炼的同时还很全面；</li>
+<li><strong>不建议跟任何带背，不建议看任何押题班</strong>，浪费时间；刷选择APP我不喜欢，不过听说还是有些用。</li>
+</ol>
+</li>
+<li><p><strong>英语(51)：</strong></p>
+<p>幸好没报隔壁计院，要不直接没过线，信软里这分数也是倒数，英语从小就拉跨，这考研考的也是真的拉。。背单词是我最早就开始的，背了新东方的恋恋有词两遍，中期做题觉得恋恋有词词汇量不大够，我就买了红宝书背了两遍，黄皮书反复一直在做，但总感觉没有提升。总之，我的英语基础，以及英语学习方式都有很大的问题，所以我也不反向经验了。</p>
+</li>
+<li><p><strong>数学(105)：</strong></p>
+<p>我的数学基础本身不好，花的时间也最长。今年这简单题考105分真的不怎么样，关于我自己出的问题我不多说了，总结一点就是：<strong>考场心态很重要</strong>。</p>
+<p>建议如下：</p>
+<ol>
+<li>我高数基础提高都跟的汤家凤，<strong>1800</strong>做了两遍，第二遍是挑错题做的，但是我认为1800虽然题还行，但是太多了，难以整理，不是很好用。</li>
+<li>我1800做了之后就做的<strong>660</strong>，做了100多道没做了，因为感觉做了1800后660的题没啥意思，660的题太抠概念了，过于细</li>
+<li>之后就是张宇<strong>1000题</strong>，质量还是蛮高的，但是我开的太晚了，来不及做完，如果没有之前耽搁做1800和660的话，我很推荐</li>
+<li>最后就是<strong>数学历年真题全精解析</strong>，金榜那本红书，这本书我刷了3遍，书真的不错，历年真题的横向专题非常实用并且具有针对性，可以很好的把握真题方向，强烈推荐</li>
+<li>让我再考一遍的话，我的大概会：<ul>
+<li><strong>错题归纳，真的很重要</strong>（有pad会很方便，没有的话应该麻烦点）</li>
+<li>高数基础跟汤家凤，提高跟武忠祥</li>
+<li>线代李永乐yyds</li>
+<li>概率论跟余炳森</li>
+<li>做完一遍1800，就去做李林的108两遍，然后就刷历年真题全解红书3遍</li>
+<li>李永乐线代讲义，余炳森概率论讲义，这两本书很好，中间可以<strong>反复穿插刷</strong>：</li>
+<li>选择题变多了，所以就也可以找找选择题专项做做，武忠祥有个<strong>选择题速成</strong>，我感觉讲的还可以</li>
+<li>模拟卷冲刺的时候做就完事了<ol>
+<li>李林4+6（100+），我认为是最好的模拟卷，难度适中，最后的李林押题班的题目讲义我也看了一遍，质量也很好；</li>
+<li>张宇4（90+），质量很很好，题目虽然难，也有一点超纲，思路很独特，但是不离谱，值得一做；</li>
+<li>超越（110+），质量也很好，我觉得不怎么难，可以一做，共创只做了1张，也就和超越差不多；</li>
+<li>李永乐6套，质量较差，不推荐。</li>
+</ol>
+</li>
+<li>这里注意一点，21年考纲变了，但是新增的内容我个人感知不强，所以说22的考生应提高警惕</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p><strong>专业课(139)：</strong></p>
+<p>我自己的情况这里先说下，我课余一直在学javaweb，我大学专业课全靠期末突击，学了忘的很快。我们学校计网是大三上开的（疫情在家网课），软工是大四上开的（期末的时候初试都结束了）。所以说这两门专业课我也没啥基础，我讲这些的意思是：<strong>考860的同学对专业课要有信心！</strong></p>
+<p>复习策略：<strong>尽早开始进行专业课，尤其是计网的复习</strong>（我印象里我是在高数基础视频看完之后开始的），而不是说到了最后几个月再冲专业课。由于专业课简单，就可以先学的比较通透，以便可以腾出时间在冲刺阶段有更多的时间准备：软件工程背诵、政治选择考点背诵、肖四背诵、刷数学套卷、英语大小作文练习等等，还有可能要写毕设的开题报告、答辩等等麻烦事。</p>
+<p><strong>1）计算机网络</strong></p>
+<p>核心：<strong>先理解，再背诵</strong></p>
+<ol>
+<li>首先计算机网络需要将<strong>黑书</strong>整本书的内容整体看至少3遍，不用做黑书的笔记，但是<strong>一定要看懂！</strong></li>
+<li>如果啃书有困难，推荐两个视频：<strong>韩立刚版</strong>（bilibili），虽然是用谢老师的书，但课程深入浅出，理论联系实际，入门真的不错。还有就是哈工大版（中国大学MOOC），有空就看吧，我认为效率不如看书；</li>
+<li>黑书的2遍过后，就可以着手看课后的<strong>复习题以及习题</strong>，题目至少三遍，对自己认为重要的题要标注，也可以自己形成笔记本。除了那种一眼都不会考的（比如那种算概率的，做wireshark实验的等等），其余的题尽力搞明白，追求撞大运的同时确实非常帮助理解。黑书答案建议看英文原版，很通俗并不难懂，翻译版机翻的基本没法看；</li>
+<li>关于笔记或者说黑书精炼版，<strong>杭电笔记</strong>(中国大学mooc)非常好用，详实并且重点突出，我就是用它作为我中后期复习背诵的主力材料；</li>
+<li>很多协议的交互方式看书时一定要弄懂（rdt那里不是重点，但是建议学懂，对tcp的理解有帮助），后期需要对协议的交互进行背诵；</li>
+<li>网络的知识点比较琐碎，尤其是安全那里，有空的可以<strong>整理思维导图</strong>，我自己也整理了些思维导图，仅供参考；</li>
+<li>这里再提一点，<strong>成电本科计网PPT</strong>基本上包括了其出题的范围，其中除了黑书内容，也包括一定的谢书上的知识（今年考了子网划分），但我建议还是看黑书以追求学习的更加透彻，这也会对复试的一些问题的解答有很大的帮助；</li>
+<li>软件定义网络我印象选择中有涉及，但是记不清了，想看就看吧，不是重点；</li>
+<li>对于计网的选择题，学懂了自然就会了，没必要专门准备，市面上资料基本没有同样风格的题，倒不如课后题好好做做。</li>
+</ol>
+<p>  <strong>2）软件工程</strong></p>
+<p>  核心<strong>：先背诵，再理解</strong></p>
+<ol>
+<li>入门：<ol>
+<li>黑书没用；</li>
+<li>建议<strong>直接看PPT</strong>：mooc的、蓝天老师的、吴晓华老师的都可以，也可以互补着看；</li>
+<li>软工基本是文科课程，建议在100天左右开始，不建议听成电软工mooc，各人认为浪费时间；</li>
+<li>软工刚开始学的话，可能会感觉一句话读完，你不知道它在说什么。。。所以建议先看PPT，但是要用心去看，看1-2遍以后就会有一个<strong>大概的框架</strong>，如果脑海中没有的话，建议自己整理出大概的框架（根据MOOC的课程目录就可以，或者直接看背诵手册的目录）；</li>
+<li>还有一个<strong>软件工程师讲义</strong>（仅仅只能作为入门，看看就行，里面有几个背诵的顺口溜挺好用），相比860的软工更加通俗；</li>
+<li>对于<strong>画图题</strong>，考察比较简单，可以灰灰考研的软工视频画图专题(bilibili，微信公众号)，以及吴晓华老师的软工PPT；</li>
+</ol>
+</li>
+<li>在看PPT已经能形成基本的框架之后，接下看就是背诵，<strong>建议直接硬背背诵手册</strong>，背不动的话可以打印PPT背PPT，可以在60天左右的时候开始背，背上一遍再回头看就基本上懂了，应至少背3遍。背诵笔记不全，但应对初试基本够用，今年第一道简答敏捷开发就没背，只能自己乱写，估计扣了好多分，哭了orz;</li>
+<li>选择题的话，只要背诵手册好好背，自然就理解并且会做了，同样不用专门训练。</li>
+</ol>
+<p><strong>3）辅导资料</strong></p>
+<ol>
+<li>对于860，不建议买任何机构的专业课辅导资料（例如：高分笔记、回忆真题集、本科期末题等等），因为质量真的非常糟糕，我买过红果研的，那是真垃圾，其他的机构，<strong>资料质量普遍较差，并且这些资料群里都有</strong>！不过红果研会员群里上届的学长的讲座还是挺好的，看自己需求，花钱买安心也没啥问题，毕竟也不贵，不过报班可就算了；</li>
+<li>建议<strong>买冲刺卷</strong>，这种在考研后期淘宝上就会有上架，大概在100rmb以下。我买过红果研冲刺卷与A+冲刺卷，其中A+冲刺卷质量较高，答案很详实，红果研那个就一般，但是也还可以。好像知博书店还有个pdf的冲刺卷，自己看着买，我感觉A+和红果研以及群里考研班试卷的分享加起来三本卷子已经很足够了。这里注意，市面上的题选择和判断出的都比较扯，和真题风格不同，但也建议一做，大题可以好好练练，也就那些东西，熟悉熟悉试卷结构，就当查漏补缺。这里提一点，<strong>市面上机构本科期末题年代久远，参考价值低，本部应该更有优势</strong></li>
+<li>强烈推荐<strong>中国大学mooc成电软件工程的所有习题</strong>，无论是课后练习题还是期末试题。可以将每次开课的题都打出来，在题目网页右键打印可保存pdf。；</li>
+<li>860出了这些年我自己感觉都没啥题可出了，所以说原来考过的也要仔细研究清楚，有往年题概率；</li>
+<li>搞懂计网<strong>黑书课后题</strong>和<strong>本科PPT中的问题</strong>，软工就<strong>背诵笔记</strong>以及<strong>mooc课后题</strong>。</li>
+<li>后期可以对自己不熟悉的点专门摘抄到一起，专门加强记忆，3元本子足以，有pad更方便。</li>
+</ol>
+</li>
+</ul>
+<h1 id="复试经验（266）"><a href="#复试经验（266）" class="headerlink" title="复试经验（266）"></a><strong>复试经验（266）</strong></h1><ol>
+<li><strong>务必敬畏诚信复试承诺书</strong></li>
+<li><strong>复试非常公平</strong>，成电信软的复试非常公平，就我个人的面试结果而言，成电老师且<strong>对双非并不歧视</strong>，英语面和综面中丝毫没有刁难我的意思。所以说对于踩线的同学，复试只管好好准备，大家都很有机会；</li>
+<li>关于复习时间，我自己大概花了一个半月，我专业课基础也比较差，时间上我觉得正合适，总之要根据自己的实际情况<strong>合理安排准备复试的时间</strong>；</li>
+<li>关于<strong>英语自我介绍，建议硬背</strong>，越熟越好，最好能熟到无意识的背出。介绍和英语问题我每天背大约2-3h左右，坚持了3周。自我介绍建议参考一些模板问候语，转折语。具体内容自己写，不会的软件翻译，背的过程中慢慢修改，可以写成电子版以便修改；</li>
+<li>对自己听力不自信的可以看美剧，权当娱乐时磨耳朵也行（从开始准备复试到复试头天晚上，老友记我从第一季看到了第六季，当然还是因为好看。。。）。不过这里注意：英语面是信软自己的老师，有点不标准但足够清晰，且语速很慢，个人认为容易听懂；</li>
+<li>专业课分数占比低，但是区分度大，很重要；</li>
+<li><strong>计组</strong>强烈吴晓华老师<strong>PPT</strong>，操作系统也可参考本科PPT；数据库的话除了高教的红书，可以再了解下<span class="exturl" data-url="aHR0cHM6Ly93d3cucnVub29iLmNvbS9tb25nb2RiL25vc3FsLmh0bWw=">NoSQL<i class="fa fa-external-link-alt"></i></span>，说的这些其实也是我自己用过的专业课复习资料，群里也有些题可以自行整理。</li>
+<li><strong>综面</strong>考察非常开放、综合，<strong>分数也更大</strong>，这里建议自行了解人工智能、大数据、物联网、云计算、智慧医疗、脑机接口等前沿领域的概念、应用以及前景，形成自己的思考。</li>
+<li><strong>简历</strong>可以<strong>引导老师综面的提问</strong>，也正是如此，个人简历千万不要往上面写不会的，简历实在没啥写的直接就不要交简历，<strong>乱吹可能会翻车</strong>；</li>
+<li>最重要的是：面试技巧。比如老师专业面时如果这题你不会，那也<strong>一定要说话，只要沾边，老师都会给分</strong>。试想有的老师是做嵌入式的，有的是做机器学习的，有的是做云计算的，一组中很可能没有老师搞嵌入式的，那其他老师的计组这么多年也都忘了很多了。比如专业问题若抽到问个某个机制的流程这种比较细的问题，很可能好几个老师自己也不知道正确答案，那么老师听你讲的有理便就不会在分数上为难你。所以说一定要说话（相关的就可以，但不要乱讲，<strong>乱讲必翻车</strong>），我觉得<strong>要是直接说我不会，老师想给都给不了你分</strong>，这点在综面中同理。关于面试的技巧还可以参考<span class="exturl" data-url="aHR0cHM6Ly93d3cuZG91YmFuLmNvbS9ncm91cC90b3BpYy8yMTk4NDc1MzUv">豆瓣上的一篇文章<i class="fa fa-external-link-alt"></i></span></li>
+</ol>
+<h1 id="导师志愿"><a href="#导师志愿" class="headerlink" title="导师志愿"></a>导师志愿</h1><ol>
+<li>学校的导师志愿是在复试前需要选定的；</li>
+<li>导师<strong>只有第一志愿有用</strong>，其他选项四个是充数的，只有第一志愿老师那边只能收到你的志愿信息，所以联系第一志愿导师非常重要；</li>
+<li>如果第一志愿导师名额不够，优先导师团队内部会尝试调配你到导师团队的其他导师，所以再次提醒：尽早联系第一志愿导师；</li>
+<li>如果都满了，就到了双选阶段（抢人阶段）：如果你分数还可以，那就可能会有你不认识的老师给你主动打电话，你当然也可以积极主动联系其他老师询问是否还有名额；</li>
+<li>双选没选上应该就等开学了，这个我不清楚，总之都有学上；</li>
+<li>建议<strong>通过电话（自己想办法要到）联系</strong>而非邮件，电话效率比邮件不知道高到哪里去了，老师人都炒鸡好的。有电话的直接给老师打电话，胆子放大，但一定一定要有礼貌；</li>
+<li>推免名额已满的导师依旧会出现在志愿系统中，这要选成了第一志愿，那就巨吃亏；</li>
+<li>网上评价较少的导师其实很多都挺nice的；</li>
+<li>没回你邮件的导师一定不要选为第一志愿；</li>
+<li>本部优势巨大；</li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2tnY28vUmF0ZU15U3VwZXJ2aXNvcg==">RateMySupervisor<i class="fa fa-external-link-alt"></i></span>（可能要梯），我觉得其中信息比较片面且主观，自行把握：</li>
+<li>该板块经验非常主观，并且不一定对。我也不解答关于此板块的问题，大家看看就好。</li>
+</ol>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><blockquote>
+<p>因人大那事，本经验贴中也删了不少细节，想了想还是发出来吧</p>
+</blockquote>
+<p>以上提到的所有资料均在公益群：<code>438081068</code> 中免费分享。我也是潜水员，不过群的氛围真的很好，也给我了莫大的帮助。怀着投我以木桃，报之以琼瑶的心情断断续续写了很久，六千余字，肺腑之言。很希望能对各位的考研有所帮助，少走弯路，也很希望将来的小伙伴也在积极群中分享自己的资料以及经验心得，<strong>但再次提醒，大家一定敬畏规则</strong>。</p>
+<p>提醒一点，本文中的个人看法非常主观，所有的经验终究是别人的经验，<strong>学习方法也有很多，最适合你的才是最好的</strong>。预祝各位考研成功！</p>
+<p>本文首发于<a href="http://www.sun1999.top/archives/38086.html">我的blog</a>，如果有疑问的话，可以在blog下留言，我会收到通知邮件，有空会回复。（引流，逃</p>
+]]></content>
+      <categories>
+        <category>Life</category>
+      </categories>
+      <tags>
+        <tag>Life</tag>
       </tags>
   </entry>
 </search>
