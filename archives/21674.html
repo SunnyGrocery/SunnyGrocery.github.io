@@ -35,10 +35,10 @@
 <meta property="og:description" content="很久没更新了，今天学习中遇到了一个出现频率极高的设计模式：观察者模式，它的实现还是很简单的，但是其和Java语言有着千丝万缕的关联，这里做一个小总结：  常见观察者模式 java.util包下所支持的观察者模式(java9中已正式废弃） java.bean下所提供的观察者模式  1. 常见观察者模式​    参见对象间的联动——观察者模式（二），即一个发布者（观察者、监听器）含有一个或订阅者（被">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-03-04T13:41:00.000Z">
-<meta property="article:modified_time" content="2022-03-04T10:22:41.569Z">
+<meta property="article:modified_time" content="2022-03-04T10:26:05.768Z">
 <meta property="article:author" content="Sunny Grocery">
-<meta property="article:tag" content="designPattern">
 <meta property="article:tag" content="java">
+<meta property="article:tag" content="DesignPattern">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://www.sun1999.top/archives/21674.html">
@@ -239,7 +239,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Web/" itemprop="url" rel="index"><span itemprop="name">Web</span></a>
+                  <a href="/categories/DesignPattern/" itemprop="url" rel="index"><span itemprop="name">DesignPattern</span></a>
                 </span>
             </span>
 
@@ -278,6 +278,8 @@
 <h3 id="1-常见观察者模式"><a href="#1-常见观察者模式" class="headerlink" title="1. 常见观察者模式"></a>1. 常见观察者模式</h3><p>​    参见<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNzcwOTQ5L2FydGljbGUvZGV0YWlscy8xMDQ5NTk0NjQ/c3BtPTEwMDEuMjEwMS4zMDAxLjY2NTAuMSZ1dG1fbWVkaXVtPWRpc3RyaWJ1dGUucGNfcmVsZXZhbnQubm9uZS10YXNrLWJsb2ctMn5kZWZhdWx0fkNUUkxJU1R+UmF0ZS0xLnBjX3JlbGV2YW50X2RlZmF1bHQmZGVwdGhfMS11dG1fc291cmNlPWRpc3RyaWJ1dGUucGNfcmVsZXZhbnQubm9uZS10YXNrLWJsb2ctMn5kZWZhdWx0fkNUUkxJU1R+UmF0ZS0xLnBjX3JlbGV2YW50X2RlZmF1bHQmdXRtX3JlbGV2YW50X2luZGV4PTI=">对象间的联动——观察者模式（二）<i class="fa fa-external-link-alt"></i></span>，即一个发布者（观察者、监听器）含有一个或订阅者（被观察者）的引用。</p>
 <h3 id="2-java-util-Observable-amp-java-util-Observer"><a href="#2-java-util-Observable-amp-java-util-Observer" class="headerlink" title="2. java.util.Observable &amp; java.util.Observer"></a>2. <span class="exturl" data-url="aHR0cHM6Ly9kb2NzLm9yYWNsZS5jb20vamF2YXNlLzkvZG9jcy9hcGkvamF2YS91dGlsL09ic2VydmFibGUuaHRtbA==">java.util.Observable<i class="fa fa-external-link-alt"></i></span> &amp; <span class="exturl" data-url="aHR0cHM6Ly9kb2NzLm9yYWNsZS5jb20vamF2YXNlLzkvZG9jcy9hcGkvamF2YS91dGlsL09ic2VydmVyLmh0bWw=">java.util.Observer<i class="fa fa-external-link-alt"></i></span></h3><p>由于观察者模式非常常用，故Java在1.0版本中就已经内置了Observable 和Observer接口，分别作为被观察者和观察者。</p>
 <p>但其在Java9中已被标记为<code>@deprecated</code>：</p>
+<a id="more"></a>
+
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">* @deprecated</span><br><span class="line">* This class and the &#123;@link Observer&#125; interface have been deprecated.</span><br><span class="line">* The event model supported by &#123;@code Observer&#125; and &#123;@code Observable&#125;</span><br><span class="line">* is quite limited, the order of notifications delivered by</span><br><span class="line">* &#123;@code Observable&#125; is unspecified, and state changes are not in</span><br><span class="line">* one-for-one correspondence with notifications.</span><br><span class="line">* For a richer event model, consider using the</span><br><span class="line">* &#123;@link java.beans&#125; package.  For reliable and ordered</span><br><span class="line">* messaging among threads, consider using one of the concurrent data</span><br><span class="line">* structures in the &#123;@link java.util.concurrent&#125; package.</span><br><span class="line">* For reactive streams style programming, see the</span><br><span class="line">* &#123;@link java.util.concurrent.Flow&#125; API.</span><br><span class="line">*&#x2F;</span><br></pre></td></tr></table></figure>
 <p>There is a quote in there from Josh Bloch as part of <span class="exturl" data-url="aHR0cHM6Ly9idWdzLm9wZW5qZGsuamF2YS5uZXQvYnJvd3NlL0pESy00MTgwNDY2">JDK-4180466<i class="fa fa-external-link-alt"></i></span> (“Why is java.util.Observable class not serializable.”) dated <strong>February 1999</strong>: <span class="exturl" data-url="aHR0cHM6Ly93d3cuamF2YWNvZGVnZWVrcy5jb20vMjAxNy8wNS9qYXZhcy1vYnNlcnZlci1vYnNlcnZhYmxlLWRlcHJlY2F0ZWQtamRrLTkuaHRtbA==">引用自：Java’s Observer and Observable are Deprecated in JDK 9<i class="fa fa-external-link-alt"></i></span></p>
 <blockquote>
@@ -347,8 +349,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/designPattern/" rel="tag"># designPattern</a>
               <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/DesignPattern/" rel="tag"># DesignPattern</a>
           </div>
 
         
@@ -447,7 +449,7 @@
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
