@@ -3133,7 +3133,7 @@
       </tags>
   </entry>
   <entry>
-    <title>观察者模式机器在Java中的支持</title>
+    <title>观察者模式以及Java中的支持</title>
     <url>/archives/21674.html</url>
     <content><![CDATA[<hr>
 <p>很久没更新了，今天学习中遇到了一个出现频率极高的设计模式：观察者模式，它的实现还是很简单的，但是其和Java语言有着千丝万缕的关联，这里做一个小总结：</p>
