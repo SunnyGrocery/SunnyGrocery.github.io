@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <meta name="google-site-verification" content="1J8G8TayUzNXKEHTUsjyrcmSpj6n0j4lFtO6EtKRr-E" />
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.sun1999.top","root":"/","scheme":"Mist","version":"7.8.0","exturl":true,"sidebar":{"position":"right","display":"hide","padding":18,"offset":20,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="很久没更新了，今天学习中遇到了一个出现频率极高的设计模式：观察者模式，它的实现还是很简单的，但是其和Java语言有着千丝万缕的关联，这里做一个小总结：  常见观察者模式 java.util包下所支持的观察者模式(java9中已正式废弃） java.bean下所提供的观察者模式  1. 常见观察者模式​    参见对象间的联动——观察者模式（二），即一个发布者（观察者、监听器）含有一个或订阅者（被">
+<meta property="og:type" content="article">
+<meta property="og:title" content="观察者模式机器在Java中的支持">
+<meta property="og:url" content="http://www.sun1999.top/archives/21674.html">
+<meta property="og:site_name" content="Sunny Grocery">
+<meta property="og:description" content="很久没更新了，今天学习中遇到了一个出现频率极高的设计模式：观察者模式，它的实现还是很简单的，但是其和Java语言有着千丝万缕的关联，这里做一个小总结：  常见观察者模式 java.util包下所支持的观察者模式(java9中已正式废弃） java.bean下所提供的观察者模式  1. 常见观察者模式​    参见对象间的联动——观察者模式（二），即一个发布者（观察者、监听器）含有一个或订阅者（被">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-04T13:41:00.000Z">
+<meta property="article:modified_time" content="2022-03-04T10:22:41.569Z">
+<meta property="article:author" content="Sunny Grocery">
+<meta property="article:tag" content="designPattern">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://www.sun1999.top/archives/21674.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>观察者模式机器在Java中的支持 | Sunny Grocery</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2fd60dce699a7df813aeff6a2451ebae";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Sunny Grocery</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <span class="exturl github-corner" data-url="aHR0cHM6Ly9naXRodWIuY29tL1N1bm55R3JvY2VyeQ==" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></span>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.sun1999.top/archives/21674.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Sunny Grocery">
+      <meta itemprop="description" content="Sunny Grocery小站">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sunny Grocery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          观察者模式机器在Java中的支持
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-03-04 21:41:00" itemprop="dateCreated datePublished" datetime="2022-03-04T21:41:00+08:00">2022-03-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Web/" itemprop="url" rel="index"><span itemprop="name">Web</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>13 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<p>很久没更新了，今天学习中遇到了一个出现频率极高的设计模式：观察者模式，它的实现还是很简单的，但是其和Java语言有着千丝万缕的关联，这里做一个小总结：</p>
+<ol>
+<li>常见观察者模式</li>
+<li><code>java.util</code>包下所支持的观察者模式(java9中已正式废弃）</li>
+<li><code>java.bean</code>下所提供的观察者模式</li>
+</ol>
+<h3 id="1-常见观察者模式"><a href="#1-常见观察者模式" class="headerlink" title="1. 常见观察者模式"></a>1. 常见观察者模式</h3><p>​    参见<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNzcwOTQ5L2FydGljbGUvZGV0YWlscy8xMDQ5NTk0NjQ/c3BtPTEwMDEuMjEwMS4zMDAxLjY2NTAuMSZ1dG1fbWVkaXVtPWRpc3RyaWJ1dGUucGNfcmVsZXZhbnQubm9uZS10YXNrLWJsb2ctMn5kZWZhdWx0fkNUUkxJU1R+UmF0ZS0xLnBjX3JlbGV2YW50X2RlZmF1bHQmZGVwdGhfMS11dG1fc291cmNlPWRpc3RyaWJ1dGUucGNfcmVsZXZhbnQubm9uZS10YXNrLWJsb2ctMn5kZWZhdWx0fkNUUkxJU1R+UmF0ZS0xLnBjX3JlbGV2YW50X2RlZmF1bHQmdXRtX3JlbGV2YW50X2luZGV4PTI=">对象间的联动——观察者模式（二）<i class="fa fa-external-link-alt"></i></span>，即一个发布者（观察者、监听器）含有一个或订阅者（被观察者）的引用。</p>
+<h3 id="2-java-util-Observable-amp-java-util-Observer"><a href="#2-java-util-Observable-amp-java-util-Observer" class="headerlink" title="2. java.util.Observable &amp; java.util.Observer"></a>2. <span class="exturl" data-url="aHR0cHM6Ly9kb2NzLm9yYWNsZS5jb20vamF2YXNlLzkvZG9jcy9hcGkvamF2YS91dGlsL09ic2VydmFibGUuaHRtbA==">java.util.Observable<i class="fa fa-external-link-alt"></i></span> &amp; <span class="exturl" data-url="aHR0cHM6Ly9kb2NzLm9yYWNsZS5jb20vamF2YXNlLzkvZG9jcy9hcGkvamF2YS91dGlsL09ic2VydmVyLmh0bWw=">java.util.Observer<i class="fa fa-external-link-alt"></i></span></h3><p>由于观察者模式非常常用，故Java在1.0版本中就已经内置了Observable 和Observer接口，分别作为被观察者和观察者。</p>
+<p>但其在Java9中已被标记为<code>@deprecated</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">* @deprecated</span><br><span class="line">* This class and the &#123;@link Observer&#125; interface have been deprecated.</span><br><span class="line">* The event model supported by &#123;@code Observer&#125; and &#123;@code Observable&#125;</span><br><span class="line">* is quite limited, the order of notifications delivered by</span><br><span class="line">* &#123;@code Observable&#125; is unspecified, and state changes are not in</span><br><span class="line">* one-for-one correspondence with notifications.</span><br><span class="line">* For a richer event model, consider using the</span><br><span class="line">* &#123;@link java.beans&#125; package.  For reliable and ordered</span><br><span class="line">* messaging among threads, consider using one of the concurrent data</span><br><span class="line">* structures in the &#123;@link java.util.concurrent&#125; package.</span><br><span class="line">* For reactive streams style programming, see the</span><br><span class="line">* &#123;@link java.util.concurrent.Flow&#125; API.</span><br><span class="line">*&#x2F;</span><br></pre></td></tr></table></figure>
+<p>There is a quote in there from Josh Bloch as part of <span class="exturl" data-url="aHR0cHM6Ly9idWdzLm9wZW5qZGsuamF2YS5uZXQvYnJvd3NlL0pESy00MTgwNDY2">JDK-4180466<i class="fa fa-external-link-alt"></i></span> (“Why is java.util.Observable class not serializable.”) dated <strong>February 1999</strong>: <span class="exturl" data-url="aHR0cHM6Ly93d3cuamF2YWNvZGVnZWVrcy5jb20vMjAxNy8wNS9qYXZhcy1vYnNlcnZlci1vYnNlcnZhYmxlLWRlcHJlY2F0ZWQtamRrLTkuaHRtbA==">引用自：Java’s Observer and Observable are Deprecated in JDK 9<i class="fa fa-external-link-alt"></i></span></p>
+<blockquote>
+<p>This class is no longer under active development. It is largely unused in the JDK, and has, for the most part, been superseded by the 1.1 Beans/AWT event model. … Observable has fallen into disuse and is no longer under active development.</p>
+</blockquote>
+<p>通过以上，可以总结java.util下这两个接口被弃用的原因：</p>
+<ol>
+<li>不支持序列化 ，Observable未实现Serializable接口，而其内部成员变量私有，子类不能通过继承它来对Observable的成员变量处理m所以子类也不能序列化。</li>
+<li>非线程安全，<code>java.util.Observable</code>不强制要求Observable线程安全，其允许子类覆盖重写Observable的方法，这会导致事件通知无序以及事件通知发生在不同的线程中，影响线程安全。</li>
+<li>支持事件模型的功能简单，只支持事情发生变化的概念，但是不能提供更多哪些内容发生了改变。（在<code>java.beans.PropertyChange..，</code>相关类就给出了相应解决方案）</li>
+<li>在JDK中并未被大规模使用</li>
+<li>被<code>java.beans</code>包下的新工具取代，尤其使用在了AWT的设计中（参见：<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xvdmVsaW9uL2FydGljbGUvZGV0YWlscy83NzIwNTIyP3V0bV9tZWRpdW09ZGlzdHJpYnV0ZS5wY19yZWxldmFudC5ub25lLXRhc2stYmxvZy0yfmRlZmF1bHR+YmFpZHVqc190aXRsZX5kZWZhdWx0LTEucXVlcnljdHJ2NCZzcG09MTAwMS4yMTAxLjMwMDEuNDI0Mi4yJnV0bV9yZWxldmFudF9pbmRleD00">基于观察者模式的委派事件模型(DelegationEvent Model, DEM)<i class="fa fa-external-link-alt"></i></span>）</li>
+</ol>
+<h3 id="3-java-beans-PropertyChangeSupport-amp-java-beans-PropertyChangeListener"><a href="#3-java-beans-PropertyChangeSupport-amp-java-beans-PropertyChangeListener" class="headerlink" title="3. java.beans.PropertyChangeSupport &amp; java.beans.PropertyChangeListener"></a>3. <span class="exturl" data-url="aHR0cHM6Ly9kb2NzLm9yYWNsZS5jb20vamF2YXNlLzkvZG9jcy9hcGkvamF2YS9iZWFucy9Qcm9wZXJ0eUNoYW5nZVN1cHBvcnQuaHRtbA==">java.beans.PropertyChangeSupport<i class="fa fa-external-link-alt"></i></span> &amp; <span class="exturl" data-url="aHR0cHM6Ly9kb2NzLm9yYWNsZS5jb20vamF2YXNlLzkvZG9jcy9hcGkvamF2YS9iZWFucy9Qcm9wZXJ0eUNoYW5nZUxpc3RlbmVyLmh0bWw=">java.beans.PropertyChangeListener<i class="fa fa-external-link-alt"></i></span></h3><ol>
+<li><p><code>java.beans.PropertyChangeListener</code> 对应于DEM模型中的事件监听器(Event Listener)</p>
+</li>
+<li><p><code> java.beans.PropertyChangeSupport</code> 一般作为事件源对象(Event Source Bean)的成员变量，存储多个监听器，一般写法为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> PropertyChangeSupport listeners = <span class="keyword">new</span> PropertyChangeSupport(<span class="keyword">this</span>);</span><br></pre></td></tr></table></figure></li>
+<li><p><code>java.beans.PropertyChangeEvent</code> 即事件对象(Event Object)</p>
+</li>
+<li><p>流程：客户端调用<code>事件源对象</code>的相应推送方法，该方法内会调用<code>PropertyChangeSupport</code>中所保存的相应<code>PropertyChangeListener</code>的<code>public void propertyChange(PropertyChangeEvent evt) </code>方法，其中<code>PropertyChangeEvent </code>可由Listener以重载的方式构造。</p>
+</li>
+</ol>
+<p>这里给出相关实现：</p>
+<blockquote>
+<p>Community作为事件源对象，组织多个Play进行活动，Community更改名称以及Community移动两个事件会触发其成员变量<code>listeners</code>中所保存的Play，Play会被调用<code>propertyChange</code>，根据Community产生的相应事件做出改变</p>
+</blockquote>
+<ul>
+<li>事件源对象(Event Source Bean)</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> structuralPatterns.observerPattern;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.beans.PropertyChangeListener;</span><br><span class="line"><span class="keyword">import</span> java.beans.PropertyChangeSupport;</span><br><span class="line"></span><br><span class="line"><span class="comment">//作为被观察者、发布者</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Community</span> </span>&#123;</span><br><span class="line">    <span class="comment">//长官下达命令</span></span><br><span class="line">    <span class="keyword">private</span> String communityName;</span><br><span class="line">    <span class="comment">//Play根据任务会修改坐标</span></span><br><span class="line">    <span class="keyword">private</span> String direction;</span><br><span class="line">    <span class="comment">//传入的对象为&quot;事件发布者&quot;(Event Source)</span></span><br><span class="line">    <span class="keyword">private</span> PropertyChangeSupport listeners;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Community</span><span class="params">(String communityName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.communityName = communityName;</span><br><span class="line">        <span class="keyword">this</span>.direction = <span class="string">&quot;local&quot;</span>;</span><br><span class="line">        <span class="keyword">this</span>.listeners = <span class="keyword">new</span> PropertyChangeSupport(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCommunityName</span><span class="params">(String communityName)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//会调用PropertyChangeSupport中保存的listener.propertyChange(event);</span></span><br><span class="line">        listeners.firePropertyChange(<span class="string">&quot;Community.newCommunityName&quot;</span>, <span class="keyword">this</span>.communityName, communityName);</span><br><span class="line">        <span class="keyword">this</span>.communityName = communityName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDirection</span><span class="params">(String direction)</span> </span>&#123;</span><br><span class="line">        listeners.firePropertyChange(<span class="string">&quot;Community.newDirection&quot;</span>, <span class="keyword">this</span>.direction, direction);</span><br><span class="line">        <span class="keyword">this</span>.direction = direction;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">join</span><span class="params">(PropertyChangeListener player)</span> </span>&#123;</span><br><span class="line">        listeners.addPropertyChangeListener(player);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">quit</span><span class="params">(PropertyChangeListener player)</span> </span>&#123;</span><br><span class="line">        listeners.removePropertyChangeListener(player);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getCommunityName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> communityName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getDirection</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> direction;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>事件监听器(Event Source Bean)</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> structuralPatterns.observerPattern;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.beans.PropertyChangeEvent;</span><br><span class="line"><span class="keyword">import</span> java.beans.PropertyChangeListener;</span><br><span class="line"></span><br><span class="line"><span class="comment">//作为观察者、订阅者</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Player</span> <span class="keyword">implements</span> <span class="title">PropertyChangeListener</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> String fullName;</span><br><span class="line">    <span class="comment">//坐标</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> x;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> y;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Player</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        <span class="keyword">this</span>.fullName = <span class="string">&quot;Random.&quot;</span> + name;</span><br><span class="line">        <span class="keyword">this</span>.x = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">this</span>.y = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">propertyChange</span><span class="params">(PropertyChangeEvent evt)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (evt.getPropertyName()) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&quot;Community.newCommunityName&quot;</span> -&gt; fullName = evt.getNewValue() + <span class="string">&quot;.&quot;</span> + name;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&quot;Community.newDirection&quot;</span> -&gt; &#123;</span><br><span class="line">                <span class="keyword">switch</span> ((String) evt.getNewValue()) &#123;</span><br><span class="line">                    <span class="keyword">case</span> <span class="string">&quot;up&quot;</span> -&gt; y++;</span><br><span class="line">                    <span class="keyword">case</span> <span class="string">&quot;down&quot;</span> -&gt; y--;</span><br><span class="line">                    <span class="keyword">case</span> <span class="string">&quot;left&quot;</span> -&gt; x--;</span><br><span class="line">                    <span class="keyword">case</span> <span class="string">&quot;right&quot;</span> -&gt; x++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;  propertyChanged: &quot;</span> + <span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;I`am &quot;</span> + name + <span class="string">&quot;, full name is \&quot;&quot;</span> + fullName + <span class="string">&quot;\&quot;. Coordinates is (&quot;</span> + x + <span class="string">&quot;,&quot;</span> + y + <span class="string">&quot;).&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getFullName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> fullName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setFullName</span><span class="params">(String fullName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.fullName = fullName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getX</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setX</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.x = x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getY</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> y;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setY</span><span class="params">(<span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.y = y;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>测试客户端</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> structuralPatterns.observerPattern;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Community community = <span class="keyword">new</span> Community(<span class="string">&quot;Uestc&quot;</span>);</span><br><span class="line"></span><br><span class="line">        Player mike = <span class="keyword">new</span> Player(<span class="string">&quot;Mike&quot;</span>);</span><br><span class="line">        Player alice = <span class="keyword">new</span> Player(<span class="string">&quot;Alice&quot;</span>);</span><br><span class="line"></span><br><span class="line">        community.join(mike);</span><br><span class="line">        community.join(alice);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;Start: &quot;</span> + mike);</span><br><span class="line">        System.out.println(<span class="string">&quot;Start: &quot;</span> + alice);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;# Change1 :community.setCommunityName(\&quot;UestcRun\&quot;);&quot;</span>);</span><br><span class="line">        community.setCommunityName(<span class="string">&quot;UestcRun&quot;</span>);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;# Change2 :community.setDirection(\&quot;up\&quot;);&quot;</span>);</span><br><span class="line">        community.setDirection(<span class="string">&quot;up&quot;</span>);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;# Change3 :community.setCommunityName(\&quot;UestcFly\&quot;);&quot;</span>);</span><br><span class="line">        community.setCommunityName(<span class="string">&quot;UestcFly&quot;</span>);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;# Change4 :community.setDirection(\&quot;left\&quot;);&quot;</span>);</span><br><span class="line">        community.setDirection(<span class="string">&quot;left&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>控制台输出</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Start: I&#96;am Mike, full name is &quot;Random.Mike&quot;. Coordinates is (0,0).</span><br><span class="line">Start: I&#96;am Alice, full name is &quot;Random.Alice&quot;. Coordinates is (0,0).</span><br><span class="line"># Change1 :community.setCommunityName(&quot;UestcRun&quot;);</span><br><span class="line">  propertyChanged: I&#96;am Mike, full name is &quot;UestcRun.Mike&quot;. Coordinates is (0,0).</span><br><span class="line">  propertyChanged: I&#96;am Alice, full name is &quot;UestcRun.Alice&quot;. Coordinates is (0,0).</span><br><span class="line"># Change2 :community.setDirection(&quot;up&quot;);</span><br><span class="line">  propertyChanged: I&#96;am Mike, full name is &quot;UestcRun.Mike&quot;. Coordinates is (0,1).</span><br><span class="line">  propertyChanged: I&#96;am Alice, full name is &quot;UestcRun.Alice&quot;. Coordinates is (0,1).</span><br><span class="line"># Change3 :community.setCommunityName(&quot;UestcFly&quot;);</span><br><span class="line">  propertyChanged: I&#96;am Mike, full name is &quot;UestcFly.Mike&quot;. Coordinates is (0,1).</span><br><span class="line">  propertyChanged: I&#96;am Alice, full name is &quot;UestcFly.Alice&quot;. Coordinates is (0,1).</span><br><span class="line"># Change4 :community.setDirection(&quot;left&quot;);</span><br><span class="line">  propertyChanged: I&#96;am Mike, full name is &quot;UestcFly.Mike&quot;. Coordinates is (-1,1).</span><br><span class="line">  propertyChanged: I&#96;am Alice, full name is &quot;UestcFly.Alice&quot;. Coordinates is (-1,1).</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Sunny Grocery
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://www.sun1999.top/archives/21674.html" title="观察者模式机器在Java中的支持">http://www.sun1999.top/archives/21674.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/designPattern/" rel="tag"># designPattern</a>
+              <a href="/tags/java/" rel="tag"># java</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/archives/38086.html" rel="prev" title="2021电子科技大学860软件工程专硕经验分享">
+      <i class="fa fa-chevron-left"></i> 2021电子科技大学860软件工程专硕经验分享
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80NDEzMy8yMDY2OA"></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%B8%B8%E8%A7%81%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">1. 常见观察者模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-java-util-Observable-amp-java-util-Observer"><span class="nav-number">2.</span> <span class="nav-text">2. java.util.Observable &amp; java.util.Observer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-java-beans-PropertyChangeSupport-amp-java-beans-PropertyChangeListener"><span class="nav-number">3.</span> <span class="nav-text">3. java.beans.PropertyChangeSupport &amp; java.beans.PropertyChangeListener</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Sunny Grocery"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Sunny Grocery</p>
+  <div class="site-description" itemprop="description">Sunny Grocery小站</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9zdW4taW4tbW92aWUvYWN0aXZpdGllcw==" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;sun-in-movie&#x2F;activities"><i class="fab fa-zhihu fa-fw"></i></span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly85OTYuaWN1LyMvemhfQ04=" title="996ICU → https:&#x2F;&#x2F;996.icu&#x2F;#&#x2F;zh_CN"><i class="fas fa-procedures fa-fw"></i></span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL1N1bm55R3JvY2VyeQ==" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;SunnyGrocery"><i class="fab fa-github fa-fw"></i></span>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        <div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sunny Grocery</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">132k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:01</span>
+</div>
+<div class="powered-by">
+    Erstellt mit 
+    <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a>
+    <span class="post-meta-divider">|</span>
+      <a href="https://beian.miit.gov.cn" rel="noopener external nofollow noreferrer" target="_blank" class="exturl" title="">陕ICP备19009013号-1</a>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="200" alpha="0.2" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>
